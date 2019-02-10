@@ -1,13 +1,11 @@
 package com.vision.project.services;
 
-import com.vision.project.models.Specs.UserSpec;
+import com.vision.project.exceptions.UserNotFoundException;
 import com.vision.project.models.User;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
