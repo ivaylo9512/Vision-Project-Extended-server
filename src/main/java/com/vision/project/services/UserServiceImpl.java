@@ -9,14 +9,20 @@ import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService,UserDetailsService {
 
     private final UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
@@ -28,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserModel> findAll() {
+    public List<UserModel> findAll() { ;
         return userRepository.findAll();
     }
 
@@ -40,22 +46,7 @@ public class UserServiceImpl implements UserService {
         }
         return userModel;
     }
-    @Override
-    public UserModel register(UserSpec userSpec, String role) {
-        UserModel userModel = userRepository.findByUsername(userSpec.getUsername());
 
-        if (userModel != null) {
-            throw new UsernameExistsException("Username is already taken.");
-        }
-
-        if (!userSpec.getPassword().equals(userSpec.getRepeatPassword())) {
-            throw new PasswordsMissMatchException("Passwords must match.");
-        }
-
-        userModel = new UserModel(userSpec, role);
-        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
-        return userRepository.save(userModel);
-    }
     @Override
     public UserModel login(UserModel userModel) throws InvalidCredentialsException {
         String username = userModel.getUsername();
@@ -74,4 +65,28 @@ public class UserServiceImpl implements UserService {
         return foundUserModel;
     }
 
+    @Override
+    public UserModel register(UserSpec userSpec, String role) {
+        UserModel userModel = userRepository.findByUsername(userSpec.getUsername());
+
+        if (userModel != null) {
+            throw new UsernameExistsException("Username is already taken.");
+        }
+
+        if (!userSpec.getPassword().equals(userSpec.getRepeatPassword())) {
+            throw new PasswordsMissMatchException("Passwords must match.");
+        }
+
+        userModel = new UserModel(userSpec, role);
+        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
+        return userRepository.save(userModel);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserModel userModel = userRepository.findByUsername(username);
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
+        return new User(userModel.getUsername(), userModel.getPassword(),authorities);
+    }
 }
