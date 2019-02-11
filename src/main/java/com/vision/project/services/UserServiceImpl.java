@@ -1,6 +1,9 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UserNotFoundException;
+import com.vision.project.exceptions.UsernameExistsException;
+import com.vision.project.models.Specs.UserSpec;
 import com.vision.project.models.User;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
@@ -37,7 +40,22 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+    @Override
+    public User register(UserSpec userSpec, String role) {
+        User user = userRepository.findByUsername(userSpec.getUsername());
 
+        if (user != null) {
+            throw new UsernameExistsException("Username is already taken.");
+        }
+
+        if (!userSpec.getPassword().equals(userSpec.getRepeatPassword())) {
+            throw new PasswordsMissMatchException("Passwords must match.");
+        }
+
+        user = new User(userSpec, role);
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
+        return userRepository.save(user);
+    }
     @Override
     public User login(User user) throws InvalidCredentialsException {
         String username = user.getUsername();

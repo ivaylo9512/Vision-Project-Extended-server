@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="afc1ed66-6e6d-4e08-a38f-21141dd3d07d" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/config/PasswordEncoderConfig$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/config/PasswordEncoderConfig$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/config/PasswordEncoderConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/repositories/base/UserRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/Exceptions/JwtExpiredTokenException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/Exceptions/JwtTokenIsIncorrectException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/Exceptions/JwtTokenIsMissingException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/UserServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/base/UserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtExpiredTokenException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtTokenIsIncorrectException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtTokenIsMissingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -58,11 +44,68 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="ProjectApplication.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/ProjectApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#320#321#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OrderServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="731">
+              <caret line="45" column="20" lean-forward="true" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserNotFoundException.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/UserNotFoundException.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InvalidCredentialsException.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/InvalidCredentialsException.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="InvalidStateException.class" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/out/production/classes/com/vision/project/exceptions/InvalidStateException.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret line="3" column="2" lean-forward="true" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="29" column="29" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="UserServiceImpl.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+            <state relative-caret-position="210">
+              <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1130#1131#0" expanded="true" />
@@ -72,49 +115,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="JwtExpiredTokenException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtExpiredTokenException.java">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="JwtTokenIsIncorrectException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtTokenIsIncorrectException.java">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="JwtTokenIsMissingException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Exceptions/JwtTokenIsMissingException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="PasswordEncoderConfig.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
               <caret line="12" column="10" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PasswordsMissMatchException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/PasswordsMissMatchException.java">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="UsernameExistsException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/UsernameExistsException.java">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="UserRepository.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="17" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -605,7 +610,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/Specs/ChangeUserPasswordSpec.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/UserRepositoryImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtGenerator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationProvider.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationEntryPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/config/SecurityConfig.java" />
@@ -632,6 +636,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" />
       </list>
     </option>
   </component>
@@ -718,30 +723,7 @@
               <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="vision" type="462c0819:PsiDirectoryNode" />
               <item name="project" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vision-project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Vision-Project-Extended-server-master" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="out" type="462c0819:PsiDirectoryNode" />
-              <item name="production" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="vision" type="462c0819:PsiDirectoryNode" />
-              <item name="project" type="462c0819:PsiDirectoryNode" />
-              <item name="security" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vision-project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Vision-Project-Extended-server-master" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="out" type="462c0819:PsiDirectoryNode" />
-              <item name="production" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="vision" type="462c0819:PsiDirectoryNode" />
-              <item name="project" type="462c0819:PsiDirectoryNode" />
-              <item name="security" type="462c0819:PsiDirectoryNode" />
-              <item name="Exceptions" type="462c0819:PsiDirectoryNode" />
+              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vision-project" type="b2602c69:ProjectViewProjectNode" />
@@ -870,16 +852,16 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.vision.project.controllers" />
       <recent name="com.vision.project.config" />
       <recent name="com.vision.project" />
       <recent name="com.vision.project.repositories.base" />
       <recent name="com.vision.project.models" />
-      <recent name="com.vision.project.repositories" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\src\main\java\com\vision\project\security" />
-      <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\src\main\java\com\vision\project\exceptions" />
       <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\out\production\classes\com\vision\project" />
+      <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\src\main\java\com\vision\project\exceptions" />
+      <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\src\main\java\com\vision\project\security" />
       <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master1\Vision-Project-Extended-server-master\src\main\java\com\vision\project" />
       <recent name="C:\Users\ivail\OneDrive\Работен плот\Vision-Project-Extended-server-master\Vision-Project-Extended-server-master\out\production\classes\com\vision\project" />
     </key>
@@ -1028,15 +1010,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationEntryPoint.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="54" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -1122,18 +1095,6 @@
         <state relative-caret-position="-416" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/ProjectApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#523#524#0" expanded="true" />
-            <element signature="e#592#593#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/Specs/UserService.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1167,16 +1128,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="45" column="20" lean-forward="true" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1198,13 +1149,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/exceptions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/UserNotFoundException.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
@@ -1238,16 +1182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/base/UserService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/package-info.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1264,10 +1198,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/ProjectApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#320#321#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="45" column="20" lean-forward="true" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/UserNotFoundException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/InvalidCredentialsException.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/out/production/classes/com/vision/project/exceptions/InvalidStateException.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="3" column="2" lean-forward="true" selection-start-line="3" selection-start-column="2" selection-end-line="3" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="29" column="29" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/base/UserService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+        <state relative-caret-position="210">
+          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1130#1131#0" expanded="true" />
