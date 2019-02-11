@@ -4,7 +4,7 @@ import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UserNotFoundException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Specs.UserSpec;
-import com.vision.project.models.User;
+import com.vision.project.models.UserModel;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
 import org.apache.http.auth.InvalidCredentialsException;
@@ -28,23 +28,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserModel> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public User findById(int id, User loggedUser) {
-        User user = userRepository.findById(id);
-        if (user == null) {
-            throw new UserNotFoundException("User doesn't exist.");
+    public UserModel findById(int id, UserModel loggedUserModel) {
+        UserModel userModel = userRepository.findById(id);
+        if (userModel == null) {
+            throw new UserNotFoundException("UserModel doesn't exist.");
         }
-        return user;
+        return userModel;
     }
     @Override
-    public User register(UserSpec userSpec, String role) {
-        User user = userRepository.findByUsername(userSpec.getUsername());
+    public UserModel register(UserSpec userSpec, String role) {
+        UserModel userModel = userRepository.findByUsername(userSpec.getUsername());
 
-        if (user != null) {
+        if (userModel != null) {
             throw new UsernameExistsException("Username is already taken.");
         }
 
@@ -52,26 +52,26 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsMissMatchException("Passwords must match.");
         }
 
-        user = new User(userSpec, role);
-        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
-        return userRepository.save(user);
+        userModel = new UserModel(userSpec, role);
+        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
+        return userRepository.save(userModel);
     }
     @Override
-    public User login(User user) throws InvalidCredentialsException {
-        String username = user.getUsername();
-        String password = user.getPassword();
+    public UserModel login(UserModel userModel) throws InvalidCredentialsException {
+        String username = userModel.getUsername();
+        String password = userModel.getPassword();
 
-        User foundUser = userRepository.findByUsername(username);
+        UserModel foundUserModel = userRepository.findByUsername(username);
 
-        if (foundUser == null) {
+        if (foundUserModel == null) {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
 
-        if (!BCrypt.checkpw(password,foundUser.getPassword())) {
+        if (!BCrypt.checkpw(password, foundUserModel.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
 
-        return foundUser;
+        return foundUserModel;
     }
 
 }

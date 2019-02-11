@@ -4,7 +4,7 @@ package com.vision.project.controllers;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Specs.UserSpec;
-import com.vision.project.models.User;
+import com.vision.project.models.UserModel;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +27,13 @@ public class UserController {
 
 
     @PostMapping(value = "/users/register")
-    public User register(@Valid @RequestBody UserSpec user) {
+    public UserModel register(@Valid @RequestBody UserSpec user) {
         return userService.register(user,"ROLE_USER");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "auth/users/adminRegistration")
-    public User registerAdmin(@Valid @RequestBody UserSpec user){
+    public UserModel registerAdmin(@Valid @RequestBody UserSpec user){
         return userService.register(user, "ROLE_ADMIN");
     }
 
