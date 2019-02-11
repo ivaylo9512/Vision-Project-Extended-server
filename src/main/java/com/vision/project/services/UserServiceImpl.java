@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         String username = user.getUsername();
         String password = user.getPassword();
 
-        User foundUser = userRepository.findByUserName(username);
+        User foundUser = userRepository.findByUsername(username);
 
         if (foundUser == null) {
             throw new InvalidCredentialsException("Invalid credentials.");
