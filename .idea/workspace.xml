@@ -3,26 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="afc1ed66-6e6d-4e08-a38f-21141dd3d07d" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/config/SecurityConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/controllers/OrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/controllers/OrderController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/models/UserModel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/AuthenticationFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/AuthorizationFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/security/Jwt.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/OrderServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/vision/project/services/UserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -66,7 +52,7 @@
       <file leaf-file-name="UserServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
+            <state relative-caret-position="142">
               <caret line="89" column="20" selection-start-line="89" selection-start-column="20" selection-end-line="89" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -75,25 +61,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OrderController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java">
+      <file leaf-file-name="OrderServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+            <state relative-caret-position="1054">
+              <caret line="82" column="31" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
               <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SecurityConfig.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/config/SecurityConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="789">
-              <caret line="70" lean-forward="true" selection-start-line="70" selection-end-line="70" />
-              <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#2915#2916#0" expanded="true" />
+                <element signature="e#2946#2947#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,52 +78,51 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserDetails.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="85">
-              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthorizationProvider.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationProvider.java">
+      <file leaf-file-name="Order.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
+            <state relative-caret-position="216">
+              <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthorizationFilter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter.java">
+      <file leaf-file-name="OrderController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="37" selection-start-line="37" selection-end-line="38" />
+            <state relative-caret-position="166">
+              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Jwt.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java">
+      <file leaf-file-name="User.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-core/5.0.7.RELEASE/e53aa815b8a71395f1b626680ea264533a9b1918/spring-security-core-5.0.7.RELEASE-sources.jar!/org/springframework/security/core/userdetails/User.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="884">
-              <caret line="66" column="1" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
+            <state relative-caret-position="242">
+              <caret line="61" column="13" selection-start-line="61" selection-start-column="13" selection-end-line="61" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthenticationFilter.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationFilter.java">
+      <file leaf-file-name="UserRequest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="44" column="52" lean-forward="true" selection-start-line="44" selection-start-column="52" selection-end-line="44" selection-end-column="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FailureHandler.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/FailureHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="14" selection-start-line="14" selection-end-line="15" />
+            <state relative-caret-position="295">
+              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#520#521#0" expanded="true" />
+                <element signature="e#562#563#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -156,8 +130,26 @@
       <file leaf-file-name="User.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/User.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
+            <state relative-caret-position="386">
               <caret line="30" selection-start-line="30" selection-end-line="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OrderRepository.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="19" column="58" selection-start-line="19" selection-start-column="58" selection-end-line="19" selection-end-column="58" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OrderService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
             </state>
           </provider>
         </entry>
@@ -213,16 +205,12 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationEntryPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/Dish.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/User.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/base/OrderRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/config/AppConfig.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/DishController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/ProjectApplication.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/Specs/UserService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/userserv.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/UserService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/exceptions.java" />
@@ -233,8 +221,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/UserController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationTokenFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthProvider.java" />
@@ -245,9 +231,15 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter1.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserDetails.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationFilter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java" />
       </list>
     </option>
   </component>
@@ -639,13 +631,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/config/SecurityConfig.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -730,28 +715,7 @@
         <state relative-caret-position="-416" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/userserv.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/exceptions/exceptions.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/UserRepository.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -826,20 +790,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="40" column="5" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="39" selection-start-line="39" selection-end-line="70" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="363">
@@ -880,51 +830,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="261">
+          <caret line="37" selection-start-line="37" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="44" column="52" lean-forward="true" selection-start-line="44" selection-start-column="52" selection-end-line="44" selection-end-column="52" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="66" column="1" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserDetails.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="89" column="20" selection-start-line="89" selection-start-column="20" selection-end-line="89" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="26" column="1" lean-forward="true" selection-start-line="26" selection-start-column="1" selection-end-line="26" selection-end-column="1" />
+        <state relative-caret-position="261">
+          <caret line="63" selection-start-line="63" selection-end-line="63" />
         </state>
       </provider>
     </entry>
@@ -935,17 +858,95 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationFilter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthorizationProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="37" selection-start-line="37" selection-end-line="38" />
+        <state relative-caret-position="238">
+          <caret line="19" column="54" lean-forward="true" selection-start-line="19" selection-start-column="54" selection-end-line="19" selection-end-column="54" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthenticationFilter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserDetails.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="44" column="52" lean-forward="true" selection-start-line="44" selection-start-column="52" selection-end-line="44" selection-end-column="52" />
+        <state relative-caret-position="85">
+          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-core/5.0.7.RELEASE/e53aa815b8a71395f1b626680ea264533a9b1918/spring-security-core-5.0.7.RELEASE-sources.jar!/org/springframework/security/core/userdetails/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="61" column="13" selection-start-line="61" selection-start-column="13" selection-end-line="61" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserRequest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#520#521#0" expanded="true" />
+            <element signature="e#562#563#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/repositories/base/OrderRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="19" column="58" selection-start-line="19" selection-start-column="58" selection-end-line="19" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/base/OrderService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/UserServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="89" column="20" selection-start-line="89" selection-start-column="20" selection-end-line="89" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/services/OrderServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1054">
+          <caret line="82" column="31" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
+          <folding>
+            <element signature="e#2915#2916#0" expanded="true" />
+            <element signature="e#2946#2947#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/OrderController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/Order.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
         </state>
       </provider>
     </entry>

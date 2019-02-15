@@ -1,5 +1,8 @@
 package com.vision.project.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,10 +19,13 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "order", fetch = FetchType.EAGER)
     private List<Dish> dishes = new ArrayList<>();
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created")
     private Date created;
 
+    @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated")
     private Date updated;
 

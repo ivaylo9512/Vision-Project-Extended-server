@@ -16,4 +16,6 @@ public interface OrderRepository extends CrudRepository<Order, Integer> {
 
     @Query(value="from Order where created >:date")
     List<Order> findMoreRecent(@Param("date") Date date);
+
+    List<Order> findTop1ByOrderByCreatedDescUpdatedDesc();
 }

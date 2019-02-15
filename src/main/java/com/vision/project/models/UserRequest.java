@@ -3,12 +3,13 @@ package com.vision.project.models;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Date;
+import java.util.List;
 
 public class UserRequest {
-    private DeferredResult<Order> deferredResult;
+    private DeferredResult<List<Order>> deferredResult;
     private Date lastPolledOrderDate;
 
-    public UserRequest(DeferredResult<Order> deferredResult, Date lastPolledOrderDate) {
+    public UserRequest(DeferredResult<List<Order>> deferredResult, Date lastPolledOrderDate) {
         this.deferredResult = deferredResult;
         this.lastPolledOrderDate = lastPolledOrderDate;
     }
@@ -17,11 +18,7 @@ public class UserRequest {
         return lastPolledOrderDate;
     }
 
-    public void setLastPolledOrderDate(Date lastPolledOrderDate) {
-        this.lastPolledOrderDate = lastPolledOrderDate;
-    }
-
-    public DeferredResult<Order> getDeferredResult() {
+    public DeferredResult<List<Order>> getDeferredResult() {
         return deferredResult;
     }
 }

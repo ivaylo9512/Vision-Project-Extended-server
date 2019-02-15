@@ -30,18 +30,23 @@ public class OrderController {
         return orderService.findById(id);
     }
 
-    @PostMapping(value = "/save")
+    @PostMapping(value = "/create")
     public Order order(@RequestBody Order order){
         return orderService.save(new Order());
     }
 
     @GetMapping("/getUpdates")
-    DeferredResult<Order> getUpdates(){
-        DeferredResult<Order> deferredResult = new DeferredResult<>(100000L,"Time out.");
+    DeferredResult<List<Order>> getUpdates(){
+
+        DeferredResult<List<Order>> deferredResult = new DeferredResult<>(100000L,"Time out.");
+        UserRequest userRequest = new UserRequest(deferredResult, new Date());
+
+        orderService.findMoreRecent(userRequest);
         CompletableFuture.runAsync(()->{
             try {
-                orderService.getRequests().add(new UserRequest(deferredResult, new Date()));
+                orderService.getRequests().add(userRequest);
             }catch (Exception ex){
+                throw new RuntimeException(ex.getMessage());
             }
         });
         return deferredResult;
