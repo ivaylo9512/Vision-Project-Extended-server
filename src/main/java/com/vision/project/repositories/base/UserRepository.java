@@ -1,15 +1,15 @@
 package com.vision.project.repositories.base;
 
-import com.vision.project.models.UserModel;
+import com.vision.project.models.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface UserRepository extends CrudRepository<UserModel, Integer> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 
-    UserModel findById(int id);
+    User findById(int id);
 
-    List<UserModel> findAll();
+    List<User> findAll();
 
-    UserModel findByUsername(String username);
+    User findByUsername(String username);
 }

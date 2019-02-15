@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping(value = "/api/order")
+@RequestMapping(value = "/api/auth/order")
 public class OrderController {
     private OrderService orderService;
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
+    /// WHILE WHILE
+
+    //// POP
     @GetMapping(value = "/findAll")
     public List<Order> findAllNotes(){
         return orderService.findAll();

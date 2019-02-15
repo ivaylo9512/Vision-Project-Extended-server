@@ -6,6 +6,10 @@ import com.vision.project.services.base.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -18,7 +22,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository) {
-
         this.orderRepository = orderRepository;
     }
 
@@ -36,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     }
     @Override
     public synchronized void updateUserRequests(Order order){
-        for (UserRequest request: requests) {
+        while (requests.size() > 0){
             UserRequest userRequest = requests.poll();
             date = userRequest.getLastPolledOrderDate();
 
@@ -46,7 +49,23 @@ public class OrderServiceImpl implements OrderService {
                 orderRepository.findMoreRecent(userRequest.getLastPolledOrderDate());
                 continue;
             }
-            request.getDeferredResult().setResult(order);
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime sixMinutesBehind = LocalDateTime.now();
+
+            Duration duration = Duration.between(now, sixMinutesBehind);
+            long diff = Math.abs(duration.toMinutes());
+            while (diff < 15){
+                if(diff == 14){
+                    now = LocalDateTime.now();
+                    System.out.println(requests.size());
+                    userRequest.getDeferredResult().setResult(order);
+                    System.out.println(requests.size());
+                }
+                diff = Math.abs(duration.toMinutes());
+                sixMinutesBehind = LocalDateTime.now();
+                duration = Duration.between(now, sixMinutesBehind);
+
+            }
         }
         date = order.getCreated();
     }

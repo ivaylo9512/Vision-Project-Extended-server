@@ -1,18 +1,18 @@
 package com.vision.project.services.base;
 
 import com.vision.project.models.Specs.UserSpec;
-import com.vision.project.models.UserModel;
+import com.vision.project.models.User;
 import org.apache.http.auth.InvalidCredentialsException;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<UserModel> findAll();
+    List<User> findAll();
 
-    UserModel findById(int id, UserModel loggedUserModel);
+    User findById(int id, User loggedUser);
 
-    UserModel register(UserSpec userSpec, String role);
+    User register(UserSpec userSpec, String role);
 
-    UserModel login(UserModel userModel) throws InvalidCredentialsException;
+    User login(User user) throws InvalidCredentialsException;
 }

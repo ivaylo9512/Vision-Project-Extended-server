@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
-public class UserModel {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +39,11 @@ public class UserModel {
 
     private String role;
 
-    public UserModel(){
+    public User(){
 
     }
 
-    public UserModel(String username, String password, String role, String firstname, String lastname, int age, String country) {
+    public User(String username, String password, String role, String firstname, String lastname, int age, String country) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -53,7 +53,7 @@ public class UserModel {
         this.country = country;
     }
 
-    public UserModel(UserSpec userSpec, String role) {
+    public User(UserSpec userSpec, String role) {
         this.setUsername(userSpec.getUsername());
         this.setPassword(userSpec.getPassword());
         this.setRole(role);

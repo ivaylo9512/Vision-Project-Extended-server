@@ -4,14 +4,14 @@ import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UserNotFoundException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Specs.UserSpec;
-import com.vision.project.models.UserModel;
+import com.vision.project.models.User;
+import com.vision.project.models.UserDetails;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -34,42 +34,42 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public List<UserModel> findAll() { ;
+    public List<User> findAll() { ;
         return userRepository.findAll();
     }
 
     @Override
-    public UserModel findById(int id, UserModel loggedUserModel) {
-        UserModel userModel = userRepository.findById(id);
-        if (userModel == null) {
-            throw new UserNotFoundException("UserModel doesn't exist.");
+    public User findById(int id, User loggedUser) {
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException("User doesn't exist.");
         }
-        return userModel;
+        return user;
     }
 
     @Override
-    public UserModel login(UserModel userModel) throws InvalidCredentialsException {
-        String username = userModel.getUsername();
-        String password = userModel.getPassword();
+    public User login(User user) throws InvalidCredentialsException {
+        String username = user.getUsername();
+        String password = user.getPassword();
 
-        UserModel foundUserModel = userRepository.findByUsername(username);
+        User foundUser = userRepository.findByUsername(username);
 
-        if (foundUserModel == null) {
+        if (foundUser == null) {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
 
-        if (!BCrypt.checkpw(password, foundUserModel.getPassword())) {
+        if (!BCrypt.checkpw(password, foundUser.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
 
-        return foundUserModel;
+        return foundUser;
     }
 
     @Override
-    public UserModel register(UserSpec userSpec, String role) {
-        UserModel userModel = userRepository.findByUsername(userSpec.getUsername());
+    public User register(UserSpec userSpec, String role) {
+        User user = userRepository.findByUsername(userSpec.getUsername());
 
-        if (userModel != null) {
+        if (user != null) {
             throw new UsernameExistsException("Username is already taken.");
         }
 
@@ -77,16 +77,22 @@ public class UserServiceImpl implements UserService,UserDetailsService {
             throw new PasswordsMissMatchException("Passwords must match.");
         }
 
-        userModel = new UserModel(userSpec, role);
-        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
-        return userRepository.save(userModel);
+        user = new User(userSpec, role);
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
+        return userRepository.save(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel userModel = userRepository.findByUsername(username);
+
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            throw new BadCredentialsException("Bad credentials");
+        }
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
-        return new User(userModel.getUsername(), userModel.getPassword(),authorities);
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+
+        return  new UserDetails(user.getUsername(), user.getPassword(),
+                authorities, user.getId());
     }
 }
