@@ -27,13 +27,13 @@ public class UserController {
 
 
     @PostMapping(value = "/users/register")
-    public User register(@Valid @RequestBody UserSpec user) {
+    public User register(@Valid UserSpec user) {
         return userService.register(user,"ROLE_USER");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "auth/users/adminRegistration")
-    public User registerAdmin(@Valid @RequestBody UserSpec user){
+    public User registerAdmin(@Valid UserSpec user){
         return userService.register(user, "ROLE_ADMIN");
     }
 

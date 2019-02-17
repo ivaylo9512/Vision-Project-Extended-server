@@ -6,7 +6,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 public interface OrderService {
 
@@ -14,11 +13,13 @@ public interface OrderService {
 
     List<Order> findAll();
 
-    Order save(Order order);
+    List<Order> findByReadyFalse();
+
+    Order create(Order order);
+
+    Order update(Order order);
 
     void findMoreRecent(UserRequest userRequest);
-
-    BlockingQueue<UserRequest> getRequests();
 
     @EventListener
     void loadMostRecentDate(ApplicationReadyEvent event);

@@ -1,12 +1,14 @@
 package com.vision.project.models;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "dishes")
-public class Dish {
+public class Dish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -16,11 +18,21 @@ public class Dish {
 
     @Column(name = "ready")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private Boolean ready;
+    private Boolean ready = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public Dish() {
+    }
+
+    public Dish(int id, String name, Boolean ready, Order order) {
+        this.id = id;
+        this.name = name;
+        this.ready = ready;
+        this.order = order;
+    }
 
     public int getId() {
         return id;
