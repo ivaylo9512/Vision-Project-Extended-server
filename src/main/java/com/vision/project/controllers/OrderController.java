@@ -15,7 +15,8 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping(value = "/api/auth/order")
 public class OrderController {
-    private OrderService orderService;
+    private final OrderService orderService;
+
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }

@@ -1,15 +1,16 @@
 package com.vision.project.models;
 
 
-import com.vision.project.models.Specs.UserSpec;
+import com.vision.project.models.specs.UserSpec;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +37,9 @@ public class User {
     @Column(name = "country")
     private String country;
 
+    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},inverseJoinColumns = @JoinColumn(name ="second_user" ))
+    private List<Chat> chats;
 
     private String role;
 
@@ -121,5 +125,13 @@ public class User {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
     }
 }

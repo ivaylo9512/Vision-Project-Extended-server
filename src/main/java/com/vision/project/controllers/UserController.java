@@ -3,7 +3,7 @@ package com.vision.project.controllers;
 
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UsernameExistsException;
-import com.vision.project.models.Specs.UserSpec;
+import com.vision.project.models.specs.UserSpec;
 import com.vision.project.models.User;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;

@@ -13,13 +13,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-public class Order implements Serializable {
+public class Order{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER)
     private List<Dish> dishes = new ArrayList<>();
 
     @CreationTimestamp

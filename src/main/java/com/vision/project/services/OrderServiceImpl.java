@@ -1,13 +1,11 @@
 package com.vision.project.services;
 
 import com.vision.project.models.*;
-import com.vision.project.repositories.base.DishRepository;
-import com.vision.project.repositories.base.OrderRepository;
+import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -21,7 +19,7 @@ public class OrderServiceImpl implements OrderService {
     private BlockingQueue<UserRequest> requests = new ArrayBlockingQueue<>(100);
     private List<Order> orders = Collections.synchronizedList(new ArrayList<>());
     private volatile Date date;
-    Order order1 = new Order();
+
     public OrderServiceImpl(OrderRepository orderRepository, DishRepository dishRepository) {
         this.orderRepository = orderRepository;
         this.dishRepository = dishRepository;
@@ -115,10 +113,10 @@ public class OrderServiceImpl implements OrderService {
             orders = Collections.synchronizedList(new ArrayList<>());
         }
     }
+    @Transactional
     @Override
     public void loadMostRecentDate(ApplicationReadyEvent event) throws RuntimeException {
         Order order = orderRepository.findTop1ByOrderByCreatedDescUpdatedDesc();
-
         try {
             Optional<Date> updated = Optional.ofNullable(order.getUpdated());
 

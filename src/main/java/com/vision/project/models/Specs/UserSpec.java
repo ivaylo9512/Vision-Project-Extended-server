@@ -1,4 +1,4 @@
-package com.vision.project.models.Specs;
+package com.vision.project.models.specs;
 
 
 

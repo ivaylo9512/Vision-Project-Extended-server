@@ -3,7 +3,7 @@ package com.vision.project.services;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.UserNotFoundException;
 import com.vision.project.exceptions.UsernameExistsException;
-import com.vision.project.models.Specs.UserSpec;
+import com.vision.project.models.specs.UserSpec;
 import com.vision.project.models.User;
 import com.vision.project.models.UserDetails;
 import com.vision.project.repositories.base.UserRepository;

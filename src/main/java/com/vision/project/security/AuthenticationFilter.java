@@ -40,7 +40,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain, Authentication auth) throws IOException, ServletException {
 
         String token = Jwt.generate(auth);
-        response.addHeader("Token", "Token " + token);
+        response.addHeader("Authorization", "Token " + token);
         response.setStatus(HttpServletResponse.SC_ACCEPTED);
         response.getWriter().write("Authenticated");
     }

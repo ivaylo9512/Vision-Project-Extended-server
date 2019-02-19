@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "dishes")
-public class Dish implements Serializable {
+public class Dish{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,7 +20,7 @@ public class Dish implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean ready = false;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
 

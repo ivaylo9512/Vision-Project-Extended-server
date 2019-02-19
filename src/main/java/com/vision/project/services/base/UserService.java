@@ -1,6 +1,6 @@
 package com.vision.project.services.base;
 
-import com.vision.project.models.Specs.UserSpec;
+import com.vision.project.models.specs.UserSpec;
 import com.vision.project.models.User;
 import org.apache.http.auth.InvalidCredentialsException;
 
