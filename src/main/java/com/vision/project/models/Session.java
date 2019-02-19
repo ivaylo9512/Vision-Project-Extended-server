@@ -24,7 +24,7 @@ public class Session{
     public Session() {
     }
 
-    public Session(LocalDate date, Chat chat) {
+    public Session(Chat chat, LocalDate date) {
         this.date = date;
         this.chat = chat;
     }

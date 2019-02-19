@@ -4,8 +4,11 @@ import com.vision.project.models.*;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -113,10 +116,10 @@ public class OrderServiceImpl implements OrderService {
             orders = Collections.synchronizedList(new ArrayList<>());
         }
     }
-    @Transactional
     @Override
     public void loadMostRecentDate(ApplicationReadyEvent event) throws RuntimeException {
-        Order order = orderRepository.findTop1ByOrderByCreatedDescUpdatedDesc();
+        Order order = orderRepository.findMostRecentDate(PageRequest.of(0,1)).get(0);
+
         try {
             Optional<Date> updated = Optional.ofNullable(order.getUpdated());
 

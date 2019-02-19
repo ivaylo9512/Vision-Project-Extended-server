@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.compositePK.MessagePK;
 
 import javax.persistence.*;
@@ -25,9 +26,14 @@ public class Message{
     @JoinColumns({@JoinColumn(name = "chat"),@JoinColumn(name = "session_date")})
     private Session session;
 
+    public Message(int receiver, LocalDateTime date, String message, Session session){
+        this.receiver = receiver;
+        this.date = date;
+        this.message = message;
+        this.session = session;
+    }
     public Message() {
     }
-
     public Message(int receiver, LocalDateTime date) {
         this.receiver = receiver;
         this.date = date;
@@ -47,5 +53,17 @@ public class Message{
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
