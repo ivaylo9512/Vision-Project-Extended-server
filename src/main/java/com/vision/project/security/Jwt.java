@@ -22,11 +22,10 @@ public class Jwt {
     static String jwtSecret = "MyJwtSecret";
     static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
 
-    static String generate(Authentication auth) {
+    static String generate(UserDetails user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-        UserDetails user = (UserDetails) auth.getPrincipal();
         Collection<GrantedAuthority> grantedAuth = user.getAuthorities();
         Set<String> authorities = AuthorityUtils.authorityListToSet(grantedAuth);
 

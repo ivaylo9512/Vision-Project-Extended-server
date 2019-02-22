@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
-        return  new UserDetails(user.getUsername(), user.getPassword(),
-                authorities, user.getId());
+        return new UserDetails(user.getUsername(), user.getPassword(), authorities,
+                user.getId(), user.getFirstName(), user.getLastName(), user.getAge(), user.getCountry());
     }
 }

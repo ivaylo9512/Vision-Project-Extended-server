@@ -26,10 +26,10 @@ public class User{
     private String password;
 
     @Column(name = "firstname")
-    private String firstname;
+    private String firstName;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "age")
     private int age;
@@ -47,12 +47,12 @@ public class User{
 
     }
 
-    public User(String username, String password, String role, String firstname, String lastname, int age, String country) {
+    public User(String username, String password, String role, String firstName, String lastName, int age, String country) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.country = country;
     }
@@ -95,20 +95,20 @@ public class User{
         this.role = role;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public int getAge() {

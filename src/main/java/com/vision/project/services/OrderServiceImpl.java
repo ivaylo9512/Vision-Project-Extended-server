@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
@@ -133,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(int id) {
-        return orderRepository.findById(id);
+        return orderRepository.findById(3).orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
     }
 
     @Override

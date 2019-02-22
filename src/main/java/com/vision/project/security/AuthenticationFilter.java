@@ -2,7 +2,10 @@ package com.vision.project.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.User;
+import com.vision.project.models.UserDetails;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +29,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws BadCredentialsException {
         try {
             User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-
             return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),
                     user.getPassword(), new ArrayList<>()));
 
@@ -39,9 +41,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication auth) throws IOException, ServletException {
 
-        String token = Jwt.generate(auth);
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String token = Jwt.generate(userDetails);
+
         response.addHeader("Authorization", "Token " + token);
-        response.setStatus(HttpServletResponse.SC_ACCEPTED);
         response.getWriter().write("Authenticated");
+
+        UserDto user = new UserDto(userDetails);
+        Gson gson = new Gson();
+        String userJson = gson.toJson(user);
+        response.setHeader("user", userJson);
     }
 }
+

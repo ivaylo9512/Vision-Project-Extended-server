@@ -11,9 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-
-    Order findById(int id);
-
     List<Order> findAll();
 
     List<Order> findByReadyFalse();
