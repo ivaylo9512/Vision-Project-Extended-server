@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -22,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     private DishRepository dishRepository;
     private BlockingQueue<UserRequest> requests = new ArrayBlockingQueue<>(100);
     private List<Order> orders = Collections.synchronizedList(new ArrayList<>());
-    private volatile Date date;
+    private volatile LocalDateTime date;
 
     public OrderServiceImpl(OrderRepository orderRepository, DishRepository dishRepository) {
         this.orderRepository = orderRepository;
@@ -61,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void findMoreRecent(UserRequest userRequest) {
         List<Order> moreRecent = new ArrayList<>();
-        if (userRequest.getLastPolledOrderDate().before(date)) {
+        if (userRequest.getLastPolledOrderDate().isBefore(date)) {
             moreRecent = orderRepository.findMoreRecent(userRequest.getLastPolledOrderDate());
         }
         if(moreRecent.size() > 0){
@@ -84,17 +85,17 @@ public class OrderServiceImpl implements OrderService {
             while (requests.size() > 0) {
 
                 UserRequest userRequest = requests.poll();
-                Date userLastPolled = userRequest.getLastPolledOrderDate();
+                LocalDateTime userLastPolled = userRequest.getLastPolledOrderDate();
 
-                if (userRequest.getLastPolledOrderDate().before(date)) {
+                if (userRequest.getLastPolledOrderDate().isBefore(date)) {
                     findMoreRecent(userRequest);
                     continue;
                 }
 
                 List<Order> moreRecentOrders = new ArrayList<>();
                 for (Order order : orders) {
-                    Optional<Date> checkUpdated = Optional.ofNullable(order.getUpdated());
-                    if (userLastPolled.before(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.before(checkUpdated.get()))) {
+                    Optional<LocalDateTime> checkUpdated = Optional.ofNullable(order.getUpdated());
+                    if (userLastPolled.isBefore(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.isBefore(checkUpdated.get()))) {
                         moreRecentOrders.add(order);
                     }
                 }
@@ -110,8 +111,8 @@ public class OrderServiceImpl implements OrderService {
             requests.addAll(unmanagedRequests);
             Order mostRecent = orders.get(orders.size() - 1);
 
-            Optional<Date> updated = Optional.ofNullable(mostRecent.getUpdated());
-            date = (updated.isPresent() && updated.get().after(mostRecent.getCreated())
+            Optional<LocalDateTime> updated = Optional.ofNullable(mostRecent.getUpdated());
+            date = (updated.isPresent() && updated.get().isAfter(mostRecent.getCreated())
                     ? updated.get() : mostRecent.getCreated());
 
             orders = Collections.synchronizedList(new ArrayList<>());
@@ -122,19 +123,19 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findMostRecentDate(PageRequest.of(0,1)).get(0);
 
         try {
-            Optional<Date> updated = Optional.ofNullable(order.getUpdated());
+            Optional<LocalDateTime> updated = Optional.ofNullable(order.getUpdated());
 
-            date = (updated.isPresent() && updated.get().after(order.getCreated())
+            date = (updated.isPresent() && updated.get().isAfter(order.getCreated())
                     ? updated.get() : order.getCreated());
         }catch (NullPointerException e){
-            date = new Date();
+            date = LocalDateTime.now();
             System.out.println("No orders in the database at application start.");
         }
     }
 
     @Override
     public Order findById(int id) {
-        return orderRepository.findById(3).orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
+        return orderRepository.findById(id).orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
     }
 
     @Override

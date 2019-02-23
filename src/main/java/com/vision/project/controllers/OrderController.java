@@ -5,12 +5,10 @@ import com.vision.project.services.base.OrderService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/api/auth/order")
@@ -27,7 +25,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findById/{id}")
-    public Order order(@PathVariable(name = "id") int id){
+    public Order order(@PathVariable(name = "id") int id) throws IOException {
         return orderService.findById(id);
     }
 
@@ -42,9 +40,9 @@ public class OrderController {
     }
 
     @GetMapping("/getUpdates")
-    DeferredResult<List<Order>> getUpdates(){
+    DeferredResult<List<Order>> getUpdates(@RequestParam(name = "dateTime") LocalDateTime dateTime){
         DeferredResult<List<Order>> deferredResult = new DeferredResult<>(100000L,"Time out.");
-        UserRequest userRequest = new UserRequest(deferredResult, new Date());
+        UserRequest userRequest = new UserRequest(deferredResult, dateTime);
         orderService.findMoreRecent(userRequest);
         return deferredResult;
     }

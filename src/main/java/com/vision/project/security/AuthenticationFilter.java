@@ -2,10 +2,10 @@ package com.vision.project.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.User;
 import com.vision.project.models.UserDetails;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,8 +48,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         response.getWriter().write("Authenticated");
 
         UserDto user = new UserDto(userDetails);
-        Gson gson = new Gson();
-        String userJson = gson.toJson(user);
+        ObjectMapper mapper = new ObjectMapper();
+        String userJson = mapper.writeValueAsString(user);
         response.setHeader("user", userJson);
     }
 }

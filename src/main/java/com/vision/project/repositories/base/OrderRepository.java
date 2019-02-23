@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByReadyFalse();
 
     @Query(value="from Order where created >= :date")
-    List<Order> findMoreRecent(@Param("date") Date date);
+    List<Order> findMoreRecent(@Param("date") LocalDateTime date);
 
     @Query(value = "from Order order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findMostRecentDate(PageRequest pageRequest);

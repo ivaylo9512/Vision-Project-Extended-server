@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
