@@ -1,5 +1,6 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.User;
 import com.vision.project.models.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -25,6 +26,17 @@ public class UserDto {
         this.age = userDetails.getAge();
         this.country = userDetails.getCountry();
         this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
+    }
+
+    public UserDto(User user){
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.age = user.getAge();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.age = user.getAge();
+        this.country = user.getCountry();
+        this.role = user.getRole();
     }
 
     public String getUsername() {

@@ -37,7 +37,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<Chat> findUserChats(int id) {
-        return chatRepository.findUserChats(1);
+        return chatRepository.findUserChats(id);
     }
 
 

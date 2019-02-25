@@ -1,6 +1,7 @@
 package com.vision.project.controllers;
 
 import com.vision.project.models.Chat;
+import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
@@ -11,9 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/chats")
+@RequestMapping(value = "api/auth/chat")
 public class ChatController {
     private final ChatService chatService;
     private final UserService userService;
@@ -24,8 +26,19 @@ public class ChatController {
     }
 
     @GetMapping(value = "/getChats")
-    public List<Chat> getChats(){
-        return chatService.findUserChats(3);
+    public List<ChatDto> getChats(){
+
+        UserDetails userDetails = (UserDetails)SecurityContextHolder
+                .getContext().getAuthentication().getDetails();
+        int userId = userDetails.getId();
+
+        List<Chat> chats = chatService.findUserChats(userId);
+        List<ChatDto> chatsDto = chats.stream()
+                .map(ChatDto::new)
+                .collect(Collectors.toList());
+
+        return chatsDto;
+
     }
 
     @GetMapping(value = "/nextSessions")
