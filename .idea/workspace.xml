@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="afc1ed66-6e6d-4e08-a38f-21141dd3d07d" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -51,18 +51,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ProjectApplication.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/ProjectApplication.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
-              <folding>
-                <element signature="e#320#321#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ChatController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/controllers/ChatController.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -102,7 +90,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserDetails.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="UserDetails.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/UserDetails.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
@@ -111,6 +99,15 @@
                 <element signature="e#1432#1433#0" expanded="true" />
                 <element signature="e#1458#1459#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="9" lean-forward="true" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -191,7 +188,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/vision/project/config/PasswordEncoderConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/JwtAuthenticationTokenFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/security/AuthProvider.java" />
@@ -242,6 +238,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/DTOs/UserDto.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/models/DTOs/ChatDto.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/vision/project/controllers/ChatController.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -650,9 +647,9 @@
       <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32888147" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Designer" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.76865673" visible="true" weight="0.24939272" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.76865673" visible="true" weight="0.24939272" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.29021558" />
-      <window_info active="true" anchor="right" id="Gradle" order="6" visible="true" weight="0.17651822" />
+      <window_info anchor="right" id="Gradle" order="6" visible="true" weight="0.17651822" />
       <window_info id="Structure" order="1" sideWeight="0.23134328" side_tool="true" visible="true" weight="0.24939272" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="4" />
@@ -714,13 +711,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/security/Jwt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/vision/project/models/Message.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -1098,6 +1088,13 @@
             <element signature="e#1432#1433#0" expanded="true" />
             <element signature="e#1458#1459#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="9" lean-forward="true" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
         </state>
       </provider>
     </entry>
