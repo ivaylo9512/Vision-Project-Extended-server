@@ -3,9 +3,8 @@ package com.vision.project.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vision.project.models.DTOs.UserDto;
-import com.vision.project.models.User;
+import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,9 +27,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws BadCredentialsException {
         try {
-            User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-            return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),
-                    user.getPassword(), new ArrayList<>()));
+            UserModel userModel = new ObjectMapper().readValue(request.getInputStream(), UserModel.class);
+            return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(userModel.getUsername(),
+                    userModel.getPassword(), new ArrayList<>()));
 
         }catch (IOException e) {
             throw new RuntimeException(e);

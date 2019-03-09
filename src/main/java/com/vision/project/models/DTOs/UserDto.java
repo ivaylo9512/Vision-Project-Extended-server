@@ -1,12 +1,9 @@
 package com.vision.project.models.DTOs;
 
-import com.vision.project.models.User;
+import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class UserDto {
     private int id;
@@ -16,6 +13,7 @@ public class UserDto {
     private int age;
     private String country;
     private String role;
+    private String profilePicture;
 
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
@@ -25,18 +23,20 @@ public class UserDto {
         this.lastName = userDetails.getLastName();
         this.age = userDetails.getAge();
         this.country = userDetails.getCountry();
+        this.profilePicture = userDetails.getProfilePicture();
         this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
     }
 
-    public UserDto(User user){
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.age = user.getAge();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.age = user.getAge();
-        this.country = user.getCountry();
-        this.role = user.getRole();
+    public UserDto(UserModel userModel){
+        this.id = userModel.getId();
+        this.username = userModel.getUsername();
+        this.age = userModel.getAge();
+        this.firstName = userModel.getFirstName();
+        this.lastName = userModel.getLastName();
+        this.age = userModel.getAge();
+        this.country = userModel.getCountry();
+        this.role = userModel.getRole();
+        this.profilePicture = userModel.getProfilePicture();
     }
 
     public String getUsername() {
@@ -93,5 +93,13 @@ public class UserDto {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

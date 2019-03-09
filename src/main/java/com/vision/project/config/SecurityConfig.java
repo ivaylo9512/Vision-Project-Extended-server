@@ -54,9 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
     }
 
-    private AuthorizationFilter authorizationFilter() throws Exception {
+    private AuthorizationFilter authorizationFilter() {
         AuthorizationFilter filter = new AuthorizationFilter();
         filter.setAuthenticationManager(authenticationManagerAuthorization());
+        filter.setAuthenticationFailureHandler(new FailureHandler());
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> {});
         return filter;
     }

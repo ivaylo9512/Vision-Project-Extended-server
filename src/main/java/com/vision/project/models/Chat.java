@@ -1,7 +1,6 @@
 package com.vision.project.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -14,12 +13,12 @@ public class Chat {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "first_user", insertable = false, updatable = false)
-    private User firstUser;
+    private UserModel firstUserModel;
 
 //    @Id
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "second_user", insertable = false, updatable = false)
-    private User secondUser;
+    private UserModel secondUserModel;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Session> sessions;
@@ -29,25 +28,25 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(User firstUser, User secondUser) {
-        this.firstUser = firstUser;
-        this.secondUser = secondUser;
+    public Chat(UserModel firstUserModel, UserModel secondUserModel) {
+        this.firstUserModel = firstUserModel;
+        this.secondUserModel = secondUserModel;
     }
 
-    public User getFirstUser() {
-        return firstUser;
+    public UserModel getFirstUserModel() {
+        return firstUserModel;
     }
 
-    public void setFirstUser(User firstUser) {
-        this.firstUser = firstUser;
+    public void setFirstUserModel(UserModel firstUserModel) {
+        this.firstUserModel = firstUserModel;
     }
 
-    public User getSecondUser() {
-        return secondUser;
+    public UserModel getSecondUserModel() {
+        return secondUserModel;
     }
 
-    public void setSecondUser(User secondUser) {
-        this.secondUser = secondUser;
+    public void setSecondUserModel(UserModel secondUserModel) {
+        this.secondUserModel = secondUserModel;
     }
 
     public int getId() {

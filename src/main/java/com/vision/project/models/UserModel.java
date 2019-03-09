@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User{
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,16 +38,21 @@ public class User{
     private String country;
 
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},inverseJoinColumns = @JoinColumn(name ="second_user" ))
+    @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},
+            inverseJoinColumns = @JoinColumn(name ="second_user" ))
     private List<Chat> chats;
+
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
     private String role;
 
-    public User(){
+    public UserModel(){
 
     }
 
-    public User(String username, String password, String role, String firstName, String lastName, int age, String country) {
+    public UserModel(String username, String password, String role, String firstName,
+                     String lastName, int age, String country, String profilePicture) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -55,9 +60,10 @@ public class User{
         this.lastName = lastName;
         this.age = age;
         this.country = country;
+        this.profilePicture = profilePicture;
     }
 
-    public User(UserSpec userSpec, String role) {
+    public UserModel(UserSpec userSpec, String role) {
         this.setUsername(userSpec.getUsername());
         this.setPassword(userSpec.getPassword());
         this.setRole(role);
@@ -133,5 +139,13 @@ public class User{
 
     public void setChats(List<Chat> chats) {
         this.chats = chats;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

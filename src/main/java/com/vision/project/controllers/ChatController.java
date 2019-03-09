@@ -46,8 +46,9 @@ public class ChatController {
             @RequestParam(name = "chatId") int chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
-
-        return chatService.findNextChatSessions(1, 1, 1);
+        System.out.println(page);
+        System.out.println(pageSize);
+        return chatService.findNextChatSessions(chatId, page, pageSize);
     }
 
     @GetMapping(value = "/getChatUpdates")

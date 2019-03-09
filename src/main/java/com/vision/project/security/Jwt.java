@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -22,7 +23,7 @@ public class Jwt {
     static String jwtSecret = "MyJwtSecret";
     static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
 
-    static String generate(UserDetails user) {
+    public static String generate(UserDetails user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
@@ -42,7 +43,7 @@ public class Jwt {
                 .compact();
     }
 
-    public static UserDetails validate(String token) {
+    static UserDetails validate(String token) {
         UserDetails user = null;
         try {
             Claims body = Jwts.parser()
@@ -56,9 +57,9 @@ public class Jwt {
 
             user = new UserDetails(body.getSubject(), token, authorities, Integer.parseInt(body.getId()));
         } catch (ExpiredJwtException e) {
-            throw new JwtExpiredTokenException("Jwt token has expired.");
+            throw new BadCredentialsException("Jwt token has expired.");
         } catch (Exception e) {
-            throw new JwtTokenIsIncorrectException("Jwt token is incorrect");
+            throw new BadCredentialsException("Jwt token is incorrect");
         }
         return user;
     }

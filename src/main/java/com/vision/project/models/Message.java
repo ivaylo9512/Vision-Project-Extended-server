@@ -6,6 +6,7 @@ import com.vision.project.models.compositePK.MessagePK;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @IdClass(MessagePK.class)
@@ -17,7 +18,7 @@ public class Message{
 
     @Id
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalTime date;
 
     @Column(name = "message")
     private String message;
@@ -26,7 +27,7 @@ public class Message{
     @JoinColumns({@JoinColumn(name = "chat"),@JoinColumn(name = "session_date")})
     private Session session;
 
-    public Message(int receiver, LocalDateTime date, String message, Session session){
+    public Message(int receiver, LocalTime date, String message, Session session){
         this.receiver = receiver;
         this.date = date;
         this.message = message;
@@ -34,7 +35,7 @@ public class Message{
     }
     public Message() {
     }
-    public Message(int receiver, LocalDateTime date) {
+    public Message(int receiver, LocalTime date) {
         this.receiver = receiver;
         this.date = date;
     }
@@ -47,11 +48,11 @@ public class Message{
         this.receiver = receiver;
     }
 
-    public LocalDateTime getDate() {
+    public LocalTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalTime date) {
         this.date = date;
     }
 

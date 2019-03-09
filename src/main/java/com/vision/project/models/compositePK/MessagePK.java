@@ -4,6 +4,7 @@ package com.vision.project.models.compositePK;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class MessagePK implements Serializable {
@@ -12,21 +13,21 @@ public class MessagePK implements Serializable {
     private int receiver;
 
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalTime date;
 
     public MessagePK() {
     }
 
-    public MessagePK(LocalDateTime date, int receiver){
+    public MessagePK(LocalTime date, int receiver){
         this.date = date;
         this.receiver = receiver;
     }
 
-    public LocalDateTime getDate() {
+    public LocalTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalTime date) {
         this.date = date;
     }
 

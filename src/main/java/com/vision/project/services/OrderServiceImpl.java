@@ -2,6 +2,7 @@ package com.vision.project.services;
 
 import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
+import com.vision.project.models.specs.DishSpec;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,19 +21,12 @@ import java.util.concurrent.CompletableFuture;
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
-    private DishRepository dishRepository;
-    private BlockingQueue<UserRequest> requests = new ArrayBlockingQueue<>(100);
+    public BlockingQueue<UserRequest> requests = new ArrayBlockingQueue<>(100);
     private List<Order> orders = Collections.synchronizedList(new ArrayList<>());
     private volatile LocalDateTime date;
 
-    public OrderServiceImpl(OrderRepository orderRepository, DishRepository dishRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.dishRepository = dishRepository;
-    }
-
-    @Override
-    public List<Order> findAll() {
-        return orderRepository.findAll();
     }
 
     @Transactional
@@ -49,10 +43,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order update(Order order) {
-        for (Dish dish:order.getDishes()) {
-            dish.setOrder(order);
+    public Order update(DishSpec dish) {
+        Order order = orderRepository.findById(dish.getOrderId())
+                .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
+
+        List<Dish> notReady = new ArrayList<>();
+
+        for (Dish orderDish: order.getDishes()) {
+            if(orderDish.getId() == dish.getId() && !orderDish.getReady()){
+                orderDish.setReady(true);
+                order.setUpdated(LocalDateTime.now());
+            }
+            if(!orderDish.getReady()){
+                notReady.add(orderDish);
+            }
         }
+
+        if(notReady.size() == 0){
+            order.setReady(true);
+        }
+
         order = orderRepository.save(order);
         orders.add(order);
         updateUserRequests();
@@ -62,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void findMoreRecent(UserRequest userRequest) {
         List<Order> moreRecent = new ArrayList<>();
+
         if (userRequest.getLastPolledOrderDate().isBefore(date)) {
             moreRecent = orderRepository.findMoreRecent(userRequest.getLastPolledOrderDate());
         }
@@ -69,6 +80,7 @@ public class OrderServiceImpl implements OrderService {
             userRequest.getDeferredResult().setResult(moreRecent);
             return;
         }
+
         CompletableFuture.runAsync(()->{
             try {
                 requests.add(userRequest);
@@ -77,8 +89,7 @@ public class OrderServiceImpl implements OrderService {
             }
         });
     }
-
-    public synchronized void updateUserRequests() {
+    private synchronized void updateUserRequests() {
         BlockingQueue<UserRequest> unmanagedRequests = new ArrayBlockingQueue<>(100);
         while (orders.size() > 0) {
 
@@ -113,33 +124,53 @@ public class OrderServiceImpl implements OrderService {
 
             Optional<LocalDateTime> updated = Optional.ofNullable(mostRecent.getUpdated());
             date = (updated.isPresent() && updated.get().isAfter(mostRecent.getCreated())
-                    ? updated.get() : mostRecent.getCreated());
+                    ? updated.get().withNano(0) : mostRecent.getCreated().withNano(0));
 
             orders = Collections.synchronizedList(new ArrayList<>());
         }
     }
+
     @Override
-    public void loadMostRecentDate(ApplicationReadyEvent event) throws RuntimeException {
+    public void removeUserRequest(UserRequest request) {
+        requests.remove(request);
+    }
+
+    @Override
+    public void setDate(ApplicationReadyEvent event) throws RuntimeException {
+        date = getMostRecentDate();
+    }
+
+    @Override
+    public LocalDateTime getMostRecentDate(){
         Order order = orderRepository.findMostRecentDate(PageRequest.of(0,1)).get(0);
 
+        LocalDateTime localDateTime;
         try {
             Optional<LocalDateTime> updated = Optional.ofNullable(order.getUpdated());
 
-            date = (updated.isPresent() && updated.get().isAfter(order.getCreated())
+            localDateTime = (updated.isPresent() && updated.get().isAfter(order.getCreated())
                     ? updated.get() : order.getCreated());
         }catch (NullPointerException e){
-            date = LocalDateTime.now();
-            System.out.println("No orders in the database at application start.");
+            localDateTime = LocalDateTime.now();
+            System.out.println("No orders in the database");
         }
-    }
 
+        return localDateTime;
+    }
     @Override
     public Order findById(int id) {
-        return orderRepository.findById(id).orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
     }
 
     @Override
-    public List<Order> findByReadyFalse() {
+    public List<Order> findAllNotReady() {
         return orderRepository.findByReadyFalse();
     }
+
+    @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
 }

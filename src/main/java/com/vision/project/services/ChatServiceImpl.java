@@ -5,7 +5,6 @@ import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
-import com.vision.project.models.compositePK.SessionPK;
 import com.vision.project.repositories.base.ChatRepository;
 import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.SessionRepository;
@@ -13,10 +12,12 @@ import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<Session> findNextChatSessions(int chatId, int page, int pageSize){
-        return sessionRepository.getSessions(chatRepository.getOne(1), PageRequest.of(1,2));
+        return sessionRepository.getSessions(chatRepository.getOne(chatId), PageRequest.of(page,pageSize,Sort.Direction.DESC    , "session_date"));
     }
 
     @Override
@@ -60,15 +61,15 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatRepository.findById(messageDto.getChatId())
                 .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageDto.getChatId() + "is not found."));
 
-        int chatFirstUser = chat.getFirstUser().getId();
-        int chatSecondUser = chat.getSecondUser().getId();
+        int chatFirstUser = chat.getFirstUserModel().getId();
+        int chatSecondUser = chat.getSecondUserModel().getId();
 
         if ((sender != chatFirstUser && sender != chatSecondUser) || (receiver != chatFirstUser && receiver != chatSecondUser)) {
             throw new NonExistingChat("Users don't match the given chat.");
         }
 
         Session session = new Session(chat, LocalDate.now());
-        Message message = new Message(messageDto.getReceiverId(),LocalDateTime.now(),messageDto.getMessage(),session);
+        Message message = new Message(messageDto.getReceiverId(),LocalTime.now(),messageDto.getMessage(),session);
         message = messageRepository.save(message);
 
         return message;

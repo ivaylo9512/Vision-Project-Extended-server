@@ -1,10 +1,15 @@
 package com.vision.project.security;
 
+import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.security.Exceptions.JwtTokenIsMissingException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +28,7 @@ public class AuthorizationFilter extends AbstractAuthenticationProcessingFilter 
                                                 response) throws AuthenticationException, IOException, ServletException {
         String token = request.getHeader("Authorization");
         if(token == null || !token.startsWith("Token")){
-            throw new JwtTokenIsMissingException("Jwt token is missing");
+            throw new BadCredentialsException("Jwt token is missing");
         }
         token = token.substring(6);
         return getAuthenticationManager().authenticate(
@@ -36,5 +41,4 @@ public class AuthorizationFilter extends AbstractAuthenticationProcessingFilter 
         super.successfulAuthentication(request, response, chain, authResult);
         chain.doFilter(request, response);
     }
-
 }

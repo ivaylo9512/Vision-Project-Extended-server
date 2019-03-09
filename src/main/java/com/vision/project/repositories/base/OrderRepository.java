@@ -12,11 +12,13 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+    @Query(value = "from Order order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findAll();
 
+    @Query(value = "from Order where ready = false order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findByReadyFalse();
 
-    @Query(value="from Order where created >= :date")
+    @Query(value="from Order where created > :date")
     List<Order> findMoreRecent(@Param("date") LocalDateTime date);
 
     @Query(value = "from Order order by CASE WHEN created > updated THEN created ELSE updated END desc")

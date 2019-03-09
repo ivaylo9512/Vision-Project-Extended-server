@@ -19,6 +19,10 @@ public class UserRequest {
         return lastPolledOrderDate;
     }
 
+    public void setLastPolledOrderDate(LocalDateTime lastPolledOrderDate) {
+        this.lastPolledOrderDate = lastPolledOrderDate;
+    }
+
     public DeferredResult<List<Order>> getDeferredResult() {
         return deferredResult;
     }
