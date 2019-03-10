@@ -1,17 +1,15 @@
 package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -35,17 +33,22 @@ public class Order{
     private LocalDateTime updated;
 
     @Column(name = "ready")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean ready = false;
+
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="restaurant")
+    private Restaurant restaurant;
 
     public Order() {
     }
 
-    public Order(int id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated) {
+    public Order(int id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;
         this.created = created;
         this.updated = updated;
+        this.restaurant = restaurant;
     }
 
     public int getId() {
@@ -87,5 +90,13 @@ public class Order{
 
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

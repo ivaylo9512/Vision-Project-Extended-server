@@ -26,14 +26,11 @@ public class ChatServiceImpl implements ChatService {
     private ChatRepository chatRepository;
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
-    private UserRepository userRepository;
 
-    @Autowired
-    public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository, UserRepository userRepository) {
+    public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository) {
         this.chatRepository = chatRepository;
         this.sessionRepository = sessionRepository;
         this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
     }
 
     @Override

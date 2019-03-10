@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     private final UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public UserModel findById(int id, UserModel loggedUserModel) {
+    public UserModel findById(int id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist."));
     }

@@ -1,7 +1,9 @@
 package com.vision.project.repositories.base;
 
 import com.vision.project.models.Order;
+import com.vision.project.models.Restaurant;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -21,6 +23,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query(value="from Order where created > :date")
     List<Order> findMoreRecent(@Param("date") LocalDateTime date);
 
-    @Query(value = "from Order order by CASE WHEN created > updated THEN created ELSE updated END desc")
-    List<Order> findMostRecentDate(PageRequest pageRequest);
+    @Query(value = "from Order where restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
+    List<Order> findMostRecentDate(@Param("restaurant") Restaurant restaurant, Pageable pageRequest);
 }

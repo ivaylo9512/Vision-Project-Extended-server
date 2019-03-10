@@ -37,8 +37,6 @@ dependencies {
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
-// https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.8'
 }
 
 jacocoTestReport {

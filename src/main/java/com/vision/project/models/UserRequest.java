@@ -9,10 +9,12 @@ import java.util.List;
 public class UserRequest {
     private DeferredResult<List<Order>> deferredResult;
     private LocalDateTime lastPolledOrderDate;
+    private int restaurantId;
 
-    public UserRequest(DeferredResult<List<Order>> deferredResult, LocalDateTime lastPolledOrderDate) {
+    public UserRequest(DeferredResult<List<Order>> deferredResult, LocalDateTime lastPolledOrderDate, int restaurantId) {
         this.deferredResult = deferredResult;
         this.lastPolledOrderDate = lastPolledOrderDate;
+        this.restaurantId = restaurantId;
     }
 
     public LocalDateTime getLastPolledOrderDate() {
@@ -25,5 +27,13 @@ public class UserRequest {
 
     public DeferredResult<List<Order>> getDeferredResult() {
         return deferredResult;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

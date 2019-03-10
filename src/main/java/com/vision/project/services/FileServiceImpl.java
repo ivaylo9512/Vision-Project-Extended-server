@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 public class FileServiceImpl implements FileService {
     private final Path fileLocation;
 
-    @Autowired
     public FileServiceImpl() {
         this.fileLocation = Paths.get("./uploads")
                 .toAbsolutePath().normalize();

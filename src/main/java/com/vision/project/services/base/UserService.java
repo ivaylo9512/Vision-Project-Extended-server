@@ -10,7 +10,7 @@ public interface UserService {
 
     List<UserModel> findAll();
 
-    UserModel findById(int id, UserModel loggedUserModel);
+    UserModel findById(int id);
 
     UserModel register(UserSpec userSpec, String role);
 }

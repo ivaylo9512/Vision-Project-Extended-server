@@ -9,8 +9,10 @@ import com.vision.project.models.*;
 import com.vision.project.models.specs.DishSpec;
 import com.vision.project.services.base.OrderService;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.apache.tomcat.jni.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -41,25 +43,32 @@ public class OrderController {
     public Order order(@PathVariable(name = "id") int id) throws IOException {
         return orderService.findById(id);
     }
-    @GetMapping(value = "/getMostRecentDate")
-    public LocalDateTime getMostRecentDate(){
-        return orderService.getMostRecentDate();
+    @GetMapping(value = "/getMostRecentDate/{restaurantId}")
+    public LocalDateTime getMostRecentDate(@PathVariable(name = "restaurantId") int id){
+        return orderService.getMostRecentDate(id);
     }
     @PostMapping(value = "/create")
     public Order create(@RequestBody Order order) throws ExpiredJwtException{
-        return orderService.create(order);
+        UserDetails loggedUser = (UserDetails)SecurityContextHolder
+                .getContext().getAuthentication().getDetails();
+        int restaurantId = loggedUser.getRestaurantId();
+        return orderService.create(order, restaurantId);
     }
 
     @PostMapping(value = "/update")
     public Order update(@RequestBody DishSpec dish){
         return orderService.update(dish);
     }
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @PatchMapping("/getUpdates")
-    DeferredResult<List<Order>> getUpdates(@RequestBody LocalDateTime dateTime){
+    DeferredResult<List<Order>> getUpdates(
+            @RequestBody LocalDateTime lastUpdate,
+            @RequestParam(name = "restaurantId") int id){
+
         DeferredResult<List<Order>> deferredResult = new DeferredResult<>(1000L,"Time out.");
-        UserRequest userRequest = new UserRequest(deferredResult, dateTime);
+        UserRequest userRequest = new UserRequest(deferredResult, lastUpdate, id);
         deferredResult.onTimeout(() -> orderService.removeUserRequest(userRequest));
         orderService.findMoreRecent(userRequest);
         return deferredResult;

@@ -1,8 +1,8 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
-
 import java.util.*;
 
 public class UserDto {
@@ -14,6 +14,7 @@ public class UserDto {
     private String country;
     private String role;
     private String profilePicture;
+    private Restaurant restaurant;
 
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
@@ -24,6 +25,7 @@ public class UserDto {
         this.age = userDetails.getAge();
         this.country = userDetails.getCountry();
         this.profilePicture = userDetails.getProfilePicture();
+        this.restaurant = userDetails.getRestaurant();
         this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
     }
 
@@ -101,5 +103,13 @@ public class UserDto {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

@@ -15,9 +15,13 @@ public class UserDetails extends User {
     private int age;
     private String country;
     private String profilePicture;
-    public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, int id){
+    private Restaurant restaurant;
+    private int restaurantId;
+
+    public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, int id, int restaurantId){
         super(username,password,authorities);
         this.id = id;
+        this.restaurantId = restaurantId;
     }
     public UserDetails(UserModel userModel, List<SimpleGrantedAuthority> authorities){
 
@@ -28,6 +32,7 @@ public class UserDetails extends User {
         this.age = userModel.getAge();
         this.country = userModel.getCountry();
         this.profilePicture = userModel.getProfilePicture();
+        this.restaurant = userModel.getRestaurant();
     }
     public int getId() {
         return id;
@@ -75,5 +80,21 @@ public class UserDetails extends User {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

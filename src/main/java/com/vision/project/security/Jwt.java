@@ -34,6 +34,7 @@ public class Jwt {
                 .setSubject(user.getUsername())
                 .setId(String.valueOf(user.getId()));
         claims.put("roles", authorities);
+        claims.put("restaurantId", user.getRestaurant().getId());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -55,7 +56,7 @@ public class Jwt {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-            user = new UserDetails(body.getSubject(), token, authorities, Integer.parseInt(body.getId()));
+            user = new UserDetails(body.getSubject(), token, authorities, Integer.parseInt(body.getId()), Integer.parseInt(body.get("restaurantId").toString()));
         } catch (ExpiredJwtException e) {
             throw new BadCredentialsException("Jwt token has expired.");
         } catch (Exception e) {

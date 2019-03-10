@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    LocalDateTime getMostRecentDate();
+    LocalDateTime getMostRecentDate(int restaurantId);
 
     Order findById(int id);
 
@@ -20,7 +20,7 @@ public interface OrderService {
 
     List<Order> findAll();
 
-    Order create(Order order);
+    Order create(Order order, int restaurantId);
 
     Order update(DishSpec dish);
 
@@ -29,5 +29,5 @@ public interface OrderService {
     void removeUserRequest(UserRequest request);
 
     @EventListener
-    void setDate(ApplicationReadyEvent event);
+    void setDates(ApplicationReadyEvent event);
 }

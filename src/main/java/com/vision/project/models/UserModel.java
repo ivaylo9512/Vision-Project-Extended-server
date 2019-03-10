@@ -45,6 +45,10 @@ public class UserModel {
     @Column(name = "profile_picture")
     private String profilePicture;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant")
+    private Restaurant restaurant;
+
     private String role;
 
     public UserModel(){
@@ -52,7 +56,7 @@ public class UserModel {
     }
 
     public UserModel(String username, String password, String role, String firstName,
-                     String lastName, int age, String country, String profilePicture) {
+                     String lastName, int age, String country, String profilePicture, Restaurant restaurant) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -61,6 +65,7 @@ public class UserModel {
         this.age = age;
         this.country = country;
         this.profilePicture = profilePicture;
+        this.restaurant = restaurant;
     }
 
     public UserModel(UserSpec userSpec, String role) {
@@ -147,5 +152,13 @@ public class UserModel {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

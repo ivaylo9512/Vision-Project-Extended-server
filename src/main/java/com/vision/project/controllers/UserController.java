@@ -15,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -26,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @RestController
+@RequestMapping(value = "/api/auth/users")
 public class UserController {
 
     private final UserService userService;
@@ -35,7 +33,7 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "users/register")
+    @PostMapping(value = "/register")
     public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
         // disabling the registration
         try{
@@ -57,12 +55,16 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "auth/users/adminRegistration")
+    @PostMapping(value = "/adminRegistration")
     public UserDto registerAdmin(@Valid UserSpec user){
         return new UserDto(userService.register(user,"ROLE_USER"));
     }
 
 
+    @GetMapping(value = "findById/{id}")
+    public UserDto findById(@PathVariable(name = "id") int id){
+        return new UserDto(userService.findById(id));
+    }
     @ExceptionHandler
     ResponseEntity handleUsernameExistsException(UsernameExistsException e) {
         return ResponseEntity

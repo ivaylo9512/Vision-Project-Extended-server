@@ -27,6 +27,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,11 +39,13 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.vision.project.repositories.base")
 public class AppConfig {
+
     @Bean(name = "OBJECT_MAPPER_BEAN")
+    @Primary
     public ObjectMapper jsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
-                .serializationInclusion(JsonInclude.Include.NON_NULL) // Don’t include null values
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .modules(new JavaTimeModule())
                 .build();
     }
