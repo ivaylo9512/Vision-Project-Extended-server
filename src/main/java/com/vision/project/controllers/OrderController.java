@@ -9,7 +9,6 @@ import com.vision.project.models.*;
 import com.vision.project.models.specs.DishSpec;
 import com.vision.project.services.base.OrderService;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.apache.tomcat.jni.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,10 +66,10 @@ public class OrderController {
             @RequestBody LocalDateTime lastUpdate,
             @RequestParam(name = "restaurantId") int id){
 
-        DeferredResult<List<Order>> deferredResult = new DeferredResult<>(1000L,"Time out.");
-        UserRequest userRequest = new UserRequest(deferredResult, lastUpdate, id);
-        deferredResult.onTimeout(() -> orderService.removeUserRequest(userRequest));
-        orderService.findMoreRecent(userRequest);
+        DeferredResult<List<Order>> deferredResult = new DeferredResult<>(100000L,"Time out.");
+        OrderRequest orderRequest = new OrderRequest(deferredResult, lastUpdate, id);
+        deferredResult.onTimeout(() -> orderService.removeUserRequest(orderRequest));
+        orderService.findMoreRecent(orderRequest);
         return deferredResult;
     }
 

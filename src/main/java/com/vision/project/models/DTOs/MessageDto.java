@@ -1,5 +1,10 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.Message;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class MessageDto {
     private String message;
 
@@ -9,11 +14,25 @@ public class MessageDto {
 
     private int receiverId;
 
+    private LocalTime time;
+
+    private LocalDate session;
+
+    public MessageDto() {
+    }
+
     public MessageDto(String message, int chatId, int senderId, int receiverId) {
         this.message = message;
         this.chatId = chatId;
         this.senderId = senderId;
         this.receiverId = receiverId;
+    }
+    public MessageDto(Message message) {
+        this.message = message.getMessage();
+        this.chatId = message.getSession().getChat().getId();
+        this.receiverId = message.getReceiverId();
+        this.time = message.getTime();
+        this.session = message.getSession().getDate();
     }
 
     public String getMessage() {
@@ -46,5 +65,21 @@ public class MessageDto {
 
     public void setReceiverId(int receiverId) {
         this.receiverId = receiverId;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public LocalDate getSession() {
+        return session;
+    }
+
+    public void setSession(LocalDate session) {
+        this.session = session;
     }
 }

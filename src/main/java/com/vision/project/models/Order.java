@@ -10,7 +10,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -22,7 +24,7 @@ public class Order{
 
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER)
-    private List<Dish> dishes = new ArrayList<>();
+    private Set<Dish> dishes = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created")
@@ -43,7 +45,7 @@ public class Order{
     public Order() {
     }
 
-    public Order(int id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
+    public Order(int id, Set<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;
         this.created = created;
@@ -60,11 +62,11 @@ public class Order{
     }
 
 
-    public List<Dish> getDishes() {
+    public Set<Dish> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<Dish> dishes) {
+    public void setDishes(Set<Dish> dishes) {
         this.dishes = dishes;
     }
 

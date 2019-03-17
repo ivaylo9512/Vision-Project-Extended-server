@@ -13,4 +13,6 @@ public interface UserService {
     UserModel findById(int id);
 
     UserModel register(UserSpec userSpec, String role);
+
+    UserModel changeUserInfo(int loggedUser, UserSpec userSpec);
 }

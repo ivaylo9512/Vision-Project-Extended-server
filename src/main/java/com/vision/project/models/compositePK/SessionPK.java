@@ -1,12 +1,14 @@
 package com.vision.project.models.compositePK;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.Chat;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+
 @Embeddable
 public class SessionPK implements Serializable {
 
@@ -20,7 +22,7 @@ public class SessionPK implements Serializable {
     public SessionPK() {
     }
 
-    public SessionPK(Chat chat, LocalDate date){
+    public SessionPK(Chat chat, LocalDate date) {
         this.chat = chat;
         this.date = date;
     }
@@ -39,7 +41,6 @@ public class SessionPK implements Serializable {
     public int hashCode() {
         return Objects.hash(getDate(), getChat());
     }
-
 
 
     public LocalDate getDate() {

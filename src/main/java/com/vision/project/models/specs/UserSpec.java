@@ -2,23 +2,36 @@ package com.vision.project.models.specs;
 
 
 
+import com.vision.project.models.UserModel;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class UserSpec {
 
-    @NotNull
     @Size(min=7, max=22, message="Name should be be between 7 and 18 char.")
     private String username;
 
-    @NotNull
     private String password;
 
-    @NotNull
-    private String repeatPassword;
+    private String firstName;
+
+    private String lastName;
+
+    private int age;
+
+    private String country;
+
+    private String role;
 
     public UserSpec() {
 
+    }
+    public UserSpec(UserModel user) {
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.age = user.getAge();
+        this.country = user.getCountry();
     }
 
     public String getUsername() {
@@ -37,11 +50,43 @@ public class UserSpec {
         this.password = password;
     }
 
-    public String getRepeatPassword() {
-        return repeatPassword;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setRepeatPassword(String repeatPassword) {
-        this.repeatPassword = repeatPassword;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

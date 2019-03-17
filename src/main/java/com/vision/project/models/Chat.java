@@ -23,8 +23,6 @@ public class Chat {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Session> sessions;
 
-//    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "chat", fetch = FetchType.EAGER, orphanRemoval = true)
-//    private List<Session> session;
     public Chat() {
     }
 

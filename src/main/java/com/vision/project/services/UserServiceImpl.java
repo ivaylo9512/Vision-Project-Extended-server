@@ -51,10 +51,6 @@ public class UserServiceImpl implements UserService,UserDetailsService {
             throw new UsernameExistsException("Username is already taken.");
         }
 
-        if (!userSpec.getPassword().equals(userSpec.getRepeatPassword())) {
-            throw new PasswordsMissMatchException("Passwords must match.");
-        }
-
         userModel = new UserModel(userSpec, role);
         userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
         return userRepository.save(userModel);
@@ -71,5 +67,17 @@ public class UserServiceImpl implements UserService,UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
 
         return new UserDetails(userModel,authorities);
+    }
+
+    @Override
+    public UserModel changeUserInfo(int loggedUser, UserSpec userSpec){
+        UserModel user = userRepository.findById(loggedUser)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+        user.setFirstName(userSpec.getFirstName());
+        user.setLastName(userSpec.getLastName());
+        user.setAge(userSpec.getAge());
+        user.setCountry(userSpec.getCountry());
+
+        return userRepository.save(user);
     }
 }

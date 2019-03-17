@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.compositePK.MessagePK;
 
@@ -14,46 +15,47 @@ import java.time.LocalTime;
 public class Message{
 
     @Id
-    private int receiver;
+    private int receiverId;
 
     @Id
     @Column(name = "date")
-    private LocalTime date;
+    private LocalTime time;
 
     @Column(name = "message")
     private String message;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumns({@JoinColumn(name = "chat"),@JoinColumn(name = "session_date")})
     private Session session;
 
-    public Message(int receiver, LocalTime date, String message, Session session){
-        this.receiver = receiver;
-        this.date = date;
+    public Message(int receiverId, LocalTime time, String message, Session session){
+        this.receiverId = receiverId;
+        this.time = time;
         this.message = message;
         this.session = session;
     }
     public Message() {
     }
-    public Message(int receiver, LocalTime date) {
-        this.receiver = receiver;
-        this.date = date;
+
+    public int getReceiverId() {
+        return receiverId;
     }
 
-    public int getReceiver() {
-        return receiver;
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 
-    public void setReceiver(int receiver) {
-        this.receiver = receiver;
+    public LocalTime getTime() {
+        return time;
     }
 
-    public LocalTime getDate() {
-        return date;
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
-    public void setDate(LocalTime date) {
-        this.date = date;
+    public Session getSession() {
+        return session;
     }
 
     public void setSession(Session session) {

@@ -9,34 +9,34 @@ import java.util.Objects;
 
 public class MessagePK implements Serializable {
 
-    @Column(name = "receiver")
-    private int receiver;
+    @Column(name = "receiver_id")
+    private int receiverId;
 
-    @Column(name = "date")
-    private LocalTime date;
+    @Column(name = "time")
+    private LocalTime time;
 
     public MessagePK() {
     }
 
-    public MessagePK(LocalTime date, int receiver){
-        this.date = date;
-        this.receiver = receiver;
+    public MessagePK(LocalTime time, int receiverId){
+        this.time = time;
+        this.receiverId = receiverId;
     }
 
-    public LocalTime getDate() {
-        return date;
+    public LocalTime getTime() {
+        return time;
     }
 
-    public void setDate(LocalTime date) {
-        this.date = date;
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
-    public int getReceiver() {
-        return receiver;
+    public int getReceiverId() {
+        return receiverId;
     }
 
-    public void setReceiver(int receiver) {
-        this.receiver = receiver;
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class MessagePK implements Serializable {
         if (this == o) return true;
         if (!(o instanceof MessagePK)) return false;
         MessagePK that = (MessagePK) o;
-        return Objects.equals(getDate(), that.getDate()) &&
-                Objects.equals(getReceiver(), that.getReceiver());
+        return Objects.equals(getTime(), that.getTime()) &&
+                Objects.equals(getReceiverId(), that.getReceiverId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDate(), getReceiver());
+        return Objects.hash(getTime(), getReceiverId());
     }
 }

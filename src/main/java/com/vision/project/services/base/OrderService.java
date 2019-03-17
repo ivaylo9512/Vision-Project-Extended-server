@@ -1,8 +1,7 @@
 package com.vision.project.services.base;
 
-import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
-import com.vision.project.models.UserRequest;
+import com.vision.project.models.OrderRequest;
 import com.vision.project.models.specs.DishSpec;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -24,9 +23,9 @@ public interface OrderService {
 
     Order update(DishSpec dish);
 
-    void findMoreRecent(UserRequest request);
+    void findMoreRecent(OrderRequest request);
 
-    void removeUserRequest(UserRequest request);
+    void removeUserRequest(OrderRequest request);
 
     @EventListener
     void setDates(ApplicationReadyEvent event);

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,9 +62,17 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "findById/{id}")
+    @GetMapping(value = "/findById/{id}")
     public UserDto findById(@PathVariable(name = "id") int id){
         return new UserDto(userService.findById(id));
+    }
+    @PostMapping(value = "/changeUserInfo")
+    public UserSpec changeUserInfo(@RequestBody UserSpec userModel){
+        System.out.println(userModel.getLastName());
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new UserSpec(userService.changeUserInfo(loggedUser.getId(), userModel));
     }
     @ExceptionHandler
     ResponseEntity handleUsernameExistsException(UsernameExistsException e) {

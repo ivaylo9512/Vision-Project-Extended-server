@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-public class UserRequest {
+public class OrderRequest {
     private DeferredResult<List<Order>> deferredResult;
     private LocalDateTime lastPolledOrderDate;
     private int restaurantId;
 
-    public UserRequest(DeferredResult<List<Order>> deferredResult, LocalDateTime lastPolledOrderDate, int restaurantId) {
+    public OrderRequest(DeferredResult<List<Order>> deferredResult, LocalDateTime lastPolledOrderDate, int restaurantId) {
         this.deferredResult = deferredResult;
         this.lastPolledOrderDate = lastPolledOrderDate;
         this.restaurantId = restaurantId;

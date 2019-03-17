@@ -10,7 +10,9 @@ import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,18 +28,17 @@ public class ChatController {
     }
 
     @GetMapping(value = "/getChats")
-    public List<ChatDto> getChats(){
+    public List<ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
 
         UserDetails userDetails = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
 
-        List<Chat> chats = chatService.findUserChats(userId);
-        List<ChatDto> chatsDto = chats.stream()
+        List<Chat> chats = chatService.findUserChats(userId, pageSize);
+
+        return chats.stream()
                 .map(ChatDto::new)
                 .collect(Collectors.toList());
-
-        return chatsDto;
 
     }
 
@@ -46,20 +47,22 @@ public class ChatController {
             @RequestParam(name = "chatId") int chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
-        System.out.println(page);
-        System.out.println(pageSize);
         return chatService.findNextChatSessions(chatId, page, pageSize);
     }
 
-    @GetMapping(value = "/getChatUpdates")
-    public List<Message> chatUpdates(){
+    @PatchMapping(value = "/getChatUpdates")
+    public DeferredResult<List<MessageDto>> chatUpdates(@RequestBody LocalDateTime lastMessageCheck){
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
-        return chatService.getNewMessages(userId);
+        DeferredResult<List<MessageDto>> deferredResult = new DeferredResult<>(100000L,"Time out.");
+        deferredResult.onTimeout(() -> chatService.removeUserRequest(userId));
+        chatService.getNewMessages(userId, lastMessageCheck, deferredResult);
+        return deferredResult;
     }
 
+
     @PostMapping(value = "/newMessage")
-    public Message newMessage(@RequestParam MessageDto message){
+    public MessageDto newMessage(@RequestBody MessageDto message){
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         message.setSenderId(userDetails.getId());
         return chatService.addNewMessage(message);

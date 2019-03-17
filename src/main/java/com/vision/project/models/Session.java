@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.compositePK.SessionPK;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 public class Session{
 
     @Id
+    @JsonIgnore
     private Chat chat;
 
     @Id
@@ -27,6 +29,10 @@ public class Session{
     public Session(Chat chat, LocalDate date) {
         this.date = date;
         this.chat = chat;
+    }
+
+    public Chat getChat() {
+        return chat;
     }
 
     public LocalDate getDate() {

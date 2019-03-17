@@ -46,13 +46,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = Jwt.generate(userDetails);
 
         response.addHeader("Authorization", "Token " + token);
-        response.getWriter().write("Authenticated");
-
         UserDto user = new UserDto(userDetails);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         String userJson = mapper.writeValueAsString(user);
-        response.setHeader("user", userJson);
+        response.getWriter().write(userJson);
     }
 }
 

@@ -1,11 +1,15 @@
 package com.vision.project.models.DTOs;
 
 import com.vision.project.models.Chat;
+import com.vision.project.models.Session;
+
+import java.util.List;
 
 public class ChatDto {
     private int id;
     private UserDto firstUser;
     private UserDto secondUser;
+    private List<Session> sessions;
 
     public ChatDto() {
     }
@@ -14,6 +18,7 @@ public class ChatDto {
         this.id = chat.getId();
         this.firstUser = new UserDto(chat.getFirstUserModel());
         this.secondUser = new UserDto(chat.getSecondUserModel());
+        this.sessions = chat.getSessions();
     }
 
     public UserDto getFirstUser() {
@@ -38,5 +43,13 @@ public class ChatDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
 }

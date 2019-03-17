@@ -5,7 +5,6 @@ import com.vision.project.models.*;
 import com.vision.project.models.specs.DishSpec;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
-import org.apache.tomcat.jni.Local;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     private RestaurantRepository restaurantRepository;
 
-    public BlockingQueue<UserRequest> requests = new ArrayBlockingQueue<>(100);
+    private BlockingQueue<OrderRequest> requests = new ArrayBlockingQueue<>(100);
     private List<Order> orders = Collections.synchronizedList(new ArrayList<>());
     private volatile HashMap<Integer, LocalDateTime> mostRecentDates = new HashMap<>();
 
@@ -80,51 +79,50 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void findMoreRecent(UserRequest userRequest) {
-        List<Order> moreRecent = new ArrayList<>();
+    public void findMoreRecent(OrderRequest orderRequest) {
 
-        if (userRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(userRequest.getRestaurantId()))) {
-            moreRecent = orderRepository.findMoreRecent(userRequest.getLastPolledOrderDate());
-        }
-        if(moreRecent.size() > 0){
-            userRequest.getDeferredResult().setResult(moreRecent);
+        if (orderRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(orderRequest.getRestaurantId()))) {
+            Restaurant restaurant = restaurantRepository.getOne(orderRequest.getRestaurantId());
+            orderRequest.getDeferredResult().setResult(orderRepository.findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant));
+
             return;
         }
 
         CompletableFuture.runAsync(()->{
             try {
-                requests.add(userRequest);
+                requests.add(orderRequest);
             }catch (Exception ex){
                 throw new RuntimeException(ex.getMessage());
             }
         });
     }
     private synchronized void updateUserRequests() {
-        BlockingQueue<UserRequest> unmanagedRequests = new ArrayBlockingQueue<>(100);
+        BlockingQueue<OrderRequest> unmanagedRequests = new ArrayBlockingQueue<>(100);
         while (orders.size() > 0) {
 
             while (requests.size() > 0) {
 
-                UserRequest userRequest = requests.poll();
-                LocalDateTime userLastPolled = userRequest.getLastPolledOrderDate();
+                OrderRequest orderRequest = requests.poll();
+                LocalDateTime userLastPolled = orderRequest.getLastPolledOrderDate();
 
-                if (userRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(userRequest.getRestaurantId()))) {
-                    findMoreRecent(userRequest);
+                if (orderRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(orderRequest.getRestaurantId()))) {
+                    Restaurant restaurant = restaurantRepository.getOne(orderRequest.getRestaurantId());
+                    orderRequest.getDeferredResult().setResult(orderRepository.findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant));
                     continue;
                 }
 
                 List<Order> moreRecentOrders = new ArrayList<>();
                 for (Order order : orders) {
                     Optional<LocalDateTime> checkUpdated = Optional.ofNullable(order.getUpdated());
-                    if (order.getRestaurant().getId() == userRequest.getRestaurantId() && (userLastPolled.isBefore(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.isBefore(checkUpdated.get())))) {
+                    if (order.getRestaurant().getId() == orderRequest.getRestaurantId() && (userLastPolled.isBefore(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.isBefore(checkUpdated.get())))) {
                         moreRecentOrders.add(order);
                     }
                 }
 
                 if (moreRecentOrders.size() > 0) {
-                    userRequest.getDeferredResult().setResult(moreRecentOrders);
+                    orderRequest.getDeferredResult().setResult(moreRecentOrders);
                 } else {
-                    unmanagedRequests.add(userRequest);
+                    unmanagedRequests.add(orderRequest);
                 }
 
             }
@@ -147,18 +145,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void removeUserRequest(UserRequest request) {
+    public void removeUserRequest(OrderRequest request) {
         requests.remove(request);
     }
 
     @Override
     public void setDates(ApplicationReadyEvent event) throws RuntimeException {
-        restaurantRepository.findAll().forEach(restaurant -> {
-            restaurant.getMenu().forEach(menu -> System.out.println(menu.getName()));
-            mostRecentDates.put(restaurant.getId(), getMostRecentDate(restaurant.getId()));
-        });
-
-        System.out.println(mostRecentDates.values());
+        restaurantRepository.findAll().forEach(restaurant ->
+                mostRecentDates.put(restaurant.getId(), getMostRecentDate(restaurant.getId())));
     }
 
     @Override

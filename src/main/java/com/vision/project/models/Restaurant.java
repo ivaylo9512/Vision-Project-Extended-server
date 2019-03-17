@@ -23,10 +23,12 @@ public class Restaurant {
     private String type;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
+    @OrderBy("name")
     private Set<Menu> menu;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.EAGER)
     @OrderBy("created")
+    @Where(clause = "ready = false")
     private Set<Order> orders;
 
     public Restaurant() {
