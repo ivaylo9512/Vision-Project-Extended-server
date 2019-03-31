@@ -55,7 +55,6 @@ public class ChatController {
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
         DeferredResult<List<MessageDto>> deferredResult = new DeferredResult<>(100000L,"Time out.");
-        deferredResult.onTimeout(() -> chatService.removeUserRequest(userId));
         chatService.getNewMessages(userId, lastMessageCheck, deferredResult);
         return deferredResult;
     }

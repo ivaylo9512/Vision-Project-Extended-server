@@ -35,7 +35,6 @@ public class UserDto {
         this.age = userModel.getAge();
         this.firstName = userModel.getFirstName();
         this.lastName = userModel.getLastName();
-        this.age = userModel.getAge();
         this.country = userModel.getCountry();
         this.role = userModel.getRole();
         this.profilePicture = userModel.getProfilePicture();

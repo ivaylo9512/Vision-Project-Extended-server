@@ -2,7 +2,7 @@ package com.vision.project.services;
 
 import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
-import com.vision.project.models.specs.DishSpec;
+import com.vision.project.models.DTOs.OrderDto;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -15,34 +15,39 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
     private RestaurantRepository restaurantRepository;
+    private UserRepository userRepository;
 
     private BlockingQueue<OrderRequest> requests = new ArrayBlockingQueue<>(100);
-    private List<Order> orders = Collections.synchronizedList(new ArrayList<>());
+    private List<OrderDto> orders = Collections.synchronizedList(new ArrayList<>());
     private volatile HashMap<Integer, LocalDateTime> mostRecentDates = new HashMap<>();
 
-    public OrderServiceImpl(OrderRepository orderRepository, RestaurantRepository restaurantRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, RestaurantRepository restaurantRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     @Override
-    public Order create(Order order, int restaurantId){
-        for (Dish dish:order.getDishes()) {
+    public Order create(Order order, int restaurantId, int userId){
+        for (Dish dish : order.getDishes()) {
             dish.setOrder(order);
         }
 
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
         order.setRestaurant(restaurant);
 
+        order.setUser(userRepository.getOne(userId));
         order = orderRepository.save(order);
-        orders.add(order);
+        orders.add(new OrderDto(order));
+
         updateUserRequests();
 
         return order;
@@ -50,14 +55,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order update(DishSpec dish) {
-        Order order = orderRepository.findById(dish.getOrderId())
+    public Order update(int orderId, int dishId) {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
 
         List<Dish> notReady = new ArrayList<>();
         boolean updated = false;
         for (Dish orderDish: order.getDishes()) {
-            if(orderDish.getId() == dish.getId() && !orderDish.getReady()){
+            if(orderDish.getId() == dishId && !orderDish.getReady()){
                 orderDish.setReady(true);
                 order.setUpdated(LocalDateTime.now());
                 updated = true;
@@ -72,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
         }
         if(updated) {
             order = orderRepository.save(order);
-            orders.add(order);
+            orders.add(new OrderDto(order));
             updateUserRequests();
         }
         return order;
@@ -80,13 +85,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void findMoreRecent(OrderRequest orderRequest) {
-
         if (orderRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(orderRequest.getRestaurantId()))) {
             Restaurant restaurant = restaurantRepository.getOne(orderRequest.getRestaurantId());
-            orderRequest.getDeferredResult().setResult(orderRepository.findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant));
-
+            orderRequest.getDeferredResult().setResult(orderRepository
+                    .findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant)
+                    .stream()
+                    .map(OrderDto::new)
+                    .collect(Collectors.toList()));
             return;
         }
+
 
         CompletableFuture.runAsync(()->{
             try {
@@ -97,6 +105,7 @@ public class OrderServiceImpl implements OrderService {
         });
     }
     private synchronized void updateUserRequests() {
+
         BlockingQueue<OrderRequest> unmanagedRequests = new ArrayBlockingQueue<>(100);
         while (orders.size() > 0) {
 
@@ -107,14 +116,18 @@ public class OrderServiceImpl implements OrderService {
 
                 if (orderRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(orderRequest.getRestaurantId()))) {
                     Restaurant restaurant = restaurantRepository.getOne(orderRequest.getRestaurantId());
-                    orderRequest.getDeferredResult().setResult(orderRepository.findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant));
+                    orderRequest.getDeferredResult().setResult(orderRepository
+                            .findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant)
+                            .stream()
+                            .map(OrderDto::new)
+                            .collect(Collectors.toList()));
                     continue;
                 }
 
-                List<Order> moreRecentOrders = new ArrayList<>();
-                for (Order order : orders) {
+                List<OrderDto> moreRecentOrders = new ArrayList<>();
+                for (OrderDto order : orders) {
                     Optional<LocalDateTime> checkUpdated = Optional.ofNullable(order.getUpdated());
-                    if (order.getRestaurant().getId() == orderRequest.getRestaurantId() && (userLastPolled.isBefore(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.isBefore(checkUpdated.get())))) {
+                    if (order.getRestaurantId() == orderRequest.getRestaurantId() && (userLastPolled.isBefore(order.getCreated()) || (checkUpdated.isPresent() && userLastPolled.isBefore(checkUpdated.get())))) {
                         moreRecentOrders.add(order);
                     }
                 }
@@ -139,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
             Optional<LocalDateTime> updated = Optional.ofNullable(order.getUpdated());
             LocalDateTime date = (updated.isPresent() && updated.get().isAfter(order.getCreated())
                     ? updated.get().withNano(0) : order.getCreated().withNano(0));
-            mostRecentDates.replace(order.getRestaurant().getId(), date);
+            mostRecentDates.replace(order.getRestaurantId(), date);
 
         });
     }

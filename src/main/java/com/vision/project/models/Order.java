@@ -42,6 +42,11 @@ public class Order{
     @JoinColumn(name="restaurant")
     private Restaurant restaurant;
 
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="created_by")
+    private UserModel user;
+
     public Order() {
     }
 
@@ -100,5 +105,13 @@ public class Order{
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 }

@@ -1,14 +1,11 @@
 package com.vision.project.security;
 
 import com.vision.project.models.UserDetails;
-import com.vision.project.security.Exceptions.JwtExpiredTokenException;
-import com.vision.project.security.Exceptions.JwtTokenIsIncorrectException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,9 +16,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class Jwt {
-    static int jwtExpirationInMs = 10000000;
+    private static int jwtExpirationInMs = 10000000;
     static String jwtSecret = "MyJwtSecret";
-    static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
+    private static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
 
     public static String generate(UserDetails user) {
         Date now = new Date();

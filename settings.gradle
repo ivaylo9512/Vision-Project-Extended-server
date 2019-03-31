@@ -1,2 +1,3 @@
 rootProject.name = 'vision-project'
+include 'Server side'
 

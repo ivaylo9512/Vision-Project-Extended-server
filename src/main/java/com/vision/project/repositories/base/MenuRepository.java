@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
 
     List<Menu> findByRestaurant(int restaurant);

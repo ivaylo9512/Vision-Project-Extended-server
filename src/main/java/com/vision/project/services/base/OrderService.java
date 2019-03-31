@@ -2,7 +2,7 @@ package com.vision.project.services.base;
 
 import com.vision.project.models.Order;
 import com.vision.project.models.OrderRequest;
-import com.vision.project.models.specs.DishSpec;
+import com.vision.project.models.UserDetails;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
@@ -19,9 +19,9 @@ public interface OrderService {
 
     List<Order> findAll();
 
-    Order create(Order order, int restaurantId);
+    Order create(Order order, int restaurantId, int userId);
 
-    Order update(DishSpec dish);
+    Order update(int orderId, int dishId);
 
     void findMoreRecent(OrderRequest request);
 

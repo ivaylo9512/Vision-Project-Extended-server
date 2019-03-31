@@ -18,11 +18,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +34,7 @@ public class ChatServiceImpl implements ChatService {
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
 
-    private Cache<Integer, List<MessageDto>> newMessages = CacheBuilder.newBuilder().build();
-    private Map<Integer,DeferredResult<List<MessageDto>>> userRequests =new HashMap<>();
+    private volatile Cache<Integer, List<MessageDto>> newMessages = CacheBuilder.newBuilder().build();
 
     private LocalDateTime serverStartDate;
 
@@ -48,7 +50,7 @@ public class ChatServiceImpl implements ChatService {
         chats.forEach(chat -> chat
                 .setSessions(sessionRepository
                         .getSessions(chat,
-                                PageRequest.of(0, pageSize,Sort.Direction.DESC, "session_date"))));
+                                PageRequest.of(0, pageSize, Sort.Direction.DESC, "session_date"))));
         return chats;
     }
 
@@ -67,18 +69,16 @@ public class ChatServiceImpl implements ChatService {
             return;
         }
 
-
-        if(newMessages.asMap().containsKey(userId)){
-            deferredResult.setResult(newMessages.asMap().get(userId));
-            newMessages.asMap().remove(userId);
-        }else {
-            CompletableFuture.runAsync(()->{
-                try {
-                    userRequests.put(userId, deferredResult);
-                }catch (Exception ex){
-                    throw new RuntimeException(ex.getMessage());
-                }
-            });
+        while (!deferredResult.isSetOrExpired()){
+            if(newMessages.getIfPresent(userId) != null){
+                deferredResult.setResult(newMessages.getIfPresent(userId));
+                newMessages.asMap().remove(userId);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -87,7 +87,6 @@ public class ChatServiceImpl implements ChatService {
     public MessageDto addNewMessage(MessageDto messageDto) {
         int sender = messageDto.getSenderId();
         int receiver = messageDto.getReceiverId();
-
 
         Chat chat = chatRepository.findById(messageDto.getChatId())
                 .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageDto.getChatId() + "is not found."));
@@ -107,13 +106,12 @@ public class ChatServiceImpl implements ChatService {
         messageDto.setTime(message.getTime());
         messageDto.setSession(session.getDate());
 
-        if(userRequests.containsKey(message.getReceiverId())){
-            List<MessageDto> messages = new ArrayList<>(Collections.singletonList(messageDto));
-            userRequests.get(message.getReceiverId()).setResult(messages);
-        }else{
-            if(newMessages.asMap().containsKey(message.getReceiverId())){
-                newMessages.asMap().get(message.getReceiverId()).add(messageDto);
-            }
+        List<MessageDto> messages = new ArrayList<>();
+        if(newMessages.asMap().containsKey(message.getReceiverId())){
+            newMessages.asMap().get(message.getReceiverId()).add(messageDto);
+        }else {
+            messages.add(messageDto);
+            newMessages.put(message.getReceiverId(), messages);
         }
         return messageDto;
     }
@@ -123,8 +121,4 @@ public class ChatServiceImpl implements ChatService {
         serverStartDate = LocalDateTime.now();
     }
 
-    @Override
-    public void removeUserRequest(int userId) {
-        userRequests.remove(userId);
-    }
 }

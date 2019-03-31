@@ -6,16 +6,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class MessageDto {
-    private String message;
-
     private int chatId;
-
     private int senderId;
-
     private int receiverId;
 
+    private String message;
     private LocalTime time;
-
     private LocalDate session;
 
     public MessageDto() {

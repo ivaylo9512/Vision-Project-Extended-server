@@ -67,12 +67,11 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
     @PostMapping(value = "/changeUserInfo")
-    public UserSpec changeUserInfo(@RequestBody UserSpec userModel){
-        System.out.println(userModel.getLastName());
+    public UserDto changeUserInfo(@RequestBody UserSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return new UserSpec(userService.changeUserInfo(loggedUser.getId(), userModel));
+        return new UserDto(userService.changeUserInfo(loggedUser.getId(), userModel));
     }
     @ExceptionHandler
     ResponseEntity handleUsernameExistsException(UsernameExistsException e) {
