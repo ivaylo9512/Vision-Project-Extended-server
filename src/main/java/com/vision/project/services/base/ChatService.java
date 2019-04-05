@@ -24,4 +24,6 @@ public interface ChatService {
     void setServerStartDate(ApplicationReadyEvent event);
 
     void removeUserRequest(int userId);
+
+    void removeMessages(int userId);
 }

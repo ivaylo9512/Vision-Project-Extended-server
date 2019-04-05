@@ -137,4 +137,8 @@ public class ChatServiceImpl implements ChatService {
         userRequests.asMap().remove(userId);
     }
 
+    @Override
+    public void removeMessages(int userId) {
+        newMessages.asMap().remove(userId);
+    }
 }

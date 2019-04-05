@@ -1,6 +1,7 @@
 package com.vision.project.config;
 import com.vision.project.security.*;
 import com.vision.project.services.UserServiceImpl;
+import com.vision.project.services.base.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthorizationProvider authorizationProvider;
+    @Autowired
+    private ChatService chatService;
+
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
@@ -63,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter authenticationFilter() throws Exception{
-        final AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        final AuthenticationFilter authenticationFilter = new AuthenticationFilter(chatService);
         authenticationFilter.setFilterProcessesUrl("/login");
         authenticationFilter.setAuthenticationFailureHandler(new FailureHandler());
         authenticationFilter.setAuthenticationManager(authenticationManager());
