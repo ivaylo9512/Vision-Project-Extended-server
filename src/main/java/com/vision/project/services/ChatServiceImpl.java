@@ -34,8 +34,14 @@ public class ChatServiceImpl implements ChatService {
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
 
-    private volatile Cache<Integer, List<MessageDto>> newMessages = CacheBuilder.newBuilder().build();
-
+    private Cache<Integer, List<MessageDto>> newMessages = CacheBuilder
+            .newBuilder()
+            .concurrencyLevel(10)
+            .build();
+    private Cache<Integer,DeferredResult<List<MessageDto>>> userRequests = CacheBuilder
+            .newBuilder()
+            .concurrencyLevel(10)
+            .build();
     private LocalDateTime serverStartDate;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository) {
@@ -68,17 +74,17 @@ public class ChatServiceImpl implements ChatService {
             deferredResult.setResult(messageDTOs);
             return;
         }
-
-        while (!deferredResult.isSetOrExpired()){
-            if(newMessages.getIfPresent(userId) != null){
-                deferredResult.setResult(newMessages.getIfPresent(userId));
-                newMessages.asMap().remove(userId);
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if(newMessages.asMap().containsKey(userId)){
+            deferredResult.setResult(newMessages.asMap().get(userId));
+            newMessages.asMap().remove(userId);
+        }else {
+            CompletableFuture.runAsync(() -> {
+                try {
+                    userRequests.put(userId, deferredResult);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex.getMessage());
+                }
+            });
         }
 
     }
@@ -106,19 +112,29 @@ public class ChatServiceImpl implements ChatService {
         messageDto.setTime(message.getTime());
         messageDto.setSession(session.getDate());
 
-        List<MessageDto> messages = new ArrayList<>();
-        if(newMessages.asMap().containsKey(message.getReceiverId())){
-            newMessages.asMap().get(message.getReceiverId()).add(messageDto);
+        List<MessageDto> messages = new ArrayList<>(Collections.singletonList(messageDto));
+        if(userRequests.asMap().containsKey(message.getReceiverId())){
+            userRequests.asMap().get(message.getReceiverId()).setResult(messages);
+            userRequests.asMap().remove(message.getReceiverId());
         }else {
-            messages.add(messageDto);
-            newMessages.put(message.getReceiverId(), messages);
+            if (newMessages.asMap().containsKey(message.getReceiverId())) {
+                newMessages.asMap().get(message.getReceiverId()).add(messageDto);
+            } else {
+                newMessages.put(message.getReceiverId(), messages);
+            }
         }
+
         return messageDto;
     }
 
     @Override
     public void setServerStartDate(ApplicationReadyEvent event) {
         serverStartDate = LocalDateTime.now();
+    }
+
+    @Override
+    public void removeUserRequest(int userId) {
+        userRequests.asMap().remove(userId);
     }
 
 }

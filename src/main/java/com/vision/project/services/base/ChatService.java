@@ -23,4 +23,5 @@ public interface ChatService {
     @EventListener
     void setServerStartDate(ApplicationReadyEvent event);
 
+    void removeUserRequest(int userId);
 }
