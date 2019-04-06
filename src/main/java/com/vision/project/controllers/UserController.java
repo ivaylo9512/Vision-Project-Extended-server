@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @RestController
-@RequestMapping(value = "/api/auth/users")
+@RequestMapping(value = "/api")
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +34,7 @@ public class UserController {
     }
 
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/users/register")
     public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
         // disabling the registration
         try{
@@ -46,7 +46,6 @@ public class UserController {
         }
         //
 
-
         UserModel userModel = userService.register(user,"ROLE_USER");
         String token = Jwt.generate(new UserDetails(userModel, new ArrayList<>(
                 Collections.singletonList(new SimpleGrantedAuthority(userModel.getRole())))));
@@ -56,7 +55,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/adminRegistration")
+    @PostMapping(value = "/auth/users/adminRegistration")
     public UserDto registerAdmin(@Valid UserSpec user){
         return new UserDto(userService.register(user,"ROLE_USER"));
     }

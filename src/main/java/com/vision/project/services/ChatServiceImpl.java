@@ -34,14 +34,9 @@ public class ChatServiceImpl implements ChatService {
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
 
-    private Cache<Integer, List<MessageDto>> newMessages = CacheBuilder
-            .newBuilder()
-            .concurrencyLevel(10)
-            .build();
-    private Cache<Integer,DeferredResult<List<MessageDto>>> userRequests = CacheBuilder
-            .newBuilder()
-            .concurrencyLevel(10)
-            .build();
+    private Map<Integer, List<MessageDto>> newMessages = Collections.synchronizedMap(new HashMap<>());
+    private ConcurrentMap<Integer, DeferredResult<List<MessageDto>>> userRequests = new ConcurrentHashMap<>();
+
     private LocalDateTime serverStartDate;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository) {
@@ -60,7 +55,6 @@ public class ChatServiceImpl implements ChatService {
         return chats;
     }
 
-
     @Override
     public List<Session> findNextChatSessions(int chatId, int page, int pageSize){
         return sessionRepository.getSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
@@ -74,17 +68,13 @@ public class ChatServiceImpl implements ChatService {
             deferredResult.setResult(messageDTOs);
             return;
         }
-        if(newMessages.asMap().containsKey(userId)){
-            deferredResult.setResult(newMessages.asMap().get(userId));
-            newMessages.asMap().remove(userId);
-        }else {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    userRequests.put(userId, deferredResult);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex.getMessage());
-                }
-            });
+        if(newMessages.containsKey(userId)){
+            deferredResult.setResult(newMessages.get(userId));
+            newMessages.remove(userId);
+        }
+
+        if(!deferredResult.hasResult()){
+            userRequests.put(userId, deferredResult);
         }
 
     }
@@ -113,12 +103,11 @@ public class ChatServiceImpl implements ChatService {
         messageDto.setSession(session.getDate());
 
         List<MessageDto> messages = new ArrayList<>(Collections.singletonList(messageDto));
-        if(userRequests.asMap().containsKey(message.getReceiverId())){
-            userRequests.asMap().get(message.getReceiverId()).setResult(messages);
-            userRequests.asMap().remove(message.getReceiverId());
+        if(userRequests.containsKey(message.getReceiverId())){
+            userRequests.get(message.getReceiverId()).setResult(messages);
         }else {
-            if (newMessages.asMap().containsKey(message.getReceiverId())) {
-                newMessages.asMap().get(message.getReceiverId()).add(messageDto);
+            if (newMessages.containsKey(message.getReceiverId())) {
+                newMessages.get(message.getReceiverId()).add(messageDto);
             } else {
                 newMessages.put(message.getReceiverId(), messages);
             }
@@ -133,12 +122,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void removeUserRequest(int userId) {
-        userRequests.asMap().remove(userId);
+    public void removeUserRequest(int userId, DeferredResult deferredResult) {
+        userRequests.remove(userId, deferredResult);
     }
 
     @Override
     public void removeMessages(int userId) {
-        newMessages.asMap().remove(userId);
+        newMessages.remove(userId);
     }
 }

@@ -23,7 +23,7 @@ public interface ChatService {
     @EventListener
     void setServerStartDate(ApplicationReadyEvent event);
 
-    void removeUserRequest(int userId);
+    void removeUserRequest(int userId, DeferredResult deferredResult);
 
     void removeMessages(int userId);
 }
