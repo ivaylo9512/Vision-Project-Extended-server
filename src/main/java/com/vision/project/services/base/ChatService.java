@@ -20,8 +20,7 @@ public interface ChatService {
 
     MessageDto addNewMessage(MessageDto message);
 
-    @EventListener
-    void setServerStartDate(ApplicationReadyEvent event);
+    void setServerStartDate();
 
     void removeUserRequest(int userId, DeferredResult deferredResult);
 

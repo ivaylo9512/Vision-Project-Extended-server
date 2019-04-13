@@ -27,6 +27,5 @@ public interface OrderService {
 
     void removeUserRequest(OrderRequest request);
 
-    @EventListener
-    void setDates(ApplicationReadyEvent event);
+    void setDates();
 }

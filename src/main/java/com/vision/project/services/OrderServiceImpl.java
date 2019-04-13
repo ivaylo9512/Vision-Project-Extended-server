@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setDates(ApplicationReadyEvent event) throws RuntimeException {
+    public void setDates() throws RuntimeException {
         restaurantRepository.findAll().forEach(restaurant ->
                 mostRecentDates.put(restaurant.getId(), getMostRecentDate(restaurant.getId())));
     }

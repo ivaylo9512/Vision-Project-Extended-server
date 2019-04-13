@@ -117,7 +117,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void setServerStartDate(ApplicationReadyEvent event) {
+    public void setServerStartDate() {
         serverStartDate = LocalDateTime.now();
     }
 
