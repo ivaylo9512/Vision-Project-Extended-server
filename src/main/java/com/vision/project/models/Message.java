@@ -1,24 +1,22 @@
 package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vision.project.models.DTOs.MessageDto;
-import com.vision.project.models.compositePK.MessagePK;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@IdClass(MessagePK.class)
 @Table(name = "messages")
 public class Message{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "receiver_id")
     private int receiverId;
 
-    @Id
-    @Column(name = "date")
+    @Column(name = "time")
     private LocalTime time;
 
     @Column(name = "message")

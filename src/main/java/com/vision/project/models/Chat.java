@@ -6,7 +6,6 @@ import java.util.List;
 @Entity
 @Table(name = "chats")
 public class Chat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -15,7 +14,6 @@ public class Chat {
     @JoinColumn(name = "first_user", insertable = false, updatable = false)
     private UserModel firstUserModel;
 
-//    @Id
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "second_user", insertable = false, updatable = false)
     private UserModel secondUserModel;

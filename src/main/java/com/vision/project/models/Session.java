@@ -12,7 +12,6 @@ import java.util.List;
 @IdClass(SessionPK.class)
 @Table(name = "sessions")
 public class Session{
-
     @Id
     @JsonIgnore
     private Chat chat;

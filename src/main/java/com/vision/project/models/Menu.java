@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "menu")
 public class Menu {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
@@ -18,8 +19,7 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(int id, String name, Restaurant restaurant) {
-        this.id = id;
+    public Menu(String name, Restaurant restaurant) {
         this.name = name;
         this.restaurant = restaurant;
     }

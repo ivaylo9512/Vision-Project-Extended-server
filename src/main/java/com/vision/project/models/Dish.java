@@ -28,8 +28,7 @@ public class Dish{
     public Dish() {
     }
 
-    public Dish(int id, String name, Boolean ready, Order order) {
-        this.id = id;
+    public Dish(String name, Boolean ready, Order order) {
         this.name = name;
         this.ready = ready;
         this.order = order;

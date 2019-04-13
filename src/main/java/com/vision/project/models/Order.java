@@ -22,7 +22,6 @@ public class Order{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER)
     private Set<Dish> dishes = new HashSet<>();
 
