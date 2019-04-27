@@ -65,6 +65,7 @@ public class UserController {
     public UserDto findById(@PathVariable(name = "id") int id){
         return new UserDto(userService.findById(id));
     }
+
     @PostMapping(value = "/changeUserInfo")
     public UserDto changeUserInfo(@RequestBody UserSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()

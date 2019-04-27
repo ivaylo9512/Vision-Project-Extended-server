@@ -42,6 +42,7 @@ public class OrderController {
     public Order order(@PathVariable(name = "id") int id) throws IOException {
         return orderService.findById(id);
     }
+
     @GetMapping(value = "/getMostRecentDate/{restaurantId}")
     public LocalDateTime getMostRecentDate(@PathVariable(name = "restaurantId") int id){
         return orderService.getMostRecentDate(id);
