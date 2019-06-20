@@ -33,6 +33,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/login")
+    public UserDto login(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return new UserDto(userDetails);
+    }
 
     @PostMapping(value = "/users/register")
     public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {

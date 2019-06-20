@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AuthenticationFilter authenticationFilter() throws Exception{
         final AuthenticationFilter authenticationFilter = new AuthenticationFilter(chatService);
-        authenticationFilter.setFilterProcessesUrl("/login");
+        authenticationFilter.setFilterProcessesUrl("/api/users/login");
         authenticationFilter.setAuthenticationFailureHandler(new FailureHandler());
         authenticationFilter.setAuthenticationManager(authenticationManager());
         return authenticationFilter;
