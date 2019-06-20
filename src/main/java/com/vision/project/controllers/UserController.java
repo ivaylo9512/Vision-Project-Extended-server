@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -42,7 +42,7 @@ public class UserController {
         return new UserDto(userDetails);
     }
 
-    @PostMapping(value = "/users/register")
+    @PostMapping(value = "/register")
     public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
         // disabling the registration
         try{
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/auth/users/adminRegistration")
+    @PostMapping(value = "/auth/adminRegistration")
     public UserDto registerAdmin(@Valid UserSpec user){
         return new UserDto(userService.register(user,"ROLE_USER"));
     }

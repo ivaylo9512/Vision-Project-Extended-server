@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/auth/order")
+@RequestMapping(value = "/api/order/auth")
 public class OrderController {
     private final OrderService orderService;
 
