@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
@@ -50,13 +51,14 @@ public class AppConfig {
         em.setPackagesToScan("com.vision.project.models");
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaProperties(additionalProperties());
         return em;
     }
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/vision-project");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/vision-project?serverTimezone=GMT%2B3&useSSL=false");
         dataSource.setUsername( "root" );
         dataSource.setPassword( "1234" );
         return dataSource;
@@ -76,4 +78,10 @@ public class AppConfig {
 
     public static final DateTimeFormatter FORMATTER = ofPattern("yyyy-MM-dd@HH:mm:ss.SSS");
 
+    Properties additionalProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLMyISAMDialect");
+
+        return properties;
+    }
 }

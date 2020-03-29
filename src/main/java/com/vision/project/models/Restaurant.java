@@ -1,10 +1,8 @@
 package com.vision.project.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,11 +20,11 @@ public class Restaurant {
     @Column(name = "type")
     private String type;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.LAZY)
     @OrderBy("name")
     private Set<Menu> menu;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.LAZY)
     @OrderBy("created")
     @Where(clause = "ready = false")
     private Set<Order> orders;

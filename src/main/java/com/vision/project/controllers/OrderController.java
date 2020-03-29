@@ -54,6 +54,7 @@ public class OrderController {
 
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
+
         return orderService.create(order, restaurantId, userId);
     }
 
@@ -72,8 +73,10 @@ public class OrderController {
 
         DeferredResult<List<OrderDto>> deferredResult = new DeferredResult<>(100000L,"Time out.");
         OrderRequest orderRequest = new OrderRequest(deferredResult, lastUpdate, id);
+
         deferredResult.onTimeout(() -> orderService.removeUserRequest(orderRequest));
         orderService.findMoreRecent(orderRequest);
+
         return deferredResult;
     }
 

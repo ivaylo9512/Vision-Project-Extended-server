@@ -15,10 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Transactional
     public UserDto login(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder
                 .getContext()
@@ -74,7 +75,7 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
 
-    @PostMapping(value = "/changeUserInfo")
+    @PostMapping(value = "auth/changeUserInfo")
     public UserDto changeUserInfo(@RequestBody UserSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

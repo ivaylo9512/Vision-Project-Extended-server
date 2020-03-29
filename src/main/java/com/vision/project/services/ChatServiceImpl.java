@@ -1,7 +1,5 @@
 package com.vision.project.services;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.vision.project.exceptions.NonExistingChat;
 import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.MessageDto;
@@ -12,18 +10,16 @@ import com.vision.project.repositories.base.ChatRepository;
 import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.SessionRepository;
 import com.vision.project.services.base.ChatService;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.time.Duration;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -46,6 +42,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional
     public List<Chat> findUserChats(int id, int pageSize) {
         List<Chat> chats = chatRepository.findUserChats(id);
         chats.forEach(chat -> chat
@@ -85,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
         int receiver = messageDto.getReceiverId();
 
         Chat chat = chatRepository.findById(messageDto.getChatId())
-                .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageDto.getChatId() + "is not found."));
+                .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageDto.getChatId() + " is not found."));
 
         int chatFirstUser = chat.getFirstUserModel().getId();
         int chatSecondUser = chat.getSecondUserModel().getId();

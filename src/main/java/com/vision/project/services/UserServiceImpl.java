@@ -1,15 +1,13 @@
 package com.vision.project.services;
 
-import com.vision.project.exceptions.PasswordsMissMatchException;
-import com.vision.project.exceptions.UserNotFoundException;
 import com.vision.project.exceptions.UsernameExistsException;
+import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.models.UserDetails;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
-import org.apache.http.auth.InvalidCredentialsException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.Hibernate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +56,18 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserModel userModel = userRepository.findByUsername(username);
         if(userModel == null){
             throw new BadCredentialsException("Bad credentials");
         }
+
+        Restaurant restaurant = userModel.getRestaurant();
+        Hibernate.initialize(restaurant.getOrders());
+        Hibernate.initialize(restaurant.getMenu());
+
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
 

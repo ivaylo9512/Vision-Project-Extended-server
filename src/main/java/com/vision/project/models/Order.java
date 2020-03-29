@@ -1,17 +1,12 @@
 package com.vision.project.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,11 +21,11 @@ public class Order{
     private Set<Dish> dishes = new HashSet<>();
 
     @CreationTimestamp
-    @Column(name = "created")
+    @Column(name = "created", columnDefinition = "DATETIME(6)")
     private LocalDateTime created;
 
     @UpdateTimestamp
-    @Column(name = "updated")
+    @Column(name = "updated", columnDefinition = "DATETIME(6)")
     private LocalDateTime updated;
 
     @Column(name = "ready")
@@ -48,7 +43,11 @@ public class Order{
 
     public Order() {
     }
-
+    public Order(Order order) {
+        this.restaurant = order.getRestaurant();
+        this.user = order.getUser();
+        this.created = order.getCreated();
+    }
     public Order(int id, Set<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;

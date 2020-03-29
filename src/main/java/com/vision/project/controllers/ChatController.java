@@ -3,7 +3,6 @@ package com.vision.project.controllers;
 import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
-import com.vision.project.models.Message;
 import com.vision.project.models.Session;
 import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.ChatService;
@@ -12,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ public class ChatController {
     }
 
     @GetMapping(value = "/getChats")
+    @Transactional
     public List<ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
 
         UserDetails userDetails = (UserDetails)SecurityContextHolder
@@ -54,8 +55,10 @@ public class ChatController {
     public DeferredResult<List<MessageDto>> chatUpdates(@RequestBody LocalDateTime lastMessageCheck){
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
+
         DeferredResult<List<MessageDto>> deferredResult = new DeferredResult<>(100000L,"Time out.");
         chatService.getNewMessages(userId, lastMessageCheck, deferredResult);
+
         deferredResult.onCompletion(() -> chatService.removeUserRequest(userId, deferredResult));
         deferredResult.onTimeout(() -> chatService.removeUserRequest(userId, deferredResult));
 

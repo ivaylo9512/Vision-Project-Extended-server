@@ -5,7 +5,6 @@ import com.vision.project.models.*;
 import com.vision.project.models.DTOs.OrderDto;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
         order.setRestaurant(restaurant);
 
         order.setUser(userRepository.getOne(userId));
-        order = orderRepository.save(order);
+        order = orderRepository.save(new Order(order));
         orders.add(new OrderDto(order));
 
         updateUserRequests();
@@ -85,13 +84,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void findMoreRecent(OrderRequest orderRequest) {
+        System.out.println(orderRequest.getLastPolledOrderDate() + "date");
+        System.out.println(mostRecentDates.get(orderRequest.getRestaurantId()));
         if (orderRequest.getLastPolledOrderDate().isBefore(mostRecentDates.get(orderRequest.getRestaurantId()))) {
             Restaurant restaurant = restaurantRepository.getOne(orderRequest.getRestaurantId());
-            orderRequest.getDeferredResult().setResult(orderRepository
+            List<OrderDto> ordersOld = orderRepository
                     .findMoreRecent(orderRequest.getLastPolledOrderDate(), restaurant)
                     .stream()
                     .map(OrderDto::new)
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            orderRequest.getDeferredResult().setResult(ordersOld);
+            ordersOld.forEach(orderDto -> System.out.println(orderDto.getCreated() + "old"));
             return;
         }
 
@@ -151,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
 
             Optional<LocalDateTime> updated = Optional.ofNullable(order.getUpdated());
             LocalDateTime date = (updated.isPresent() && updated.get().isAfter(order.getCreated())
-                    ? updated.get().withNano(0) : order.getCreated().withNano(0));
+                    ? updated.get() : order.getCreated());
             mostRecentDates.replace(order.getRestaurantId(), date);
 
         });
