@@ -1,6 +1,7 @@
 package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
@@ -25,6 +26,7 @@ public class Dish{
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean ready = false;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -37,6 +39,10 @@ public class Dish{
     @Column(name = "updated", columnDefinition = "DATETIME(6)")
     private LocalDateTime updated;
 
+    @JsonInclude()
+    @Transient
+    private int orderId;
+
     public Dish() {
     }
 
@@ -46,8 +52,9 @@ public class Dish{
         this.order = order;
     }
 
-    public Dish(int id, Order order) {
+    public Dish(int id, LocalDateTime updated, Order order) {
         this.id = id;
+        this.updated = updated;
         this.order = order;
     }
 
@@ -75,6 +82,10 @@ public class Dish{
         this.ready = ready;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -93,5 +104,13 @@ public class Dish{
 
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
+    }
+
+    public int getOrderId() {
+        return order.getId();
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }

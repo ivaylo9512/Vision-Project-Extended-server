@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
             new Thread(this::updateUserRequests).run();
         }
 
-        return new Dish(dishId, order);
+        return new Dish(dishId, order.getUpdated(), order);
     }
 
     @Override
