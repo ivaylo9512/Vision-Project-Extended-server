@@ -59,7 +59,7 @@ public class OrderController {
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")
-    public Order update(@PathVariable(name = "orderId") int orderId,
+    public Dish update(@PathVariable(name = "orderId") int orderId,
                         @PathVariable(name = "dishId")  int dishId){
         return orderService.update(orderId, dishId);
     }

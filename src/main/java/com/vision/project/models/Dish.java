@@ -2,10 +2,14 @@ package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "dishes")
@@ -25,12 +29,25 @@ public class Dish{
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @CreationTimestamp
+    @Column(name = "created", columnDefinition = "DATETIME(6)")
+    private LocalDateTime created;
+
+    @UpdateTimestamp
+    @Column(name = "updated", columnDefinition = "DATETIME(6)")
+    private LocalDateTime updated;
+
     public Dish() {
     }
 
     public Dish(String name, Boolean ready, Order order) {
         this.name = name;
         this.ready = ready;
+        this.order = order;
+    }
+
+    public Dish(int id, Order order) {
+        this.id = id;
         this.order = order;
     }
 
@@ -60,5 +77,21 @@ public class Dish{
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
     }
 }

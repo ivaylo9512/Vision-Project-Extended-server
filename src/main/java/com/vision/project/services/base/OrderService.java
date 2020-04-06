@@ -1,5 +1,6 @@
 package com.vision.project.services.base;
 
+import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.OrderRequest;
 import com.vision.project.models.UserDetails;
@@ -21,7 +22,7 @@ public interface OrderService {
 
     Order create(Order order, int restaurantId, int userId);
 
-    Order update(int orderId, int dishId);
+    Dish update(int orderId, int dishId);
 
     void findMoreRecent(OrderRequest request);
 

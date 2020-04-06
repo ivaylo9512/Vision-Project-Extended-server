@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
         order.setRestaurant(restaurant);
 
         order.setUser(userRepository.getOne(userId));
-        order = orderRepository.save(new Order(order));
+        order = orderRepository.save(order);
         orders.add(new OrderDto(order));
 
         updateUserRequests();
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order update(int orderId, int dishId) {
+    public Dish update(int orderId, int dishId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
 
@@ -77,9 +77,10 @@ public class OrderServiceImpl implements OrderService {
         if(updated) {
             order = orderRepository.save(order);
             orders.add(new OrderDto(order));
-            updateUserRequests();
+            new Thread(this::updateUserRequests).run();
         }
-        return order;
+
+        return new Dish(dishId, order);
     }
 
     @Override
