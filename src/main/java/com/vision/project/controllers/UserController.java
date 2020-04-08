@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,10 +70,19 @@ public class UserController {
         return new UserDto(userService.register(user,"ROLE_USER"));
     }
 
-
-    @GetMapping(value = "/findById/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping(value = "/auth/findById/{id}")
     public UserDto findById(@PathVariable(name = "id") int id){
         return new UserDto(userService.findById(id));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('USER')")
+    @GetMapping(value = "/auth/getLoggedUser")
+    public UserDto getLoggedUser(){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new UserDto(userService.findById(loggedUser.getId()));
     }
 
     @PostMapping(value = "auth/changeUserInfo")
