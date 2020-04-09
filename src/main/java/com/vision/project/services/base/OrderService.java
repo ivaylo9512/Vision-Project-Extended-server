@@ -3,9 +3,11 @@ package com.vision.project.services.base;
 import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.OrderRequest;
+import com.vision.project.models.Restaurant;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface OrderService {
 
@@ -13,7 +15,7 @@ public interface OrderService {
 
     Order findById(int id);
 
-    List<Order> findAllNotReady();
+    List<Order> findAllNotReady(Restaurant restaurant);
 
     List<Order> findAll();
 

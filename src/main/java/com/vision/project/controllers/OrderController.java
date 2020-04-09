@@ -18,6 +18,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/api/order/auth")
@@ -34,8 +35,8 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findAllNotReady")
-    public List<Order> findNotReady(){
-        return orderService.findAllNotReady();
+    public List<Order> findNotReady(Restaurant restaurant){
+        return orderService.findAllNotReady(restaurant);
     }
 
     @GetMapping(value = "/findById/{id}")
@@ -47,6 +48,7 @@ public class OrderController {
     public LocalDateTime getMostRecentDate(@PathVariable(name = "restaurantId") int id){
         return orderService.getMostRecentDate(id);
     }
+
     @PostMapping(value = "/create")
     public Order create(@RequestBody Order order) throws ExpiredJwtException{
         UserDetails loggedUser = (UserDetails)SecurityContextHolder

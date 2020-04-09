@@ -3,6 +3,7 @@ package com.vision.project.models;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,7 +28,7 @@ public class Restaurant {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.LAZY)
     @OrderBy("created")
     @Where(clause = "ready = false")
-    private Set<Order> orders;
+    private List<Order> orders;
 
     public Restaurant() {
     }
@@ -80,11 +81,11 @@ public class Restaurant {
         this.menu = menu;
     }
 
-    public Set<Order> getOrders() {
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<Order> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 }

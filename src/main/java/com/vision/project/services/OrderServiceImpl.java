@@ -196,8 +196,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllNotReady() {
-        return orderRepository.findByReadyFalse();
+    public List<Order> findAllNotReady(Restaurant restaurant) {
+        return orderRepository.findByReadyFalse(restaurant);
     }
 
     @Override

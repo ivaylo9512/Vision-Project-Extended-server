@@ -5,16 +5,17 @@ import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.DTOs.UserDto;
+import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
+import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,18 +30,22 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     @PostMapping("/login")
     @Transactional
     public UserDto login(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        Restaurant restaurant = userDetails.getRestaurant();
+        restaurant.setOrders(orderService.findAllNotReady(restaurant));
+
         return new UserDto(userDetails);
     }
 
@@ -76,13 +81,16 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('USER')")
     @GetMapping(value = "/auth/getLoggedUser")
     public UserDto getLoggedUser(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return new UserDto(userService.findById(loggedUser.getId()));
+        UserModel user = userService.findById(loggedUser.getId());
+        Restaurant restaurant = user.getRestaurant();
+        restaurant.setOrders(orderService.findAllNotReady(restaurant));
+
+        return new UserDto(user, restaurant);
     }
 
     @PostMapping(value = "auth/changeUserInfo")

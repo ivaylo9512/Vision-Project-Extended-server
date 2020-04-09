@@ -14,7 +14,7 @@ public class UserDto {
     private String country;
     private String role;
     private String profilePicture;
-    private Restaurant restaurant;
+    private RestaurantDto restaurant;
 
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
@@ -25,10 +25,13 @@ public class UserDto {
         this.age = userDetails.getAge();
         this.country = userDetails.getCountry();
         this.profilePicture = userDetails.getProfilePicture();
-        this.restaurant = userDetails.getRestaurant();
+        this.restaurant = new RestaurantDto(userDetails.getRestaurant());
         this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
     }
-
+    public UserDto(UserModel userModel, Restaurant restaurant){
+        this(userModel);
+        this.restaurant = new RestaurantDto(restaurant);
+    }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
         this.username = userModel.getUsername();
@@ -104,11 +107,11 @@ public class UserDto {
         this.profilePicture = profilePicture;
     }
 
-    public Restaurant getRestaurant() {
+    public RestaurantDto getRestaurant() {
         return restaurant;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
+    public void RestaurantDto(RestaurantDto restaurant) {
         this.restaurant = restaurant;
     }
 }
