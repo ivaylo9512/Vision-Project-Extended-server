@@ -60,17 +60,21 @@ public class OrderServiceImpl implements OrderService {
 
         List<Dish> notReady = new ArrayList<>();
         boolean updated = false;
+
+        Dish updatedDish = null;
         for (Dish orderDish: order.getDishes()) {
-            if(orderDish.getId() == dishId && !orderDish.getReady()){
-                orderDish.setReady(true);
-                order.setUpdated(LocalDateTime.now());
-                updated = true;
+            if(orderDish.getId() == dishId ){
+                if(!orderDish.getReady()) {
+                    orderDish.setReady(true);
+                    order.setUpdated(LocalDateTime.now());
+                    updated = true;
+                }
+                updatedDish = orderDish;
             }
             if(!orderDish.getReady()){
                 notReady.add(orderDish);
             }
         }
-
         if(notReady.size() == 0){
             order.setReady(true);
         }
@@ -80,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
             new Thread(this::updateUserRequests).run();
         }
 
-        return new Dish(dishId, order.getUpdated(), order);
+        return updatedDish;
     }
 
     @Override

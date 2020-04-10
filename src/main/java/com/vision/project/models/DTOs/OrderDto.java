@@ -3,18 +3,14 @@ package com.vision.project.models.DTOs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class OrderDto {
     private int id;
     private int userId;
-    private Set<Dish> dishes = new HashSet<>();
+    private List<Dish> dishes;
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean ready;
@@ -51,11 +47,11 @@ public class OrderDto {
         this.userId = userId;
     }
 
-    public Set<Dish> getDishes() {
+    public List<Dish> getDishes() {
         return dishes;
     }
 
-    public void setDishes(Set<Dish> dishes) {
+    public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
     }
 

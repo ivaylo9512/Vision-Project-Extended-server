@@ -2,12 +2,12 @@ package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -18,7 +18,7 @@ public class Order{
     private int id;
 
     @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER)
-    private Set<Dish> dishes = new HashSet<>();
+    private List<Dish> dishes;
 
     @CreationTimestamp
     @Column(name = "created", columnDefinition = "DATETIME(6)")
@@ -29,7 +29,8 @@ public class Order{
     private LocalDateTime updated;
 
     @Column(name = "ready")
-    private boolean ready = false;
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean ready;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -48,7 +49,7 @@ public class Order{
         this.user = order.getUser();
         this.created = order.getCreated();
     }
-    public Order(int id, Set<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
+    public Order(int id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;
         this.created = created;
@@ -65,11 +66,11 @@ public class Order{
     }
 
 
-    public Set<Dish> getDishes() {
+    public List<Dish> getDishes() {
         return dishes;
     }
 
-    public void setDishes(Set<Dish> dishes) {
+    public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
     }
 

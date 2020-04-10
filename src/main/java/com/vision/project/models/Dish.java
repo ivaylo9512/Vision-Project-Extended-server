@@ -2,14 +2,11 @@ package com.vision.project.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +21,7 @@ public class Dish{
 
     @Column(name = "ready")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private Boolean ready = false;
+    private boolean ready;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -52,10 +49,9 @@ public class Dish{
         this.order = order;
     }
 
-    public Dish(int id, LocalDateTime updated, Order order) {
+    public Dish(int id , int orderId) {
         this.id = id;
-        this.updated = updated;
-        this.order = order;
+        this.orderId = orderId;
     }
 
     public int getId() {
