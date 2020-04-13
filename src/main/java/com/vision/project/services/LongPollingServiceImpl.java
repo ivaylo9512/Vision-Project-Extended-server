@@ -2,11 +2,8 @@ package com.vision.project.services;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.models.Message;
-import com.vision.project.models.Order;
-import com.vision.project.models.Restaurant;
-import com.vision.project.models.UserRequest;
 import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.OrderRepository;
 import com.vision.project.repositories.base.RestaurantRepository;
@@ -14,13 +11,16 @@ import com.vision.project.services.base.LongPollingService;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Integer, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
-    private Cache<Integer, UserRequest> restaurants = CacheBuilder.newBuilder()
+    Cache<Integer, Cache<UserRequest, UserRequest>> restaurants = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
 
     private final OrderRepository orderRepository;
@@ -87,6 +87,32 @@ public class LongPollingServiceImpl implements LongPollingService {
     public void addRequest(UserRequest request){
         int userId = request.getUserId();
         userRequests.put(userId, request);
-        userRequests.put(userId, request);
+
+        Cache<UserRequest, UserRequest> userRequests = restaurants.getIfPresent(request.getRestaurantId());
+        if(userRequests == null){
+            userRequests = CacheBuilder.newBuilder()
+                    .expireAfterWrite(15, TimeUnit.MINUTES).build();
+            restaurants.put(request.getRestaurantId(), userRequests);
+        }
+        userRequests.put(request, request);
+    }
+
+    public void checkRestaurants(Object obj, int restaurantId){
+        Cache<UserRequest, UserRequest> userRequests = restaurants.getIfPresent(restaurantId);
+
+        if(userRequests != null){
+            for (UserRequest userRequest : userRequests.asMap().keySet()) {
+                try {
+                    userRequest.getLock().lock();
+                    if(obj.getClass() == Order.class){
+                        userRequest.getOrders().add((Order)obj);
+                    }else {
+                        userRequest.getDishes().add((Dish) obj);
+                    }
+                }finally {
+                    userRequest.getLock().unlock();
+                }
+            }
+        }
     }
 }
