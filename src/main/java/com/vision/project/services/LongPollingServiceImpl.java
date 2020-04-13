@@ -15,13 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Integer, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
-    Cache<Integer, Cache<UserRequest, UserRequest>> restaurants = CacheBuilder.newBuilder()
-            .expireAfterWrite(15, TimeUnit.MINUTES).build();
+    Map<Integer, Cache<UserRequest, UserRequest>> restaurants = new HashMap<>();
 
     private final OrderRepository orderRepository;
     private final MessageRepository messageRepository;
@@ -58,8 +56,11 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         if (currentRequest.getDishes().size() > 0 || currentRequest.getMessages().size() > 0 || currentRequest.getOrders().size() > 0) {
 
+            currentRequest.setLastCheck(LocalDateTime.now());
             waitingResult.setResult(new UserRequestDto(currentRequest));
             waitingResult = null;
+
+            currentRequest.clearData();
         }
         currentRequest.setRequest(waitingResult);
     }
@@ -88,7 +89,7 @@ public class LongPollingServiceImpl implements LongPollingService {
         int userId = request.getUserId();
         userRequests.put(userId, request);
 
-        Cache<UserRequest, UserRequest> userRequests = restaurants.getIfPresent(request.getRestaurantId());
+        Cache<UserRequest, UserRequest> userRequests = restaurants.get(request.getRestaurantId());
         if(userRequests == null){
             userRequests = CacheBuilder.newBuilder()
                     .expireAfterWrite(15, TimeUnit.MINUTES).build();
@@ -98,7 +99,7 @@ public class LongPollingServiceImpl implements LongPollingService {
     }
 
     public void checkRestaurants(Object obj, int restaurantId){
-        Cache<UserRequest, UserRequest> userRequests = restaurants.getIfPresent(restaurantId);
+        Cache<UserRequest, UserRequest> userRequests = restaurants.get(restaurantId);
 
         if(userRequests != null){
             for (UserRequest userRequest : userRequests.asMap().keySet()) {
@@ -109,6 +110,11 @@ public class LongPollingServiceImpl implements LongPollingService {
                     }else {
                         userRequest.getDishes().add((Dish) obj);
                     }
+                    userRequest.setLastCheck(LocalDateTime.now());
+                    userRequest.getRequest().setResult(new UserRequestDto(userRequest));
+                    userRequest.setRequest(null);
+
+                    userRequest.clearData();
                 }finally {
                     userRequest.getLock().unlock();
                 }
