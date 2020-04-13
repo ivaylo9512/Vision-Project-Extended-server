@@ -31,38 +31,39 @@ public class LongPollingServiceImpl implements LongPollingService {
         this.restaurantRepository = restaurantRepository;
     }
 
-    public void checkRequest(UserRequest newRequest){
+    public void setAndAddRequest(UserRequest newRequest){
         int userId = newRequest.getUserId();
 
         UserRequest currentRequest = userRequests.getIfPresent(userId);
-        DeferredResult<UserRequestDto> waitingResult = newRequest.getRequest();
         if(currentRequest == null){
-            getMoreRecent(newRequest);
+            setMoreRecentData(newRequest);
+            addRequest(newRequest);
         }else {
             try {
-                getDataFromRequest(currentRequest);
+                currentRequest.getLock().lock();
+                currentRequest.setRequest(newRequest.getRequest());
+
+                setDataFromRequest(currentRequest);
+                addRequest(currentRequest);
             }finally {
                 currentRequest.getLock().unlock();
             }
         }
     }
 
-    private void getDataFromRequest(UserRequest currentRequest) {
-        DeferredResult<UserRequestDto> waitingResult = newRequest.getRequest();
+    private void setDataFromRequest(UserRequest currentRequest) {
+        DeferredResult<UserRequestDto> waitingResult = currentRequest.getRequest();
         int userId = currentRequest.getUserId();
 
-        currentRequest.getLock().lock();
         if (currentRequest.getDishes().size() > 0 || currentRequest.getMessages().size() > 0 || currentRequest.getOrders().size() > 0) {
 
             waitingResult.setResult(new UserRequestDto(currentRequest));
             waitingResult = null;
         }
         currentRequest.setRequest(waitingResult);
-        userRequests.put(userId, currentRequest);
-        restaurants.put(userId, currentRequest);
     }
 
-    private void getMoreRecent(UserRequest newRequest) {
+    private void setMoreRecentData(UserRequest newRequest) {
         DeferredResult<UserRequestDto> waitingResult = newRequest.getRequest();
         int userId = newRequest.getUserId();
         LocalDateTime lastCheck = newRequest.getLastCheck();
@@ -79,7 +80,11 @@ public class LongPollingServiceImpl implements LongPollingService {
             waitingResult = null;
         }
         newRequest.setRequest(waitingResult);
-        userRequests.put(userId, newRequest);
-        userRequests.put(userId, newRequest);
+    }
+
+    public void addRequest(UserRequest request){
+        int userId = request.getUserId();
+        userRequests.put(userId, request);
+        userRequests.put(userId, request);
     }
 }
