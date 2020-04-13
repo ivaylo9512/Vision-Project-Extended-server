@@ -17,7 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query(value = "from Order where ready = false and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findByReadyFalse(@Param("restaurant")Restaurant restaurant);
 
-    @Query(value="from Order where CASE WHEN created > updated THEN created ELSE updated END > :date and restaurant = :restaurant")
+    @Query(value="from Order where CASE WHEN created > updated THEN created ELSE updated END > :date and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findMoreRecent(@Param("date") LocalDateTime date, @Param("restaurant") Restaurant restaurant);
 
     @Query(value = "from Order where restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
