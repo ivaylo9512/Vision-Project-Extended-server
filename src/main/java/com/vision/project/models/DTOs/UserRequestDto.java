@@ -1,6 +1,9 @@
-package com.vision.project.models;
+package com.vision.project.models.DTOs;
 
-import com.vision.project.models.DTOs.UserRequestDto;
+import com.vision.project.models.Dish;
+import com.vision.project.models.Message;
+import com.vision.project.models.Order;
+import com.vision.project.models.UserRequest;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
@@ -8,24 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class UserRequest {
+public class UserRequestDto {
     private List<Order> orders = new ArrayList<>();
     private List<Message> messages = new ArrayList<>();
     private List<Dish> dishes = new ArrayList<>();
-    private DeferredResult<UserRequestDto> request = new DeferredResult<>();
-    private ReentrantLock lock = new ReentrantLock();
     private int userId;
     private int restaurantId;
     private LocalDateTime lastCheck;
 
-    public UserRequest(){
-
+    public UserRequestDto(UserRequest currentRequest){
+        this.orders = currentRequest.getOrders();
+        this.messages = currentRequest.getMessages();
+        this.dishes = currentRequest.getDishes();
+        this.userId = currentRequest.getUserId();
+        this.restaurantId = currentRequest.getRestaurantId();
+        this.lastCheck = currentRequest.getLastCheck();
     }
-
-    public UserRequest(DeferredResult request){
-        this.request = request;
-    }
-
 
     public List<Order> getOrders() {
         return orders;
@@ -49,18 +50,6 @@ public class UserRequest {
 
     public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
-    }
-
-    public DeferredResult<UserRequestDto> getRequest() {
-        return request;
-    }
-
-    public void setRequest(DeferredResult<UserRequestDto> request) {
-        this.request = request;
-    }
-
-    public ReentrantLock getLock() {
-        return lock;
     }
 
     public int getUserId() {

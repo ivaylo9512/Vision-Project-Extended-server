@@ -2,6 +2,7 @@ package com.vision.project.services;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
@@ -10,6 +11,7 @@ import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.OrderRepository;
 import com.vision.project.repositories.base.RestaurantRepository;
 import com.vision.project.services.base.LongPollingService;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,7 +55,6 @@ public class LongPollingServiceImpl implements LongPollingService {
 
     private void setDataFromRequest(UserRequest currentRequest) {
         DeferredResult<UserRequestDto> waitingResult = currentRequest.getRequest();
-        int userId = currentRequest.getUserId();
 
         if (currentRequest.getDishes().size() > 0 || currentRequest.getMessages().size() > 0 || currentRequest.getOrders().size() > 0) {
 
@@ -71,6 +72,7 @@ public class LongPollingServiceImpl implements LongPollingService {
         Restaurant restaurant = restaurantRepository.getOne(newRequest.getRestaurantId());
         List<Order> newOrders = orderRepository.findMoreRecent(lastCheck, restaurant);
         List<Message> newMessages = messageRepository.findMostRecentMessages(userId, lastCheck.toLocalDate(), lastCheck.toLocalTime());
+        newRequest.setLastCheck(LocalDateTime.now());
 
         if(newMessages.size() > 0 || newOrders.size() > 0) {
             newRequest.setMessages(newMessages);
