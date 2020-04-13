@@ -60,7 +60,7 @@ public class LongPollingServiceImpl implements LongPollingService {
             waitingResult.setResult(new UserRequestDto(currentRequest));
             waitingResult = null;
 
-            currentRequest.clearData();
+            clearData(currentRequest);
         }
         currentRequest.setRequest(waitingResult);
     }
@@ -114,11 +114,29 @@ public class LongPollingServiceImpl implements LongPollingService {
                     userRequest.getRequest().setResult(new UserRequestDto(userRequest));
                     userRequest.setRequest(null);
 
-                    userRequest.clearData();
+                    clearData(userRequest);
                 }finally {
                     userRequest.getLock().unlock();
                 }
             }
         }
+    }
+
+    public void checkMessages(Message message){
+        UserRequest userRequest = userRequests.getIfPresent(message.getReceiverId());
+        if(userRequest != null){
+            userRequest.getMessages().add(message);
+            userRequest.setLastCheck(LocalDateTime.now());
+            userRequest.getRequest().setResult(new UserRequestDto(userRequest));
+            userRequest.setRequest(null);
+
+            clearData(userRequest);
+        }
+    }
+
+    public void clearData(UserRequest userRequest){
+        userRequest.getOrders().clear();
+        userRequest.getDishes().clear();
+        userRequest.getMessages().clear();
     }
 }

@@ -86,10 +86,4 @@ public class UserRequest {
     public void setLastCheck(LocalDateTime lastCheck) {
         this.lastCheck = lastCheck;
     }
-
-    public void clearData(){
-        orders.clear();
-        messages.clear();
-        dishes.clear();
-    }
 }
