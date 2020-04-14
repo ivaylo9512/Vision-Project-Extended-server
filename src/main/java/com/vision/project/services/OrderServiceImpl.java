@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Dish update(int orderId, int dishId) {
+    public Dish update(int orderId, int dishId, int userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
 
@@ -54,8 +54,8 @@ public class OrderServiceImpl implements OrderService {
         for (Dish orderDish: order.getDishes()) {
             if(orderDish.getId() == dishId ){
                 if(!orderDish.getReady()) {
+                    orderDish.setUpdatedBy(userRepository.getOne(userId));
                     orderDish.setReady(true);
-                    order.setUpdated(LocalDateTime.now());
                     updated = true;
                 }
                 updatedDish = orderDish;
@@ -68,9 +68,10 @@ public class OrderServiceImpl implements OrderService {
             order.setReady(true);
         }
         if(updated) {
-            orderRepository.save(order);
+            order = orderRepository.save(order);
         }
 
+        updatedDish.setUpdated(order.getUpdated());
         return updatedDish;
     }
 

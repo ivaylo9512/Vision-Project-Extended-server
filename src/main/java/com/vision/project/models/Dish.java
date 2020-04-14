@@ -36,6 +36,10 @@ public class Dish{
     @Column(name = "updated", columnDefinition = "DATETIME(6)")
     private LocalDateTime updated;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "updated_by")
+    private UserModel updatedBy;
+
     @JsonInclude()
     @Transient
     private int orderId;
@@ -108,5 +112,13 @@ public class Dish{
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public UserModel getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(UserModel updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }

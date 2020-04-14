@@ -63,8 +63,10 @@ public class OrderController {
     @PatchMapping(value = "/update/{orderId}/{dishId}")
     public Dish update(@PathVariable(name = "orderId") int orderId,
                           @PathVariable(name = "dishId")  int dishId){
+        UserDetails loggedUser = (UserDetails)SecurityContextHolder
+                .getContext().getAuthentication().getDetails();
 
-        return orderService.update(orderId, dishId);
+        return orderService.update(orderId, dishId, loggedUser.getId());
     }
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)

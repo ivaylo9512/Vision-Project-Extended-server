@@ -15,5 +15,5 @@ public interface OrderService {
 
     Order create(Order order, int restaurantId, int userId);
 
-    Dish update(int orderId, int dishId);
+    Dish update(int orderId, int dishId, int userId);
 }
