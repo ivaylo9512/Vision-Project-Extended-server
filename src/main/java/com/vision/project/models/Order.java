@@ -32,12 +32,10 @@ public class Order{
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean ready;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="restaurant")
     private Restaurant restaurant;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="created_by")
     private UserModel user;

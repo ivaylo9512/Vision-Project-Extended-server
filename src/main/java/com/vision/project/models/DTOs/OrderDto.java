@@ -14,8 +14,6 @@ public class OrderDto {
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean ready;
-
-    @JsonIgnore
     private int restaurantId;
 
     public OrderDto() {

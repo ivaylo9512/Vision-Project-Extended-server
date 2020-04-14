@@ -22,7 +22,8 @@ public class RestaurantDto {
         this.address = restaurant.getAddress();
         this.type = restaurant.getType();
         this.menu = restaurant.getMenu();
-        this.orders = restaurant.getOrders().stream().map(OrderDto::new).collect(Collectors.toList());
+        this.orders = restaurant.getOrders().stream()
+                .map(OrderDto::new).collect(Collectors.toList());
     }
 
     public int getId() {

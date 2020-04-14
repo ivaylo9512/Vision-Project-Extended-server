@@ -2,6 +2,8 @@ package com.vision.project.controllers;
 
 import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
+import com.vision.project.models.DTOs.DishDto;
+import com.vision.project.models.DTOs.OrderDto;
 import com.vision.project.services.base.OrderService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/order/auth")
@@ -21,38 +24,38 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findAll")
-    public List<Order> findAllNotes(){
-        return orderService.findAll();
+    public List<OrderDto> findAllNotes(){
+        return orderService.findAll().stream().map(OrderDto::new).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/findAllNotReady")
-    public List<Order> findNotReady(Restaurant restaurant){
-        return orderService.findAllNotReady(restaurant);
+    public List<OrderDto> findNotReady(Restaurant restaurant){
+        return orderService.findAllNotReady(restaurant).stream().map(OrderDto::new).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/findById/{id}")
-    public Order order(@PathVariable(name = "id") int id) throws IOException {
-        return orderService.findById(id);
+    public OrderDto order(@PathVariable(name = "id") int id) throws IOException {
+        return new OrderDto(orderService.findById(id));
     }
 
     @PostMapping(value = "/create")
-    public Order create(@RequestBody Order order) throws ExpiredJwtException{
+    public OrderDto create(@RequestBody Order order) throws ExpiredJwtException{
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
 
-        return orderService.create(order, restaurantId, userId);
+        return new OrderDto(orderService.create(order, restaurantId, userId));
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")
-    public Dish update(@PathVariable(name = "orderId") int orderId,
+    public DishDto update(@PathVariable(name = "orderId") int orderId,
                           @PathVariable(name = "dishId")  int dishId){
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        return orderService.update(orderId, dishId, loggedUser.getId());
+        return new DishDto(orderService.update(orderId, dishId, loggedUser.getId()));
     }
 
 

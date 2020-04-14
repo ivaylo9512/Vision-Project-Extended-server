@@ -23,7 +23,6 @@ public class Dish{
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean ready;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -40,10 +39,6 @@ public class Dish{
     @JoinColumn(name = "updated_by")
     private UserModel updatedBy;
 
-    @JsonInclude()
-    @Transient
-    private int orderId;
-
     public Dish() {
     }
 
@@ -51,11 +46,6 @@ public class Dish{
         this.name = name;
         this.ready = ready;
         this.order = order;
-    }
-
-    public Dish(int id , int orderId) {
-        this.id = id;
-        this.orderId = orderId;
     }
 
     public int getId() {
@@ -104,14 +94,6 @@ public class Dish{
 
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
-    }
-
-    public int getOrderId() {
-        return order.getId();
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
     }
 
     public UserModel getUpdatedBy() {
