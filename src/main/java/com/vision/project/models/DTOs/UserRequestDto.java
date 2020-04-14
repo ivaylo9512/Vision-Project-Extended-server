@@ -8,45 +8,46 @@ import com.vision.project.models.UserRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserRequestDto {
-    private Map<Integer, Order> orders;
-    private List<Message> messages;
-    private List<Dish> dishes;
+    private List<OrderDto> orders;
+    private List<MessageDto> messages;
+    private List<DishDto> dishes;
     private int userId;
     private int restaurantId;
     private LocalDateTime lastCheck;
 
     public UserRequestDto(UserRequest currentRequest){
-        this.orders = currentRequest.getOrders();
-        this.messages = currentRequest.getMessages();
-        this.dishes = currentRequest.getDishes();
+        this.orders = currentRequest.getOrders().stream().map(OrderDto::new).collect(Collectors.toList());
+        this.messages = currentRequest.getMessages().stream().map(MessageDto::new).collect(Collectors.toList());
+        this.dishes = currentRequest.getDishes().stream().map(DishDto::new).collect(Collectors.toList());
         this.userId = currentRequest.getUserId();
         this.restaurantId = currentRequest.getRestaurantId();
         this.lastCheck = currentRequest.getLastCheck();
     }
 
-    public Map<Integer, Order> getOrders() {
+    public List<OrderDto> getOrders() {
         return orders;
     }
 
-    public void setOrders(Map<Integer, Order> orders) {
+    public void setOrders(List<OrderDto> orders) {
         this.orders = orders;
     }
 
-    public List<Message> getMessages() {
+    public List<MessageDto> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<MessageDto> messages) {
         this.messages = messages;
     }
 
-    public List<Dish> getDishes() {
+    public List<DishDto> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<Dish> dishes) {
+    public void setDishes(List<DishDto> dishes) {
         this.dishes = dishes;
     }
 

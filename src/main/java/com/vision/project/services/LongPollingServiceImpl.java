@@ -3,10 +3,12 @@ package com.vision.project.services;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
+import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
@@ -74,7 +76,7 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         if(newMessages.size() > 0 || newOrders.size() > 0) {
             newRequest.setMessages(newMessages);
-            newRequest.setOrders(newOrders.stream().collect(Collectors.toMap(Order::getId, order -> order)));
+            newRequest.setOrders(newOrders);
 
             waitingResult.setResult(new UserRequestDto(newRequest));
             waitingResult = null;
@@ -95,6 +97,22 @@ public class LongPollingServiceImpl implements LongPollingService {
         userRequests.put(request, request);
     }
 
+    public Dish addDish(int orderId, int dishId, int userId, int restaurantId){
+        Dish dish = orderService.update(orderId, dishId, userId);
+
+        new Thread(() -> checkRestaurants(dish, restaurantId)).start();
+
+        return dish;
+    }
+
+    public Order addOrder(Order order, int restaurantId, int userId){
+        Order updatedOrder = orderService.create(order, restaurantId, userId);
+
+        new Thread(() -> checkRestaurants(updatedOrder, restaurantId)).start();
+
+        return updatedOrder;
+    }
+
     public void checkRestaurants(Object obj, int restaurantId){
         Cache<UserRequest, UserRequest> userRequests = restaurants.get(restaurantId);
 
@@ -105,7 +123,7 @@ public class LongPollingServiceImpl implements LongPollingService {
                     if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
                         if (obj.getClass() == Order.class) {
                             Order order = (Order) obj;
-                            userRequest.getOrders().put(order.getId(), order);
+                            userRequest.getOrders().add(order);
                         } else {
                             userRequest.getDishes().add((Dish) obj);
                         }
