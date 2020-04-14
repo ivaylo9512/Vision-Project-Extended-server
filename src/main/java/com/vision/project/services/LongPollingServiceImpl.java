@@ -4,10 +4,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.repositories.base.MessageRepository;
-import com.vision.project.repositories.base.OrderRepository;
-import com.vision.project.repositories.base.RestaurantRepository;
+import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
+import com.vision.project.services.base.OrderService;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
@@ -22,14 +21,12 @@ public class LongPollingServiceImpl implements LongPollingService {
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
     Map<Integer, Cache<UserRequest, UserRequest>> restaurants = new HashMap<>();
 
-    private final OrderRepository orderRepository;
-    private final MessageRepository messageRepository;
-    private final RestaurantRepository restaurantRepository;
+    private final OrderService orderService;
+    private final ChatService chatService;
 
-    public LongPollingServiceImpl(OrderRepository orderRepository, MessageRepository messagesRepository, RestaurantRepository restaurantRepository) {
-        this.orderRepository = orderRepository;
-        this.messageRepository = messagesRepository;
-        this.restaurantRepository = restaurantRepository;
+    public LongPollingServiceImpl(OrderService orderService, ChatService chatService ) {
+        this.orderService = orderService;
+        this.chatService = chatService;
     }
 
     public void setAndAddRequest(UserRequest newRequest){
@@ -71,9 +68,8 @@ public class LongPollingServiceImpl implements LongPollingService {
         int userId = newRequest.getUserId();
         LocalDateTime lastCheck = newRequest.getLastCheck();
 
-        Restaurant restaurant = restaurantRepository.getOne(newRequest.getRestaurantId());
-        List<Order> newOrders = orderRepository.findMoreRecent(lastCheck, restaurant);
-        List<Message> newMessages = messageRepository.findMostRecentMessages(userId, lastCheck.toLocalDate(), lastCheck.toLocalTime());
+        List<Order> newOrders = orderService.findMoreRecent(lastCheck, newRequest.getRestaurantId());
+        List<Message> newMessages = chatService.findMoreRecentMessages(userId, lastCheck);
         newRequest.setLastCheck(LocalDateTime.now());
 
         if(newMessages.size() > 0 || newOrders.size() > 0) {

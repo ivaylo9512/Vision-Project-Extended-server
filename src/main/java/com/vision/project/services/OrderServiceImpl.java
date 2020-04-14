@@ -88,6 +88,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findMoreRecent(LocalDateTime lastCheck, int restaurantId) {
+        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
+        return orderRepository.findMoreRecent(lastCheck, restaurant);
+    }
+
+    @Override
     public List<Order> findAll() {
         return orderRepository.findAll();
     }

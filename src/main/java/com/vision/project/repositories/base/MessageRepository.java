@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
     @Query(value="from Message where receiverId = :userId and session_date = :lastCheckDate and time > :lastCheckTime or receiverId = :userId and session_date > :lastCheckDate")
-    List<Message> findMostRecentMessages(@Param("userId")int userId, @Param("lastCheckDate")LocalDate lastCheckDate, @Param("lastCheckTime") LocalTime lastCheckTime);
+    List<Message> findMoreRecentMessages(@Param("userId")int userId, @Param("lastCheckDate")LocalDate lastCheckDate, @Param("lastCheckTime") LocalTime lastCheckTime);
 }

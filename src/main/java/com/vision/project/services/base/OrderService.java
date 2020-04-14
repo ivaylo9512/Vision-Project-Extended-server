@@ -4,6 +4,7 @@ import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
@@ -16,4 +17,6 @@ public interface OrderService {
     Order create(Order order, int restaurantId, int userId);
 
     Dish update(int orderId, int dishId, int userId);
+
+    List<Order> findMoreRecent(LocalDateTime lastCheck, int restaurantId);
 }

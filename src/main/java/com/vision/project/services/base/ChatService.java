@@ -8,7 +8,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface ChatService {
@@ -19,4 +21,6 @@ public interface ChatService {
     MessageDto addNewMessage(MessageDto message);
 
     void setServerStartDate();
+
+    List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck);
 }
