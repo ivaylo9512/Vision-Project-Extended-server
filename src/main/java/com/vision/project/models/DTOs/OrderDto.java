@@ -1,16 +1,16 @@
 package com.vision.project.models.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderDto {
     private int id;
     private int userId;
-    private List<Dish> dishes;
+    private List<DishDto> dishes;
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean ready;
@@ -24,7 +24,7 @@ public class OrderDto {
     public OrderDto(Order order) {
         this.id = order.getId();
         this.userId = order.getUser().getId();
-        this.dishes = order.getDishes();
+        this.dishes = order.getDishes().stream().map(DishDto::new).collect(Collectors.toList());
         this.created = order.getCreated();
         this.updated = order.getUpdated();
         this.restaurantId = order.getRestaurant().getId();
@@ -47,11 +47,11 @@ public class OrderDto {
         this.userId = userId;
     }
 
-    public List<Dish> getDishes() {
+    public List<DishDto> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<Dish> dishes) {
+    public void setDishes(List<DishDto> dishes) {
         this.dishes = dishes;
     }
 
