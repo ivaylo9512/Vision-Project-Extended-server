@@ -30,9 +30,6 @@ public class ChatServiceImpl implements ChatService {
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
 
-    private Map<Integer, List<MessageDto>> newMessages = Collections.synchronizedMap(new HashMap<>());
-    private ConcurrentMap<Integer, DeferredResult<List<MessageDto>>> userRequests = new ConcurrentHashMap<>();
-
     private LocalDateTime serverStartDate;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository) {
@@ -57,24 +54,6 @@ public class ChatServiceImpl implements ChatService {
         return sessionRepository.getSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
-    @Override
-    public void getNewMessages(int userId, LocalDateTime lastMessageCheck, DeferredResult<List<MessageDto>> deferredResult){
-        if(lastMessageCheck.isBefore(serverStartDate)){
-            List<Message> messages = messageRepository.findMostRecentMessages(userId, lastMessageCheck.toLocalDate(), lastMessageCheck.toLocalTime());
-            List<MessageDto> messageDTOs = messages.stream().map(MessageDto::new).collect(Collectors.toList());
-            deferredResult.setResult(messageDTOs);
-            return;
-        }
-        if(newMessages.containsKey(userId)){
-            deferredResult.setResult(newMessages.get(userId));
-            newMessages.remove(userId);
-        }
-
-        if(!deferredResult.hasResult()){
-            userRequests.put(userId, deferredResult);
-        }
-
-    }
 
     @Override
     public MessageDto addNewMessage(MessageDto messageDto) {
@@ -99,17 +78,6 @@ public class ChatServiceImpl implements ChatService {
         messageDto.setTime(message.getTime());
         messageDto.setSession(session.getDate());
 
-        List<MessageDto> messages = new ArrayList<>(Collections.singletonList(messageDto));
-        if(userRequests.containsKey(message.getReceiverId())){
-            userRequests.get(message.getReceiverId()).setResult(messages);
-        }else {
-            if (newMessages.containsKey(message.getReceiverId())) {
-                newMessages.get(message.getReceiverId()).add(messageDto);
-            } else {
-                newMessages.put(message.getReceiverId(), messages);
-            }
-        }
-
         return messageDto;
     }
 
@@ -118,13 +86,4 @@ public class ChatServiceImpl implements ChatService {
         serverStartDate = LocalDateTime.now();
     }
 
-    @Override
-    public void removeUserRequest(int userId, DeferredResult deferredResult) {
-        userRequests.remove(userId, deferredResult);
-    }
-
-    @Override
-    public void removeMessages(int userId) {
-        newMessages.remove(userId);
-    }
 }

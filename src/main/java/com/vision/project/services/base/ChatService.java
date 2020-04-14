@@ -16,13 +16,7 @@ public interface ChatService {
 
     List<Session> findNextChatSessions(int chatId, int page, int pageSize);
 
-    void getNewMessages(int userId, LocalDateTime lastMessageCheck, DeferredResult<List<MessageDto>> userRequest);
-
     MessageDto addNewMessage(MessageDto message);
 
     void setServerStartDate();
-
-    void removeUserRequest(int userId, DeferredResult deferredResult);
-
-    void removeMessages(int userId);
 }
