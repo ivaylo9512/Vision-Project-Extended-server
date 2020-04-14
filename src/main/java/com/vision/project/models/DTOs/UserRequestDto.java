@@ -4,17 +4,15 @@ import com.vision.project.models.Dish;
 import com.vision.project.models.Message;
 import com.vision.project.models.Order;
 import com.vision.project.models.UserRequest;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Map;
 
 public class UserRequestDto {
-    private List<Order> orders = new ArrayList<>();
-    private List<Message> messages = new ArrayList<>();
-    private List<Dish> dishes = new ArrayList<>();
+    private Map<Integer, Order> orders;
+    private List<Message> messages;
+    private List<Dish> dishes;
     private int userId;
     private int restaurantId;
     private LocalDateTime lastCheck;
@@ -28,11 +26,11 @@ public class UserRequestDto {
         this.lastCheck = currentRequest.getLastCheck();
     }
 
-    public List<Order> getOrders() {
+    public Map<Integer, Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Map<Integer, Order> orders) {
         this.orders = orders;
     }
 

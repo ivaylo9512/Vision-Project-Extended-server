@@ -5,11 +5,13 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class UserRequest {
-    private List<Order> orders = new ArrayList<>();
+    private Map<Integer, Order> orders = new LinkedHashMap<>();
     private List<Message> messages = new ArrayList<>();
     private List<Dish> dishes = new ArrayList<>();
     private DeferredResult<UserRequestDto> request = new DeferredResult<>();
@@ -27,11 +29,11 @@ public class UserRequest {
     }
 
 
-    public List<Order> getOrders() {
+    public Map<Integer, Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Map<Integer, Order> orders) {
         this.orders = orders;
     }
 

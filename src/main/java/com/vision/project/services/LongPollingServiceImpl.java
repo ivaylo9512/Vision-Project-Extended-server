@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Integer, UserRequest> userRequests = CacheBuilder.newBuilder()
@@ -77,7 +78,7 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         if(newMessages.size() > 0 || newOrders.size() > 0) {
             newRequest.setMessages(newMessages);
-            newRequest.setOrders(newOrders);
+            newRequest.setOrders(newOrders.stream().collect(Collectors.toMap(Order::getId, order -> order)));
 
             waitingResult.setResult(new UserRequestDto(newRequest));
             waitingResult = null;
@@ -105,16 +106,19 @@ public class LongPollingServiceImpl implements LongPollingService {
             for (UserRequest userRequest : userRequests.asMap().keySet()) {
                 try {
                     userRequest.getLock().lock();
-                    if(obj.getClass() == Order.class){
-                        userRequest.getOrders().add((Order)obj);
-                    }else {
-                        userRequest.getDishes().add((Dish) obj);
-                    }
-                    userRequest.setLastCheck(LocalDateTime.now());
-                    userRequest.getRequest().setResult(new UserRequestDto(userRequest));
-                    userRequest.setRequest(null);
+                    if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
+                        if (obj.getClass() == Order.class) {
+                            Order order = (Order) obj;
+                            userRequest.getOrders().put(order.getId(), order);
+                        } else {
+                            userRequest.getDishes().add((Dish) obj);
+                        }
+                        userRequest.setLastCheck(LocalDateTime.now());
+                        userRequest.getRequest().setResult(new UserRequestDto(userRequest));
+                        userRequest.setRequest(null);
 
-                    clearData(userRequest);
+                        clearData(userRequest);
+                    }
                 }finally {
                     userRequest.getLock().unlock();
                 }
@@ -124,7 +128,7 @@ public class LongPollingServiceImpl implements LongPollingService {
 
     public void checkMessages(Message message){
         UserRequest userRequest = userRequests.getIfPresent(message.getReceiverId());
-        if(userRequest != null){
+        if(userRequest != null && userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()){
             userRequest.getMessages().add(message);
             userRequest.setLastCheck(LocalDateTime.now());
             userRequest.getRequest().setResult(new UserRequestDto(userRequest));

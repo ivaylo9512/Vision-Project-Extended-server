@@ -68,9 +68,7 @@ public class OrderServiceImpl implements OrderService {
             order.setReady(true);
         }
         if(updated) {
-            order = orderRepository.save(order);
-            orders.add(new OrderDto(order));
-            new Thread(this::updateUserRequests).run();
+            orderRepository.save(order);
         }
 
         return updatedDish;
