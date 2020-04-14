@@ -70,9 +70,6 @@ public class UserServiceImpl implements UserService,UserDetailsService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
 
-        System.out.println("hey");
-        System.out.println(restaurant.getId());
-
         return new UserDetails(userModel,authorities);
     }
 
