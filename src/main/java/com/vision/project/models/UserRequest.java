@@ -12,7 +12,7 @@ public class UserRequest {
     private List<Order> orders = new ArrayList<>();
     private List<Message> messages = new ArrayList<>();
     private List<Dish> dishes = new ArrayList<>();
-    private DeferredResult<UserRequestDto> request = new DeferredResult<>();
+    private DeferredResult<UserRequestDto> request;
     private ReentrantLock lock = new ReentrantLock();
     private int userId;
     private int restaurantId;
@@ -21,9 +21,10 @@ public class UserRequest {
     public UserRequest(){
 
     }
-    public UserRequest(int userId, int restaurantId){
+    public UserRequest(int userId, int restaurantId, DeferredResult<UserRequestDto> request){
         this.userId = userId;
         this.restaurantId = restaurantId;
+        this.request = request;
     }
 
     public UserRequest(DeferredResult request){

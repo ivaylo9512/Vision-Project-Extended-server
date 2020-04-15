@@ -26,6 +26,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -52,7 +53,7 @@ public class UserController {
         Restaurant restaurant = userDetails.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
 
-        UserRequest userRequest = new UserRequest(userDetails.getId(), userDetails.getRestaurantId());
+        UserRequest userRequest = new UserRequest(userDetails.getId(), userDetails.getRestaurantId(), null);
 
         longPollingService.addRequest(userRequest);
 
@@ -100,11 +101,29 @@ public class UserController {
         Restaurant restaurant = user.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
 
-        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId());
+        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), null);
 
         longPollingService.addRequest(userRequest);
 
         return new UserDto(user, restaurant);
+    }
+
+    @GetMapping(value = "auth/waitData")
+    public DeferredResult waitData(){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        DeferredResult<UserRequestDto> request = new DeferredResult<>(100000L,"Time out.");
+
+        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request);
+
+        Runnable onTimeoutOrCompletion = ()-> userRequest.setRequest(null);
+        request.onTimeout(onTimeoutOrCompletion);
+        request.onCompletion(onTimeoutOrCompletion);
+
+        longPollingService.addRequest(userRequest);
+
+        return request;
     }
 
     @PostMapping(value = "auth/changeUserInfo")
