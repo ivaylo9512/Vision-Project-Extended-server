@@ -5,37 +5,37 @@ import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
+import com.vision.project.models.UserModel;
 import com.vision.project.models.compositePK.SessionPK;
 import com.vision.project.repositories.base.ChatRepository;
 import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.SessionRepository;
+import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.ChatService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 @Service
 public class ChatServiceImpl implements ChatService {
     private ChatRepository chatRepository;
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
+    private UserRepository userRepository;
 
     private LocalDateTime serverStartDate;
 
-    public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository) {
+    public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
         this.sessionRepository = sessionRepository;
         this.messageRepository = messageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -72,7 +72,9 @@ public class ChatServiceImpl implements ChatService {
 
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))
                 .orElse(new Session(chat, LocalDate.now()));
-        Message message = new Message(messageDto.getReceiverId(),LocalTime.now(),messageDto.getMessage(),session);
+
+        UserModel user = userRepository.getOne(messageDto.getReceiverId());
+        Message message = new Message(user,LocalTime.now(),messageDto.getMessage(),session);
         message = messageRepository.save(message);
 
         messageDto.setTime(message.getTime());

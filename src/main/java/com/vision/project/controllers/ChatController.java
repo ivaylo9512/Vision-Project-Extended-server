@@ -3,6 +3,7 @@ package com.vision.project.controllers;
 import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
+import com.vision.project.models.DTOs.SessionDto;
 import com.vision.project.models.Session;
 import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.ChatService;
@@ -41,11 +42,11 @@ public class ChatController {
     }
 
     @GetMapping(value = "/nextSessions")
-    public List<Session> nextChatSessions(
+    public List<SessionDto> nextChatSessions(
             @RequestParam(name = "chatId") int chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
-        return chatService.findNextChatSessions(chatId, page, pageSize);
+        return chatService.findNextChatSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
     }
 
 

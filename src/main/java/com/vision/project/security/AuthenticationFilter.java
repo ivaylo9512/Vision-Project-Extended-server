@@ -48,8 +48,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String token = Jwt.generate(userDetails);
 
-        chatService.removeMessages(userDetails.getId());
-
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, userDetails.getId()));
         response.addHeader("Authorization", "Token " + token);
         chain.doFilter(request, response);

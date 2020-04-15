@@ -141,7 +141,7 @@ public class LongPollingServiceImpl implements LongPollingService {
     }
 
     public void checkMessages(Message message){
-        UserRequest userRequest = userRequests.getIfPresent(message.getReceiverId());
+        UserRequest userRequest = userRequests.getIfPresent(message.getReceiver().getId());
         if(userRequest != null && userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()){
             userRequest.getMessages().add(message);
             userRequest.setLastCheck(LocalDateTime.now());

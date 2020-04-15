@@ -26,7 +26,7 @@ public class MessageDto {
     public MessageDto(Message message) {
         this.message = message.getMessage();
         this.chatId = message.getSession().getChat().getId();
-        this.receiverId = message.getReceiverId();
+        this.receiverId = message.getReceiver().getId();
         this.time = message.getTime();
         this.session = message.getSession().getDate();
     }

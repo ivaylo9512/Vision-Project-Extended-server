@@ -13,15 +13,15 @@ import java.util.List;
 @Table(name = "sessions")
 public class Session{
     @Id
-    @JsonIgnore
     private Chat chat;
 
     @Id
     @Column(name = "date")
     private LocalDate date;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "session", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "session", cascade = CascadeType.ALL)
     private List<Message> messages;
+
     public Session() {
     }
 

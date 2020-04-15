@@ -36,7 +36,6 @@ public class ScheduleConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         chatService.setServerStartDate();
-        orderService.setDates();
     }
 
     public String getThreadPrefix() {

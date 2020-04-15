@@ -11,6 +11,7 @@ public class DishDto {
     private LocalDateTime updated;
     private int updatedById;
     private int orderId;
+    private boolean isOrderReady;
 
     public DishDto(Dish dish) {
         this.id = dish.getId();
@@ -19,6 +20,7 @@ public class DishDto {
         this.created = dish.getCreated();
         this.updated = dish.getUpdated();
         this.updatedById = dish.getOrder().getId();
+        this.isOrderReady = dish.getOrder().isReady();
         this.orderId = dish.getOrder().getId();
     }
 
@@ -76,5 +78,13 @@ public class DishDto {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public boolean isOrderReady() {
+        return isOrderReady;
+    }
+
+    public void setOrderReady(boolean orderReady) {
+        isOrderReady = orderReady;
     }
 }

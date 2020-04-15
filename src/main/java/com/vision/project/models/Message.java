@@ -13,8 +13,9 @@ public class Message{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "receiver_id")
-    private int receiverId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver")
+    private UserModel receiver;
 
     @Column(name = "time")
     private LocalTime time;
@@ -27,8 +28,8 @@ public class Message{
     @JoinColumns({@JoinColumn(name = "chat"),@JoinColumn(name = "session_date")})
     private Session session;
 
-    public Message(int receiverId, LocalTime time, String message, Session session){
-        this.receiverId = receiverId;
+    public Message(UserModel receiver, LocalTime time, String message, Session session){
+        this.receiver = receiver;
         this.time = time;
         this.message = message;
         this.session = session;
@@ -36,12 +37,12 @@ public class Message{
     public Message() {
     }
 
-    public int getReceiverId() {
-        return receiverId;
+    public UserModel getReceiver() {
+        return receiver;
     }
 
-    public void setReceiverId(int receiverId) {
-        this.receiverId = receiverId;
+    public void setReceiver(UserModel receiverId) {
+        this.receiver = receiverId;
     }
 
     public LocalTime getTime() {

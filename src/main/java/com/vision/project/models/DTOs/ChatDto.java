@@ -4,12 +4,13 @@ import com.vision.project.models.Chat;
 import com.vision.project.models.Session;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChatDto {
     private int id;
     private UserDto firstUser;
     private UserDto secondUser;
-    private List<Session> sessions;
+    private List<SessionDto> sessions;
 
     public ChatDto() {
     }
@@ -18,7 +19,7 @@ public class ChatDto {
         this.id = chat.getId();
         this.firstUser = new UserDto(chat.getFirstUserModel());
         this.secondUser = new UserDto(chat.getSecondUserModel());
-        this.sessions = chat.getSessions();
+        this.sessions = chat.getSessions().stream().map(SessionDto::new).collect(Collectors.toList());
     }
 
     public UserDto getFirstUser() {
@@ -45,11 +46,11 @@ public class ChatDto {
         this.id = id;
     }
 
-    public List<Session> getSessions() {
+    public List<SessionDto> getSessions() {
         return sessions;
     }
 
-    public void setSessions(List<Session> sessions) {
+    public void setSessions(List<SessionDto> sessions) {
         this.sessions = sessions;
     }
 }
