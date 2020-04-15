@@ -5,11 +5,14 @@ import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.DTOs.UserDto;
+import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
+import com.vision.project.models.UserRequest;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
+import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -31,10 +35,12 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+    private final LongPollingService longPollingService;
 
-    public UserController(UserService userService, OrderService orderService) {
+    public UserController(UserService userService, OrderService orderService, LongPollingService longPollingService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.longPollingService = longPollingService;
     }
 
     @PostMapping("/login")
@@ -45,6 +51,10 @@ public class UserController {
 
         Restaurant restaurant = userDetails.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
+
+        UserRequest userRequest = new UserRequest(userDetails.getId(), userDetails.getRestaurantId());
+
+        longPollingService.addRequest(userRequest);
 
         return new UserDto(userDetails);
     }
@@ -89,6 +99,10 @@ public class UserController {
         UserModel user = userService.findById(loggedUser.getId());
         Restaurant restaurant = user.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
+
+        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId());
+
+        longPollingService.addRequest(userRequest);
 
         return new UserDto(user, restaurant);
     }

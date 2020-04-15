@@ -21,6 +21,10 @@ public class UserRequest {
     public UserRequest(){
 
     }
+    public UserRequest(int userId, int restaurantId){
+        this.userId = userId;
+        this.restaurantId = restaurantId;
+    }
 
     public UserRequest(DeferredResult request){
         this.request = request;

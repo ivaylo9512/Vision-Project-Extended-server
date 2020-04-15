@@ -3,12 +3,10 @@ package com.vision.project.services;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
-import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
@@ -16,12 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Integer, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
-    Map<Integer, Cache<UserRequest, UserRequest>> restaurants = new HashMap<>();
+    Map<Integer, Cache<Integer, UserRequest>> restaurants = new HashMap<>();
 
     private final OrderService orderService;
     private final ChatService chatService;
@@ -88,13 +85,13 @@ public class LongPollingServiceImpl implements LongPollingService {
         int userId = request.getUserId();
         userRequests.put(userId, request);
 
-        Cache<UserRequest, UserRequest> userRequests = restaurants.get(request.getRestaurantId());
+        Cache<Integer, UserRequest> userRequests = restaurants.get(request.getRestaurantId());
         if(userRequests == null){
             userRequests = CacheBuilder.newBuilder()
                     .expireAfterWrite(15, TimeUnit.MINUTES).build();
             restaurants.put(request.getRestaurantId(), userRequests);
         }
-        userRequests.put(request, request);
+        userRequests.put(userId, request);
     }
 
     public Dish addDish(int orderId, int dishId, int userId, int restaurantId){
@@ -114,10 +111,10 @@ public class LongPollingServiceImpl implements LongPollingService {
     }
 
     public void checkRestaurants(Object obj, int restaurantId){
-        Cache<UserRequest, UserRequest> userRequests = restaurants.get(restaurantId);
+        Cache<Integer, UserRequest> userRequests = restaurants.get(restaurantId);
 
         if(userRequests != null){
-            for (UserRequest userRequest : userRequests.asMap().keySet()) {
+            for (UserRequest userRequest : userRequests.asMap().values()) {
                 try {
                     userRequest.getLock().lock();
                     if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
