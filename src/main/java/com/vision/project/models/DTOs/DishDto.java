@@ -1,7 +1,9 @@
 package com.vision.project.models.DTOs;
 
 import com.vision.project.models.Dish;
-    import java.time.LocalDateTime;
+import com.vision.project.models.UserModel;
+
+import java.time.LocalDateTime;
 
 public class DishDto {
     private int id;
@@ -19,9 +21,9 @@ public class DishDto {
         this.ready = dish.getReady();
         this.created = dish.getCreated();
         this.updated = dish.getUpdated();
-        this.updatedById = dish.getOrder().getId();
         this.isOrderReady = dish.getOrder().isReady();
         this.orderId = dish.getOrder().getId();
+        setUpdatedById(dish.getUpdatedBy());
     }
 
     public int getId() {
@@ -68,8 +70,10 @@ public class DishDto {
         return updatedById;
     }
 
-    public void setUpdatedById(int updatedById) {
-        this.updatedById = updatedById;
+    public void setUpdatedById(UserModel updatedBy) {
+        if(updatedBy != null) {
+            this.updatedById = updatedBy.getId();
+        }
     }
 
     public int getOrderId() {

@@ -7,6 +7,7 @@ import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Service
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Integer, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
@@ -97,7 +99,7 @@ public class LongPollingServiceImpl implements LongPollingService {
     public Dish addDish(int orderId, int dishId, int userId, int restaurantId){
         Dish dish = orderService.update(orderId, dishId, userId);
 
-        new Thread(() -> checkRestaurants(dish, restaurantId)).start();
+        new Thread(() -> checkRestaurants(dish, restaurantId, userId)).start();
 
         return dish;
     }
@@ -105,19 +107,19 @@ public class LongPollingServiceImpl implements LongPollingService {
     public Order addOrder(Order order, int restaurantId, int userId){
         Order updatedOrder = orderService.create(order, restaurantId, userId);
 
-        new Thread(() -> checkRestaurants(updatedOrder, restaurantId)).start();
+        new Thread(() -> checkRestaurants(updatedOrder, restaurantId, userId)).start();
 
         return updatedOrder;
     }
 
-    public void checkRestaurants(Object obj, int restaurantId){
+    public void checkRestaurants(Object obj, int restaurantId, int addedBy){
         Cache<Integer, UserRequest> userRequests = restaurants.get(restaurantId);
 
         if(userRequests != null){
             for (UserRequest userRequest : userRequests.asMap().values()) {
                 try {
                     userRequest.getLock().lock();
-                    if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
+                    if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired() && userRequest.getUserId() != addedBy) {
                         if (obj.getClass() == Order.class) {
                             Order order = (Order) obj;
                             userRequest.getOrders().add(order);

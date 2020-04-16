@@ -56,6 +56,8 @@ public class OrderServiceImpl implements OrderService {
                 if(!orderDish.getReady()) {
                     orderDish.setUpdatedBy(userRepository.getOne(userId));
                     orderDish.setReady(true);
+                    order.setUpdated(LocalDateTime.now());
+
                     updated = true;
                 }
                 updatedDish = orderDish;
@@ -67,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
         if(notReady.size() == 0){
             order.setReady(true);
         }
+
         if(updated) {
             order = orderRepository.save(order);
         }

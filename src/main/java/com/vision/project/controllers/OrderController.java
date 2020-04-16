@@ -4,6 +4,7 @@ import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.OrderDto;
+import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/order/auth")
 public class OrderController {
     private final OrderService orderService;
+    private final LongPollingService longPollingService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, LongPollingService longPollingService) {
         this.orderService = orderService;
+        this.longPollingService = longPollingService;
     }
 
     @GetMapping(value = "/findAll")
@@ -55,7 +58,7 @@ public class OrderController {
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        return new DishDto(orderService.update(orderId, dishId, loggedUser.getId()));
+        return new DishDto(longPollingService.addDish(orderId, dishId, loggedUser.getId(), loggedUser.getRestaurantId()));
     }
 
 

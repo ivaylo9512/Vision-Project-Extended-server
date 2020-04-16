@@ -108,7 +108,7 @@ public class UserController {
         return new UserDto(user, restaurant);
     }
 
-    @GetMapping(value = "auth/waitData")
+    @GetMapping(value = "/auth/waitData")
     public DeferredResult waitData(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
