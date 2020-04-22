@@ -12,6 +12,7 @@ import com.vision.project.models.UserModel;
 import com.vision.project.models.UserRequest;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
+import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
@@ -26,7 +27,6 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -36,11 +36,13 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+    private final ChatService chatService;
     private final LongPollingService longPollingService;
 
-    public UserController(UserService userService, OrderService orderService, LongPollingService longPollingService) {
+    public UserController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.chatService = chatService;
         this.longPollingService = longPollingService;
     }
 
@@ -70,6 +72,7 @@ public class UserController {
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
+        user.setChats(chatService.findUserChats(user.getId(), 3));
 
         longPollingService.addRequest(userRequest);
         return new UserDto(user, restaurant);

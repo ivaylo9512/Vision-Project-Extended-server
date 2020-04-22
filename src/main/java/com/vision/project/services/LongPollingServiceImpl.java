@@ -35,7 +35,7 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         UserRequest currentRequest = userRequests.getIfPresent(userId);
         if(currentRequest == null){
-            setMoreRecentData(newRequest);
+//            setMoreRecentData(newRequest);
             addRequest(newRequest);
         }else {
             try {

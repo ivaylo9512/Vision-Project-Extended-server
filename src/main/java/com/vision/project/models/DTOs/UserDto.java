@@ -4,6 +4,7 @@ import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserDto {
     private int id;
@@ -15,6 +16,7 @@ public class UserDto {
     private String role;
     private String profilePicture;
     private RestaurantDto restaurant;
+    private List<ChatDto> chats;
 
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
@@ -42,6 +44,7 @@ public class UserDto {
         this.country = userModel.getCountry();
         this.role = userModel.getRole();
         this.profilePicture = userModel.getProfilePicture();
+        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
     }
 
     public String getUsername() {
@@ -114,5 +117,13 @@ public class UserDto {
 
     public void RestaurantDto(RestaurantDto restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public List<ChatDto> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<ChatDto> chats) {
+        this.chats = chats;
     }
 }
