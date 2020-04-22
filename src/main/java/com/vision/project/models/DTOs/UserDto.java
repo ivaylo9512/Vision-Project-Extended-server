@@ -19,14 +19,15 @@ public class UserDto {
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
         this.username = userDetails.getUsername();
-        this.age = userDetails.getAge();
-        this.firstName = userDetails.getFirstName();
-        this.lastName = userDetails.getLastName();
-        this.age = userDetails.getAge();
-        this.country = userDetails.getCountry();
-        this.profilePicture = userDetails.getProfilePicture();
-        this.restaurant = new RestaurantDto(userDetails.getRestaurant());
         this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
+
+        UserModel userModel = userDetails.getUserModel();
+        this.firstName = userModel.getFirstName();
+        this.lastName = userModel.getLastName();
+        this.age = userModel.getAge();
+        this.country = userModel.getCountry();
+        this.profilePicture = userModel.getProfilePicture();
+        this.restaurant = new RestaurantDto(userModel.getRestaurant());
     }
     public UserDto(UserModel userModel, Restaurant restaurant){
         this(userModel);

@@ -10,13 +10,8 @@ import java.util.List;
 
 public class UserDetails extends User {
     private int id;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String country;
-    private String profilePicture;
-    private Restaurant restaurant;
     private int restaurantId;
+    private UserModel userModel;
 
     public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, int id, int restaurantId){
         super(username,password,authorities);
@@ -24,15 +19,10 @@ public class UserDetails extends User {
         this.restaurantId = restaurantId;
     }
     public UserDetails(UserModel userModel, List<SimpleGrantedAuthority> authorities){
-
         super(userModel.getUsername(), userModel.getPassword(), authorities);
         this.id = userModel.getId();
-        this.firstName = userModel.getFirstName();
-        this.lastName = userModel.getLastName();
-        this.age = userModel.getAge();
-        this.country = userModel.getCountry();
-        this.profilePicture = userModel.getProfilePicture();
-        this.restaurant = userModel.getRestaurant();
+        this.restaurantId = userModel.getRestaurant().getId();
+        this.userModel = userModel;
     }
     public int getId() {
         return id;
@@ -42,59 +32,19 @@ public class UserDetails extends User {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setlastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
     public int getRestaurantId() {
         return restaurantId;
     }
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public UserModel getUserModel() {
+        return userModel;
+    }
+
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 }

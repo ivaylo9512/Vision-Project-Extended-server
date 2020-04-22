@@ -31,7 +31,7 @@ public class Jwt {
                 .setSubject(user.getUsername())
                 .setId(String.valueOf(user.getId()));
         claims.put("roles", authorities);
-        claims.put("restaurantId", user.getRestaurant().getId());
+        claims.put("restaurantId", user.getRestaurantId());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,7 +42,7 @@ public class Jwt {
     }
 
     static UserDetails validate(String token) {
-        UserDetails user = null;
+        UserDetails user;
         try {
             Claims body = Jwts.parser()
                     .setSigningKey(new String(encodedJwtSecret))

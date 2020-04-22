@@ -50,14 +50,29 @@ public class UserController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        Restaurant restaurant = userDetails.getRestaurant();
+        UserModel userModel = userDetails.getUserModel();
+
+        return initializeUser(userModel);
+    }
+
+    @GetMapping(value = "/auth/getLoggedUser")
+    public UserDto getLoggedUser(){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        UserModel userModel = userService.findById(loggedUser.getId());
+
+        return initializeUser(userModel);
+    }
+
+    private UserDto initializeUser(UserModel user){
+        Restaurant restaurant = user.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
 
-        UserRequest userRequest = new UserRequest(userDetails.getId(), userDetails.getRestaurantId(), null);
+        UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
 
         longPollingService.addRequest(userRequest);
-
-        return new UserDto(userDetails);
+        return new UserDto(user, restaurant);
     }
 
     @PostMapping(value = "/register")
@@ -92,28 +107,12 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
 
-    @GetMapping(value = "/auth/getLoggedUser")
-    public UserDto getLoggedUser(){
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-
-        UserModel user = userService.findById(loggedUser.getId());
-        Restaurant restaurant = user.getRestaurant();
-        restaurant.setOrders(orderService.findAllNotReady(restaurant));
-
-        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), null);
-
-        longPollingService.addRequest(userRequest);
-
-        return new UserDto(user, restaurant);
-    }
-
     @GetMapping(value = "/auth/waitData")
     public DeferredResult waitData(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        DeferredResult<UserRequestDto> request = new DeferredResult<>(100000L,"Time out.");
+        DeferredResult<UserRequestDto> request = new DeferredResult<>(15000L,"Time out.");
 
         UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request);
 
@@ -121,7 +120,7 @@ public class UserController {
         request.onTimeout(onTimeoutOrCompletion);
         request.onCompletion(onTimeoutOrCompletion);
 
-        longPollingService.addRequest(userRequest);
+        longPollingService.setAndAddRequest(userRequest);
 
         return request;
     }
