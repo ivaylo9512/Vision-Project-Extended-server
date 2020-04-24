@@ -34,6 +34,7 @@ public class UserDto {
     public UserDto(UserModel userModel, Restaurant restaurant){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
+        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
     }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
@@ -44,7 +45,6 @@ public class UserDto {
         this.country = userModel.getCountry();
         this.role = userModel.getRole();
         this.profilePicture = userModel.getProfilePicture();
-        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
     }
 
     public String getUsername() {

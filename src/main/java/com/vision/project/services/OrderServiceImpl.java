@@ -28,6 +28,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public Order create(Order order, int restaurantId, int userId){
+        if(order.getDishes() == null || order.getDishes().size() == 0){
+            throw new IllegalArgumentException("Order must have at least one dish");
+        }
+        
         for (Dish dish : order.getDishes()) {
             dish.setOrder(order);
         }

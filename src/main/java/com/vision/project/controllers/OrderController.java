@@ -49,7 +49,7 @@ public class OrderController {
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
 
-        return new OrderDto(orderService.create(order, restaurantId, userId));
+        return new OrderDto(longPollingService.addOrder(order, restaurantId, userId));
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")
