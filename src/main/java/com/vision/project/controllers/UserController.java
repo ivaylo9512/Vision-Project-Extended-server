@@ -27,6 +27,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -75,7 +76,7 @@ public class UserController {
         user.setChats(chatService.findUserChats(user.getId(), 3));
 
         longPollingService.addRequest(userRequest);
-        return new UserDto(user, restaurant);
+        return new UserDto(user, restaurant, LocalDateTime.now());
     }
 
     @PostMapping(value = "/register")
@@ -110,14 +111,14 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
 
-    @GetMapping(value = "/auth/waitData")
-    public DeferredResult waitData(){
+    @PostMapping(value = "/auth/waitData")
+    public DeferredResult waitData(@RequestBody LocalDateTime lastCheck){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
         DeferredResult<UserRequestDto> request = new DeferredResult<>(15000L,"Time out.");
 
-        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request);
+        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request, lastCheck);
 
         Runnable onTimeoutOrCompletion = ()-> userRequest.setRequest(null);
         request.onTimeout(onTimeoutOrCompletion);

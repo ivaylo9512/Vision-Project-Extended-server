@@ -3,6 +3,8 @@ package com.vision.project.models.DTOs;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ public class UserDto {
     private String profilePicture;
     private RestaurantDto restaurant;
     private List<ChatDto> chats;
+    private LocalDateTime lastCheck;
 
     public UserDto(UserDetails userDetails){
         this.id = userDetails.getId();
@@ -31,10 +34,11 @@ public class UserDto {
         this.profilePicture = userModel.getProfilePicture();
         this.restaurant = new RestaurantDto(userModel.getRestaurant());
     }
-    public UserDto(UserModel userModel, Restaurant restaurant){
+    public UserDto(UserModel userModel, Restaurant restaurant, LocalDateTime lastCheck){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
         this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
+        this.lastCheck = lastCheck;
     }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
@@ -125,5 +129,13 @@ public class UserDto {
 
     public void setChats(List<ChatDto> chats) {
         this.chats = chats;
+    }
+
+    public LocalDateTime getLastCheck() {
+        return lastCheck;
+    }
+
+    public void setLastCheck(LocalDateTime lastCheck) {
+        this.lastCheck = lastCheck;
     }
 }

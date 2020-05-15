@@ -87,13 +87,13 @@ public class LongPollingServiceImpl implements LongPollingService {
         int userId = request.getUserId();
         userRequests.put(userId, request);
 
-        Cache<Integer, UserRequest> userRequests = restaurants.get(request.getRestaurantId());
-        if(userRequests == null){
-            userRequests = CacheBuilder.newBuilder()
+        Cache<Integer, UserRequest> restaurantRequests = restaurants.get(request.getRestaurantId());
+        if(restaurantRequests == null){
+            restaurantRequests = CacheBuilder.newBuilder()
                     .expireAfterWrite(15, TimeUnit.MINUTES).build();
-            restaurants.put(request.getRestaurantId(), userRequests);
+            restaurants.put(request.getRestaurantId(), restaurantRequests);
         }
-        userRequests.put(userId, request);
+        restaurantRequests.put(userId, request);
     }
 
     public Dish addDish(int orderId, int dishId, int userId, int restaurantId){

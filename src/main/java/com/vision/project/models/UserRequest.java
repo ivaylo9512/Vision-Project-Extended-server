@@ -26,6 +26,12 @@ public class UserRequest {
         this.restaurantId = restaurantId;
         this.request = request;
     }
+    public UserRequest(int userId, int restaurantId, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
+        this.userId = userId;
+        this.restaurantId = restaurantId;
+        this.request = request;
+        this.lastCheck = lastCheck;
+    }
 
     public UserRequest(DeferredResult request){
         this.request = request;

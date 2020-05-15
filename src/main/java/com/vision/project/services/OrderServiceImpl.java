@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
         if(order.getDishes() == null || order.getDishes().size() == 0){
             throw new IllegalArgumentException("Order must have at least one dish");
         }
-        
+
         for (Dish dish : order.getDishes()) {
             dish.setOrder(order);
         }
