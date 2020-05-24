@@ -6,6 +6,10 @@ public class MessageSpec {
     private int receiverId;
     private String message;
 
+    public MessageSpec(){
+
+    }
+
     public MessageSpec(int chatId, int senderId, int receiverId, String message) {
         this.chatId = chatId;
         this.senderId = senderId;

@@ -82,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck) {
-        return messageRepository.findMoreRecentMessages(userId, lastCheck.toLocalDate(), lastCheck.toLocalTime());
+        return messageRepository.findMoreRecentMessages(userRepository.getOne(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
     }
 
     @Override
