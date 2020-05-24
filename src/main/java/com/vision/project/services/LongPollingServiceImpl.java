@@ -4,10 +4,10 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.*;
+import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
-import org.apache.derby.iapi.services.i18n.MessageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -25,12 +25,10 @@ public class LongPollingServiceImpl implements LongPollingService {
 
     private final OrderService orderService;
     private final ChatService chatService;
-    private final MessageService messageService;
 
-    public LongPollingServiceImpl(OrderService orderService, ChatService chatService, MessageService messageService) {
+    public LongPollingServiceImpl(OrderService orderService, ChatService chatService) {
         this.orderService = orderService;
         this.chatService = chatService;
-        this.messageService = messageService;
     }
 
     public void setAndAddRequest(UserRequest newRequest){
@@ -115,21 +113,21 @@ public class LongPollingServiceImpl implements LongPollingService {
         return updatedOrder;
     }
 
-    public MessageDto addMessage(MessageDto messageDto){
-        MessageDto message = chatService.addNewMessage(messageDto);
+    public Message addMessage(MessageSpec messageSpec){
+        Message message = chatService.addNewMessage(messageSpec);
 
-        new Thread(() -> checkUsers(message, message.getReceiverId())).start();
+        new Thread(() -> checkUsers(message, messageSpec.getReceiverId())).start();
 
         return message;
     }
 
-    public void checkUsers(MessageDto message, int userId){
+    public void checkUsers(Message message, int userId){
         UserRequest userRequest = userRequests.getIfPresent(userId);
         if(userRequest != null) {
             try {
                 userRequest.getLock().lock();
+                userRequest.getMessages().add(message);
                 if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
-                    userRequest.getMessages().add(message);
                     userRequest.setLastCheck(LocalDateTime.now());
                     userRequest.getRequest().setResult(new UserRequestDto(userRequest));
                     userRequest.setRequest(null);
@@ -149,13 +147,14 @@ public class LongPollingServiceImpl implements LongPollingService {
             for (UserRequest userRequest : userRequests.asMap().values()) {
                 try {
                     userRequest.getLock().lock();
+                    if (obj.getClass() == Order.class) {
+                        Order order = (Order) obj;
+                        userRequest.getOrders().add(order);
+                    } else {
+                        userRequest.getDishes().add((Dish) obj);
+                    }
+
                     if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired() && userRequest.getUserId() != addedBy) {
-                        if (obj.getClass() == Order.class) {
-                            Order order = (Order) obj;
-                            userRequest.getOrders().add(order);
-                        } else {
-                            userRequest.getDishes().add((Dish) obj);
-                        }
                         userRequest.setLastCheck(LocalDateTime.now());
                         userRequest.getRequest().setResult(new UserRequestDto(userRequest));
                         userRequest.setRequest(null);
@@ -166,18 +165,6 @@ public class LongPollingServiceImpl implements LongPollingService {
                     userRequest.getLock().unlock();
                 }
             }
-        }
-    }
-
-    public void checkMessages(Message message){
-        UserRequest userRequest = userRequests.getIfPresent(message.getReceiver().getId());
-        if(userRequest != null && userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()){
-            userRequest.getMessages().add(message);
-            userRequest.setLastCheck(LocalDateTime.now());
-            userRequest.getRequest().setResult(new UserRequestDto(userRequest));
-            userRequest.setRequest(null);
-
-            clearData(userRequest);
         }
     }
 

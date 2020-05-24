@@ -7,6 +7,7 @@ import com.vision.project.models.Message;
 import com.vision.project.models.Session;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.compositePK.SessionPK;
+import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.repositories.base.ChatRepository;
 import com.vision.project.repositories.base.MessageRepository;
 import com.vision.project.repositories.base.SessionRepository;
@@ -56,12 +57,12 @@ public class ChatServiceImpl implements ChatService {
 
 
     @Override
-    public MessageDto addNewMessage(MessageDto messageDto) {
-        int sender = messageDto.getSenderId();
-        int receiver = messageDto.getReceiverId();
+    public Message addNewMessage(MessageSpec messageSpec) {
+        int sender = messageSpec.getSenderId();
+        int receiver = messageSpec.getReceiverId();
 
-        Chat chat = chatRepository.findById(messageDto.getChatId())
-                .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageDto.getChatId() + " is not found."));
+        Chat chat = chatRepository.findById(messageSpec.getChatId())
+                .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageSpec.getChatId() + " is not found."));
 
         int chatFirstUser = chat.getFirstUserModel().getId();
         int chatSecondUser = chat.getSecondUserModel().getId();
@@ -73,14 +74,10 @@ public class ChatServiceImpl implements ChatService {
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))
                 .orElse(new Session(chat, LocalDate.now()));
 
-        UserModel user = userRepository.getOne(messageDto.getReceiverId());
-        Message message = new Message(user,LocalTime.now(),messageDto.getMessage(),session);
-        message = messageRepository.save(message);
+        UserModel user = userRepository.getOne(receiver);
+        Message message = new Message(user,LocalTime.now(),messageSpec.getMessage(),session);
 
-        messageDto.setTime(message.getTime());
-        messageDto.setSession(session.getDate());
-
-        return messageDto;
+        return messageRepository.save(message);
     }
 
     @Override

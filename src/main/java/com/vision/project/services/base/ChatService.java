@@ -4,6 +4,7 @@ import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
+import com.vision.project.models.specs.MessageSpec;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -18,7 +19,7 @@ public interface ChatService {
 
     List<Session> findNextChatSessions(int chatId, int page, int pageSize);
 
-    MessageDto addNewMessage(MessageDto message);
+    Message addNewMessage(MessageSpec message);
 
     void setServerStartDate();
 

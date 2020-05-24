@@ -5,6 +5,7 @@ import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.DTOs.SessionDto;
 import com.vision.project.models.UserDetails;
+import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.UserService;
@@ -53,9 +54,9 @@ public class ChatController {
 
 
     @PostMapping(value = "/newMessage")
-    public MessageDto newMessage(@RequestBody MessageDto message){
+    public MessageDto newMessage(@RequestBody MessageSpec message){
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         message.setSenderId(userDetails.getId());
-        return longPollingService.addMessage(message);
+        return new MessageDto(longPollingService.addMessage(message));
     }
 }
