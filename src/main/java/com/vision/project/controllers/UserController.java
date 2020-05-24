@@ -1,15 +1,16 @@
 package com.vision.project.controllers;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
+import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.models.Restaurant;
-import com.vision.project.models.UserDetails;
-import com.vision.project.models.UserModel;
-import com.vision.project.models.UserRequest;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
@@ -112,6 +113,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/auth/waitData")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     public DeferredResult waitData(@RequestBody LocalDateTime lastCheck){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

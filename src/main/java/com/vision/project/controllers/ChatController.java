@@ -4,9 +4,9 @@ import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.DTOs.SessionDto;
-import com.vision.project.models.Session;
 import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.ChatService;
+import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class ChatController {
     private final ChatService chatService;
     private final UserService userService;
+    private final LongPollingService longPollingService;
 
-    public ChatController(ChatService chatService, UserService userService) {
+    public ChatController(ChatService chatService, UserService userService, LongPollingService longPollingService) {
         this.chatService = chatService;
         this.userService = userService;
+        this.longPollingService = longPollingService;
     }
 
     @GetMapping(value = "/getChats")
@@ -54,6 +56,6 @@ public class ChatController {
     public MessageDto newMessage(@RequestBody MessageDto message){
         UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
         message.setSenderId(userDetails.getId());
-        return chatService.addNewMessage(message);
+        return longPollingService.addMessage(message);
     }
 }

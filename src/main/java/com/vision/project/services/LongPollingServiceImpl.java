@@ -3,10 +3,11 @@ package com.vision.project.services;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
-import com.vision.project.models.DTOs.UserRequestDto;
+import com.vision.project.models.DTOs.*;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
+import org.apache.derby.iapi.services.i18n.MessageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -24,10 +25,12 @@ public class LongPollingServiceImpl implements LongPollingService {
 
     private final OrderService orderService;
     private final ChatService chatService;
+    private final MessageService messageService;
 
-    public LongPollingServiceImpl(OrderService orderService, ChatService chatService ) {
+    public LongPollingServiceImpl(OrderService orderService, ChatService chatService, MessageService messageService) {
         this.orderService = orderService;
         this.chatService = chatService;
+        this.messageService = messageService;
     }
 
     public void setAndAddRequest(UserRequest newRequest){
@@ -35,7 +38,7 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         UserRequest currentRequest = userRequests.getIfPresent(userId);
         if(currentRequest == null){
-//            setMoreRecentData(newRequest);
+            setMoreRecentData(newRequest);
             addRequest(newRequest);
         }else {
             try {
@@ -110,6 +113,33 @@ public class LongPollingServiceImpl implements LongPollingService {
         new Thread(() -> checkRestaurants(updatedOrder, restaurantId, userId)).start();
 
         return updatedOrder;
+    }
+
+    public MessageDto addMessage(MessageDto messageDto){
+        MessageDto message = chatService.addNewMessage(messageDto);
+
+        new Thread(() -> checkUsers(message, message.getReceiverId())).start();
+
+        return message;
+    }
+
+    public void checkUsers(MessageDto message, int userId){
+        UserRequest userRequest = userRequests.getIfPresent(userId);
+        if(userRequest != null) {
+            try {
+                userRequest.getLock().lock();
+                if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired()) {
+                    userRequest.getMessages().add(message);
+                    userRequest.setLastCheck(LocalDateTime.now());
+                    userRequest.getRequest().setResult(new UserRequestDto(userRequest));
+                    userRequest.setRequest(null);
+
+                    clearData(userRequest);
+                }
+            }finally {
+                userRequest.getLock().unlock();
+            }
+        }
     }
 
     public void checkRestaurants(Object obj, int restaurantId, int addedBy){

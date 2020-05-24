@@ -68,4 +68,12 @@ public class Message{
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

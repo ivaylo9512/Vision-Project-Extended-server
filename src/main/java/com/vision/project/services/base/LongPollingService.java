@@ -1,5 +1,6 @@
 package com.vision.project.services.base;
 
+import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.UserRequest;
@@ -12,4 +13,6 @@ public interface LongPollingService {
     Dish addDish(int orderId, int dishId, int userId, int restaurantId);
 
     Order addOrder(Order order, int restaurantId, int userId);
+
+    MessageDto addMessage(MessageDto messageDto);
 }
