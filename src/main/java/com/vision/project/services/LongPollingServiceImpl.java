@@ -145,24 +145,26 @@ public class LongPollingServiceImpl implements LongPollingService {
 
         if(userRequests != null){
             for (UserRequest userRequest : userRequests.asMap().values()) {
-                try {
-                    userRequest.getLock().lock();
-                    if (obj.getClass() == Order.class) {
-                        Order order = (Order) obj;
-                        userRequest.getOrders().add(order);
-                    } else {
-                        userRequest.getDishes().add((Dish) obj);
-                    }
+                if(userRequest.getUserId() != addedBy) {
+                    try {
+                        userRequest.getLock().lock();
+                        if (obj.getClass() == Order.class) {
+                            Order order = (Order) obj;
+                            userRequest.getOrders().add(order);
+                        } else {
+                            userRequest.getDishes().add((Dish) obj);
+                        }
 
-                    if(userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired() && userRequest.getUserId() != addedBy) {
-                        userRequest.setLastCheck(LocalDateTime.now());
-                        userRequest.getRequest().setResult(new UserRequestDto(userRequest));
-                        userRequest.setRequest(null);
+                        if (userRequest.getRequest() != null && !userRequest.getRequest().isSetOrExpired() && userRequest.getUserId() != addedBy) {
+                            userRequest.setLastCheck(LocalDateTime.now());
+                            userRequest.getRequest().setResult(new UserRequestDto(userRequest));
+                            userRequest.setRequest(null);
 
-                        clearData(userRequest);
+                            clearData(userRequest);
+                        }
+                    } finally {
+                        userRequest.getLock().unlock();
                     }
-                }finally {
-                    userRequest.getLock().unlock();
                 }
             }
         }

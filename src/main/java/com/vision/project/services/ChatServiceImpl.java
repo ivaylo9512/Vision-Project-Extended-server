@@ -2,7 +2,6 @@ package com.vision.project.services;
 
 import com.vision.project.exceptions.NonExistingChat;
 import com.vision.project.models.Chat;
-import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
 import com.vision.project.models.UserModel;
@@ -55,7 +54,7 @@ public class ChatServiceImpl implements ChatService {
         return sessionRepository.getSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
-
+    @Transactional
     @Override
     public Message addNewMessage(MessageSpec messageSpec) {
         int sender = messageSpec.getSenderId();
