@@ -69,6 +69,14 @@ public class UserController {
         return initializeUser(userModel);
     }
 
+    @GetMapping(value = "auth/getUserInfo")
+    public UserDto getUserInfo(){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new UserDto(userService.findById(loggedUser.getId()));
+    }
+    
     private UserDto initializeUser(UserModel user){
         Restaurant restaurant = user.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant));
