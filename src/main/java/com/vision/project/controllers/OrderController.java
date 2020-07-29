@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findAll")
-    public List<OrderDto> findAllNotes(){
+    public List<OrderDto> findAllOrders(){
         return orderService.findAll().stream().map(OrderDto::new).collect(Collectors.toList());
     }
 

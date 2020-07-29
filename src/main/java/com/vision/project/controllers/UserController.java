@@ -1,21 +1,13 @@
 package com.vision.project.controllers;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserDto;
-import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
-import com.vision.project.services.base.ChatService;
-import com.vision.project.services.base.LongPollingService;
-import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
-
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -37,37 +25,11 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
-    private final OrderService orderService;
-    private final ChatService chatService;
-    private final LongPollingService longPollingService;
 
-    public UserController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.orderService = orderService;
-        this.chatService = chatService;
-        this.longPollingService = longPollingService;
     }
 
-    @PostMapping("/login")
-    @Transactional
-    public UserDto login(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        UserModel userModel = userDetails.getUserModel();
-
-        return initializeUser(userModel);
-    }
-
-    @GetMapping(value = "/auth/getLoggedUser")
-    public UserDto getLoggedUser(){
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-
-        UserModel userModel = userService.findById(loggedUser.getId());
-
-        return initializeUser(userModel);
-    }
 
     @GetMapping(value = "auth/getUserInfo")
     public UserDto getUserInfo(){
@@ -75,17 +37,6 @@ public class UserController {
                 .getAuthentication().getDetails();
 
         return new UserDto(userService.findById(loggedUser.getId()));
-    }
-    
-    private UserDto initializeUser(UserModel user){
-        Restaurant restaurant = user.getRestaurant();
-        restaurant.setOrders(orderService.findAllNotReady(restaurant));
-
-        UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
-        user.setChats(chatService.findUserChats(user.getId(), 3));
-
-        longPollingService.addRequest(userRequest);
-        return new UserDto(user, restaurant, LocalDateTime.now());
     }
 
     @PostMapping(value = "/register")
@@ -118,26 +69,6 @@ public class UserController {
     @GetMapping(value = "/auth/findById/{id}")
     public UserDto findById(@PathVariable(name = "id") int id){
         return new UserDto(userService.findById(id));
-    }
-
-    @PostMapping(value = "/auth/waitData")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    public DeferredResult waitData(@RequestBody LocalDateTime lastCheck){
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-
-        DeferredResult<UserRequestDto> request = new DeferredResult<>(15000L,"Time out.");
-
-        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request, lastCheck);
-
-        Runnable onTimeoutOrCompletion = ()-> userRequest.setRequest(null);
-        request.onTimeout(onTimeoutOrCompletion);
-        request.onCompletion(onTimeoutOrCompletion);
-
-        longPollingService.setAndAddRequest(userRequest);
-
-        return request;
     }
 
     @PostMapping(value = "auth/changeUserInfo")
