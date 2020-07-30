@@ -47,6 +47,8 @@ dependencies {
     compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
     compile group: 'com.h2database', name: 'h2', version: '1.4.192'
     compile group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
+    compile group: 'org.springframework', name: 'spring-messaging'
+    compile group: 'org.springframework', name: 'spring-websocket'
 }
 
 jacocoTestReport {
