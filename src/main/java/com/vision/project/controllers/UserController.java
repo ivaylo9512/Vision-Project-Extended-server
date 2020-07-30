@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,17 +40,26 @@ public class UserController {
         return new UserDto(userService.findById(loggedUser.getId()));
     }
 
+    @PostMapping("/login")
+    @Transactional
+    public UserDto login(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        return new UserDto(userDetails.getUserModel());
+    }
+
     @PostMapping(value = "/register")
     public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
-        // disabling the registration
-        try{
-
+        if(SecurityContextHolder.getContext() != null){
             UserDetails loggedUser = (UserDetails)SecurityContextHolder
                     .getContext().getAuthentication().getDetails();
-        }catch (Exception e){
+            if(!loggedUser.getUserModel().getRole().equals("admin")){
+                throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
+            }
+        }else{
             throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
         }
-        //
 
         UserModel userModel = userService.register(user,"ROLE_USER");
         String token = Jwt.generate(new UserDetails(userModel, new ArrayList<>(
