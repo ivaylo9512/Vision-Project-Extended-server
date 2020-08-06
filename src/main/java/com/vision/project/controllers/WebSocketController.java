@@ -5,9 +5,7 @@ import com.vision.project.models.Order;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.security.Jwt;
-import com.vision.project.services.base.ChatService;
-import com.vision.project.services.base.OrderService;
-import com.vision.project.services.base.UserService;
+import com.vision.project.services.base.LongPollingService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,15 +18,11 @@ import java.security.Principal;
 @Controller
 public class WebSocketController {
     private SimpMessagingTemplate messagingTemplate;
-    private ChatService chatService;
-    private UserService userService;
-    private OrderService orderService;
+    private LongPollingService longPollingService;
 
-    public WebSocketController(SimpMessagingTemplate messagingTemplate, ChatService chatService, UserService userService, OrderService orderService) {
+    public WebSocketController(SimpMessagingTemplate messagingTemplate, LongPollingService longPollingService) {
         this.messagingTemplate = messagingTemplate;
-        this.chatService = chatService;
-        this.userService = userService;
-        this.orderService = orderService;
+        this.longPollingService = longPollingService;
     }
 
 
@@ -43,7 +37,7 @@ public class WebSocketController {
             throw new BadCredentialsException("Jwt token is missing or is incorrect.");
         }
         message.setSenderId(loggedUser.getId());
-        chatService.addNewMessage(message);
+        longPollingService.addMessage(message);
 
         messagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiverId()), "/message", message);
     }
@@ -63,7 +57,7 @@ public class WebSocketController {
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
 
-        OrderDto orderDto = new OrderDto(orderService.create(order, restaurantId, userId);
+        OrderDto orderDto = new OrderDto(longPollingService.addOrder(order, restaurantId, userId));
         messagingTemplate.convertAndSendToUser(String.valueOf(userId), "/createOrder", orderDto);
     }
 }
