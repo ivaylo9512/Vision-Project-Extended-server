@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @RestController
-@RequestMapping(value = "/api/polling")
+@RequestMapping(value = "/api/users/polling")
 public class LongPollingController {
 
     private final UserService userService;
