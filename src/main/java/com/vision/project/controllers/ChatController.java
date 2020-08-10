@@ -63,14 +63,6 @@ public class ChatController {
         return chatService.findNextChatSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
     }
 
-
-    @PostMapping(value = "/newMessage")
-    public MessageDto newMessage(@RequestBody MessageSpec message){
-        UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getDetails();
-        message.setSenderId(userDetails.getId());
-        return new MessageDto(longPollingService.addMessage(message));
-    }
-
     @MessageMapping("/createOrder")
     @Transactional
     public void createChat(Principal principal, Order order, SimpMessageHeaderAccessor headers) throws  Exception {
