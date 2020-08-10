@@ -90,7 +90,7 @@ public class ChatController {
         messagingTemplate.convertAndSendToUser(String.valueOf(userId), "/createOrder", orderDto);
     }
 
-    @MessageMapping("/message")
+    @MessageMapping("/newMessage")
     public void message(Principal principal, MessageSpec message, SimpMessageHeaderAccessor headers) throws  Exception {
         UserDetails loggedUser;
         try{
@@ -101,8 +101,8 @@ public class ChatController {
             throw new BadCredentialsException("Jwt token is missing or is incorrect.");
         }
         message.setSenderId(loggedUser.getId());
-        longPollingService.addMessage(message);
+        MessageDto messageDto = new MessageDto(longPollingService.addMessage(message));
 
-        messagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiverId()), "/message", message);
+        messagingTemplate.convertAndSendToUser(String.valueOf(message.getReceiverId()), "/message", messageDto);
     }
 }
