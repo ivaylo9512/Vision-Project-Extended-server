@@ -31,9 +31,8 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @GetMapping(value = "auth/getUserInfo")
-    public UserDto getUserInfo(){
+    @GetMapping(value = "/auth/getLoggedUser")
+    public UserDto getLoggedUser(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
@@ -81,7 +80,7 @@ public class UserController {
         return new UserDto(userService.findById(id));
     }
 
-    @PostMapping(value = "auth/changeUserInfo")
+    @PostMapping(value = "/auth/changeUserInfo")
     public UserDto changeUserInfo(@RequestBody UserSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
