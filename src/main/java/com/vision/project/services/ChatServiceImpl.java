@@ -13,6 +13,7 @@ import com.vision.project.repositories.base.SessionRepository;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.ChatService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,7 @@ public class ChatServiceImpl implements ChatService {
     private SessionRepository sessionRepository;
     private MessageRepository messageRepository;
     private UserRepository userRepository;
-
-    private LocalDateTime serverStartDate;
+    private int sessionPageSize = 3;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
@@ -41,17 +41,17 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public List<Chat> findUserChats(int id, int pageSize) {
-        List<Chat> chats = chatRepository.findUserChats(id);
+        List<Chat> chats = chatRepository.findUserChats(id, PageRequest.of(0, pageSize));
         chats.forEach(chat -> chat
                 .setSessions(sessionRepository
-                        .getSessions(chat,
-                                PageRequest.of(0, pageSize, Sort.Direction.DESC, "session_date"))));
+                        .findSessions(chat,
+                                PageRequest.of(0, sessionPageSize, Sort.Direction.DESC, "session_date"))));
         return chats;
     }
 
     @Override
-    public List<Session> findNextChatSessions(int chatId, int page, int pageSize){
-        return sessionRepository.getSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+    public List<Session> findSessions(int chatId, int page, int pageSize){
+        return sessionRepository.findSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
     @Transactional
@@ -83,10 +83,4 @@ public class ChatServiceImpl implements ChatService {
     public List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck) {
         return messageRepository.findMoreRecentMessages(userRepository.getOne(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
     }
-
-    @Override
-    public void setServerStartDate() {
-        serverStartDate = LocalDateTime.now();
-    }
-
 }

@@ -23,7 +23,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -31,14 +30,16 @@ public class UserController {
 
     private final UserService userService;
     private final OrderService orderService;
+    private final ChatService chatService;
 
-    public UserController(UserService userService, OrderService orderService) {
+    public UserController(UserService userService, OrderService orderService, ChatService chatService) {
         this.userService = userService;
         this.orderService = orderService;
+        this.chatService = chatService;
     }
 
     @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
-    public UserDto getLoggedUser(@RequestParam("pageSize") int pageSize){
+    public UserDto getLoggedUser(@PathVariable("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
@@ -47,7 +48,7 @@ public class UserController {
 
     @PostMapping("/login/{pageSize}")
     @Transactional
-    public UserDto login(@RequestParam("pageSize") int pageSize){
+    public UserDto login(@PathVariable("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
@@ -57,6 +58,7 @@ public class UserController {
     private UserDto initializeUser(UserModel userModel, int pageSize){
         Restaurant restaurant = userModel.getRestaurant();
         restaurant.setOrders(orderService.findAllNotReady(restaurant, PageRequest.of(0, pageSize)));
+        userModel.setChats(chatService.findUserChats(userModel.getId(), pageSize));
 
         return new UserDto(userModel, restaurant);
     }

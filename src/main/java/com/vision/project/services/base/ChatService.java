@@ -17,11 +17,9 @@ import java.util.List;
 public interface ChatService {
     List<Chat> findUserChats(int id, int pageSize);
 
-    List<Session> findNextChatSessions(int chatId, int page, int pageSize);
+    List<Session> findSessions(int chatId, int page, int pageSize);
 
     Message addNewMessage(MessageSpec message);
-
-    void setServerStartDate();
 
     List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck);
 }

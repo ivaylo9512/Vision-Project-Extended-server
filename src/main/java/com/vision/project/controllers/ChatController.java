@@ -55,12 +55,12 @@ public class ChatController {
 
     }
 
-    @GetMapping(value = "/nextSessions")
-    public List<SessionDto> nextChatSessions(
+    @GetMapping(value = "/getSessions")
+    public List<SessionDto> getSessions(
             @RequestParam(name = "chatId") int chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
-        return chatService.findNextChatSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
+        return chatService.findSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
     }
 
     @MessageMapping("/createOrder")
