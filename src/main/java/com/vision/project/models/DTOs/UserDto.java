@@ -1,5 +1,6 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
@@ -34,11 +35,16 @@ public class UserDto {
         this.profilePicture = userModel.getProfilePicture();
         this.restaurant = new RestaurantDto(userModel.getRestaurant());
     }
-    public UserDto(UserModel userModel, Restaurant restaurant, LocalDateTime lastCheck){
+    public UserDto(UserModel userModel, Restaurant restaurant,LocalDateTime lastCheck){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
         this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
         this.lastCheck = lastCheck;
+    }
+    public UserDto(UserModel userModel, Restaurant restaurant){
+        this(userModel);
+        this.restaurant = new RestaurantDto(restaurant);
+        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
     }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();

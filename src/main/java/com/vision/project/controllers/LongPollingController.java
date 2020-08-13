@@ -19,6 +19,7 @@ import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,25 +49,21 @@ public class LongPollingController {
         this.longPollingService = longPollingService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login/{pageSize}")
     @Transactional
-    public UserDto login(){
+    public UserDto login(@RequestParam("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        UserModel userModel = userDetails.getUserModel();
-
-        return initializeUser(userModel);
+        return initializeUser(userDetails.getUserModel(), pageSize);
     }
 
-    @GetMapping(value = "/auth/getLoggedUser")
-    public UserDto getLoggedUser(){
+    @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
+    public UserDto getLoggedUser(@RequestParam("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        UserModel userModel = userService.findById(loggedUser.getId());
-
-        return initializeUser(userModel);
+        return initializeUser(userService.findById(loggedUser.getId()), pageSize);
     }
 
     @PostMapping(value = "/register")
@@ -95,9 +92,9 @@ public class LongPollingController {
         return new UserDto(userModel);
     }
 
-    private UserDto initializeUser(UserModel user){
+    private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
-        restaurant.setOrders(orderService.findAllNotReady(restaurant));
+        restaurant.setOrders(orderService.findAllNotReady(restaurant, PageRequest.of(0, pageSize)));
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
         user.setChats(chatService.findUserChats(user.getId(), 3));
