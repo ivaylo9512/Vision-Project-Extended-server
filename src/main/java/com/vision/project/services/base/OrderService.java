@@ -11,7 +11,9 @@ import java.util.List;
 public interface OrderService {
     Order findById(int id);
 
-    List<Order> findAllNotReady(Restaurant restaurant, Pageable pageable);
+    List<Order> findNotReady(Restaurant restaurant, int page, int pageSize);
+
+    List<Order> findAllNotReady(Restaurant restaurant);
 
     List<Order> findAll();
 

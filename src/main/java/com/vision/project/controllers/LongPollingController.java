@@ -94,7 +94,7 @@ public class LongPollingController {
 
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
-        restaurant.setOrders(orderService.findAllNotReady(restaurant, PageRequest.of(0, pageSize)));
+        restaurant.setOrders(orderService.findNotReady(restaurant, 0, pageSize));
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
         user.setChats(chatService.findUserChats(user.getId(), pageSize));

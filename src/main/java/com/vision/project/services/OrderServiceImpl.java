@@ -7,6 +7,7 @@ import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,8 +94,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllNotReady(Restaurant restaurant, Pageable pageable) {
-        return orderRepository.findByReadyFalse(restaurant, pageable);
+    public List<Order> findNotReady(Restaurant restaurant, int page, int pageSize) {
+        return orderRepository.findNotReady(restaurant, PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+    }
+
+    @Override
+    public List<Order> findAllNotReady(Restaurant restaurant) {
+        return orderRepository.findAllNotReady(restaurant);
     }
 
     @Override
