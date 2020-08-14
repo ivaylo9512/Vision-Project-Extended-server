@@ -3,9 +3,7 @@ package com.vision.project.controllers;
 import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
-import com.vision.project.models.DTOs.OrderDto;
 import com.vision.project.models.DTOs.SessionDto;
-import com.vision.project.models.Order;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.security.Jwt;
@@ -61,25 +59,6 @@ public class ChatController {
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
         return chatService.findSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
-    }
-
-    @MessageMapping("/createOrder")
-    @Transactional
-    public void createChat(Principal principal, Order order, SimpMessageHeaderAccessor headers) throws  Exception {
-        UserDetails loggedUser;
-        try{
-            String auth = headers.getNativeHeader("Authorization").get(0);
-            String token = auth.substring(6);
-            loggedUser = Jwt.validate(token);
-        }catch (Exception e){
-            throw new BadCredentialsException("Jwt token is missing or is incorrect.");
-        }
-
-        int restaurantId = loggedUser.getRestaurantId();
-        int userId = loggedUser.getId();
-
-        OrderDto orderDto = new OrderDto(longPollingService.addOrder(order, restaurantId, userId));
-        messagingTemplate.convertAndSendToUser(String.valueOf(userId), "/createOrder", orderDto);
     }
 
     @MessageMapping("/newMessage")
