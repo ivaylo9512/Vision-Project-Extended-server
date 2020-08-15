@@ -1,6 +1,5 @@
 package com.vision.project.services;
 
-import com.vision.project.exceptions.NonExistingChat;
 import com.vision.project.models.Chat;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
@@ -15,7 +14,7 @@ import com.vision.project.services.base.ChatService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,10 +40,16 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public List<Chat> findUserChats(int id, int pageSize) {
         List<Chat> chats = chatRepository.findUserChats(id, PageRequest.of(0, pageSize));
-        chats.forEach(chat -> chat
-                .setSessions(sessionRepository
-                        .findSessions(chat,
-                                PageRequest.of(0, sessionPageSize, Sort.Direction.DESC, "session_date"))));
+        chats.forEach(chat -> {
+            chat.setSessions(sessionRepository.findSessions(chat,PageRequest.of(0, pageSize,
+                    Sort.Direction.DESC, "session_date")));
+
+            UserModel loggedUser = chat.getFirstUserModel();
+            if(loggedUser.getId() != id){
+                chat.setFirstUserModel(chat.getSecondUserModel());
+                chat.setSecondUserModel(loggedUser);
+            }
+        });
         return chats;
     }
 
@@ -60,13 +65,13 @@ public class ChatServiceImpl implements ChatService {
         int receiver = messageSpec.getReceiverId();
 
         Chat chat = chatRepository.findById(messageSpec.getChatId())
-                .orElseThrow(()-> new NonExistingChat("Chat with id: " + messageSpec.getChatId() + " is not found."));
+                .orElseThrow(()-> new EntityNotFoundException("Chat with id: " + messageSpec.getChatId() + " is not found."));
 
         int chatFirstUser = chat.getFirstUserModel().getId();
         int chatSecondUser = chat.getSecondUserModel().getId();
 
         if ((sender != chatFirstUser && sender != chatSecondUser) || (receiver != chatFirstUser && receiver != chatSecondUser)) {
-            throw new NonExistingChat("Users don't match the given chat.");
+            throw new EntityNotFoundException("Users don't match the given chat.");
         }
 
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))

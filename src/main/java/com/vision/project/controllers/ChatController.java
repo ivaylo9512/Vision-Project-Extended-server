@@ -40,17 +40,13 @@ public class ChatController {
     @GetMapping(value = "/getChats")
     @Transactional
     public List<ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
-
         UserDetails userDetails = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
 
-        List<Chat> chats = chatService.findUserChats(userId, pageSize);
-
-        return chats.stream()
+        return chatService.findUserChats(userId, pageSize).stream()
                 .map(ChatDto::new)
                 .collect(Collectors.toList());
-
     }
 
     @GetMapping(value = "/getSessions")

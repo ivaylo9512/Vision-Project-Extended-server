@@ -1,6 +1,5 @@
 package com.vision.project.controllers;
 
-import com.vision.project.exceptions.NonExistingOrder;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.OrderDto;

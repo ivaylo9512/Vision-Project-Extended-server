@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     @Override
     public UserModel findById(int id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist."));
+                .orElseThrow(() -> new EntityNotFoundException("User doesn't exist."));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     @Override
     public UserModel changeUserInfo(int loggedUser, UserSpec userSpec){
         UserModel user = userRepository.findById(loggedUser)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+                .orElseThrow(() -> new EntityNotFoundException("Username not found."));
         user.setFirstName(userSpec.getFirstName());
         user.setLastName(userSpec.getLastName());
         user.setAge(userSpec.getAge());
