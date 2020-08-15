@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Dish update(int orderId, int dishId, int userId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
+                .orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
 
         List<Dish> notReady = new ArrayList<>();
         boolean updated = false;
@@ -87,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findById(int id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new NonExistingOrder("Order doesn't exist."));
+                .orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
     }
 
     @Override

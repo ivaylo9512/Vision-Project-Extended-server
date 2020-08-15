@@ -88,12 +88,4 @@ public class OrderController {
 
         return new DishDto(longPollingService.addDish(orderId, dishId, loggedUser.getId(), loggedUser.getRestaurantId()));
     }
-
-
-    @ExceptionHandler
-    ResponseEntity handleNonExistingOrder(NonExistingOrder e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
 }
