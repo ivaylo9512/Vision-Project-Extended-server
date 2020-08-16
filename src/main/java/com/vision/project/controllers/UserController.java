@@ -46,9 +46,9 @@ public class UserController {
         return initializeUser(userService.findById(loggedUser.getId()), pageSize);
     }
 
-    @PostMapping("/login/{pageSize}")
+    @PostMapping("/login")
     @Transactional
-    public UserDto login(@PathVariable("pageSize") int pageSize){
+    public UserDto login(@RequestParam("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 

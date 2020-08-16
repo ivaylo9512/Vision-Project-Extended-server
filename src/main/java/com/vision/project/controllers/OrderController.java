@@ -7,15 +7,12 @@ import com.vision.project.security.Jwt;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.security.Principal;
