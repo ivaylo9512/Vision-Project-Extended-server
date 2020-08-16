@@ -1,9 +1,11 @@
 package com.vision.project.models.DTOs;
 
 import com.vision.project.models.Menu;
+import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,17 +15,17 @@ public class RestaurantDto {
     private String address;
     private String type;
     private Set<Menu> menu;
-    private List<OrderDto> orders;
+    private Map<Integer, OrderDto> orders;
 
-
-    RestaurantDto(Restaurant restaurant){
+    public RestaurantDto(Restaurant restaurant, Map<Integer, Order> orders){
         this.id = restaurant.getId();
         this.name = restaurant.getName();
         this.address = restaurant.getAddress();
         this.type = restaurant.getType();
         this.menu = restaurant.getMenu();
-        this.orders = restaurant.getOrders().stream()
-                .map(OrderDto::new).collect(Collectors.toList());
+        this.orders = orders.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto((Order) o),
+                        (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
     public int getId() {
@@ -66,11 +68,11 @@ public class RestaurantDto {
         this.menu = menu;
     }
 
-    public List<OrderDto> getOrders() {
+    public Map<Integer, OrderDto> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrderDto> orders) {
+    public void setOrders(Map<Integer, OrderDto> orders) {
         this.orders = orders;
     }
 }

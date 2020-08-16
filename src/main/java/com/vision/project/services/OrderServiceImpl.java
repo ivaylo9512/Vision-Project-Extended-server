@@ -4,6 +4,7 @@ import com.vision.project.models.*;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -92,13 +94,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findNotReady(Restaurant restaurant, int page, int pageSize) {
-        return orderRepository.findNotReady(restaurant, PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+    public Map<Integer, Order> findNotReady(int restaurantId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.DESC, "created");
+
+        return orderRepository.findNotReady(restaurantRepository.getOne(restaurantId), pageable).stream()
+                .collect(Collectors.toMap(Order::getId, order -> order, (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
     @Override
-    public List<Order> findAllNotReady(Restaurant restaurant) {
-        return orderRepository.findAllNotReady(restaurant);
+    public List<Order> findAllNotReady(int restaurantId) {
+        return orderRepository.findAllNotReady(restaurantRepository.getOne(restaurantId));
     }
 
     @Override

@@ -7,13 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
-import com.vision.project.models.Chat;
+import com.vision.project.models.*;
+import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.models.Restaurant;
-import com.vision.project.models.UserDetails;
-import com.vision.project.models.UserModel;
-import com.vision.project.models.UserRequest;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
@@ -95,13 +92,14 @@ public class LongPollingController {
 
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
-        restaurant.setOrders(orderService.findNotReady(restaurant, 0, pageSize));
+        Map<Integer, Order> orders = orderService.findNotReady(restaurant.getId(), 0, pageSize);
+        RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
         Map<Integer, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
 
         longPollingService.addRequest(userRequest);
-        return new UserDto(user, restaurant, LocalDateTime.now(), chats);
+        return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);
     }
 
 

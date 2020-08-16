@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,11 +46,12 @@ public class OrderController {
     }
 
     @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
-    public List<OrderDto> findNotReady(@PathVariable("page") int page,
-                                          @PathVariable("pageSize") int pageSize,
-                                          @PathVariable("restaurantId") int restaurantId){
-        return orderService.findNotReady(restaurantId, page, pageSize).stream()
-                .map(OrderDto::new).collect(Collectors.toList());
+    public Map<Integer, OrderDto> findNotReady(@PathVariable("page") int page,
+                                      @PathVariable("pageSize") int pageSize,
+                                      @PathVariable("restaurantId") int restaurantId){
+        return orderService.findNotReady(restaurantId, page, pageSize).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto((Order) o),
+                        (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
     @GetMapping(value = "/findById/{id}")

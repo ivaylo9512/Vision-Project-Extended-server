@@ -18,28 +18,15 @@ public class UserDto {
     private Map<Integer, ChatDto> chats;
     private LocalDateTime lastCheck;
 
-    public UserDto(UserDetails userDetails){
-        this.id = userDetails.getId();
-        this.username = userDetails.getUsername();
-        this.role = new ArrayList<>(userDetails.getAuthorities()).get(0).getAuthority();
-
-        UserModel userModel = userDetails.getUserModel();
-        this.firstName = userModel.getFirstName();
-        this.lastName = userModel.getLastName();
-        this.age = userModel.getAge();
-        this.country = userModel.getCountry();
-        this.profilePicture = userModel.getProfilePicture();
-        this.restaurant = new RestaurantDto(userModel.getRestaurant());
-    }
-    public UserDto(UserModel userModel, Restaurant restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
+    public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
         this(userModel);
-        this.restaurant = new RestaurantDto(restaurant);
+        this.restaurant = restaurant;
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
         this.lastCheck = lastCheck;
     }
-    public UserDto(UserModel userModel, Restaurant restaurant, Map<Integer, Chat> chats){
+    public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Integer, Chat> chats){
         this(userModel);
-        this.restaurant = new RestaurantDto(restaurant);
+        this.restaurant = restaurant;
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
 
     }

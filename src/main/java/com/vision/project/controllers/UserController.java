@@ -5,6 +5,7 @@ import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
+import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
@@ -57,10 +58,11 @@ public class UserController {
 
     private UserDto initializeUser(UserModel userModel, int pageSize){
         Restaurant restaurant = userModel.getRestaurant();
-        restaurant.setOrders(orderService.findNotReady(restaurant.getId(), 0, pageSize));
+        Map<Integer, Order> orders = orderService.findNotReady(restaurant.getId(), 0, pageSize);
+        RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
         Map<Integer, Chat> chats = chatService.findUserChats(userModel.getId(), pageSize);
 
-        return new UserDto(userModel, restaurant, chats);
+        return new UserDto(userModel, restaurantDto, chats);
     }
 
     @PostMapping(value = "/register")
