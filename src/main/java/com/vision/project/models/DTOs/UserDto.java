@@ -34,13 +34,14 @@ public class UserDto {
     public UserDto(UserModel userModel, Restaurant restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
-        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o)));
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
         this.lastCheck = lastCheck;
     }
     public UserDto(UserModel userModel, Restaurant restaurant, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
-        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o)));
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
+
     }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
