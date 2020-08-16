@@ -57,7 +57,7 @@ public class UserController {
 
     private UserDto initializeUser(UserModel userModel, int pageSize){
         Restaurant restaurant = userModel.getRestaurant();
-        restaurant.setOrders(orderService.findNotReady(restaurant, 0, pageSize));
+        restaurant.setOrders(orderService.findNotReady(restaurant.getId(), 0, pageSize));
         Map<Integer, Chat> chats = chatService.findUserChats(userModel.getId(), pageSize);
 
         return new UserDto(userModel, restaurant, chats);

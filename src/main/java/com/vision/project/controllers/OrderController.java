@@ -37,9 +37,18 @@ public class OrderController {
         return orderService.findAll().stream().map(OrderDto::new).collect(Collectors.toList());
     }
 
-    @GetMapping(value = "/findAllNotReady")
-    public List<OrderDto> findNotReady(Restaurant restaurant){
-        return orderService.findAllNotReady(restaurant).stream().map(OrderDto::new).collect(Collectors.toList());
+    @GetMapping(value = "/findAllNotReady/{restaurantId}")
+    public List<OrderDto> findAllNotReady(@PathVariable("restaurantId") int restaurantId){
+        return orderService.findAllNotReady(restaurantId).stream()
+                .map(OrderDto::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
+    public List<OrderDto> findNotReady(@PathVariable("page") int page,
+                                          @PathVariable("pageSize") int pageSize,
+                                          @PathVariable("restaurantId") int restaurantId){
+        return orderService.findNotReady(restaurantId, page, pageSize).stream()
+                .map(OrderDto::new).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/findById/{id}")
