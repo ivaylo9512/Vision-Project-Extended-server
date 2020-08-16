@@ -1,8 +1,6 @@
 package com.vision.project.models.DTOs;
 
 import com.vision.project.models.Chat;
-import com.vision.project.models.Session;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,14 +40,13 @@ public class ChatController {
 
     @GetMapping(value = "/getChats")
     @Transactional
-    public List<ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
+    public Map<Integer, ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
         UserDetails userDetails = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
         int userId = userDetails.getId();
 
-        return chatService.findUserChats(userId, pageSize).stream()
-                .map(ChatDto::new)
-                .collect(Collectors.toList());
+        return chatService.findUserChats(userId, pageSize).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o)));
     }
 
     @GetMapping(value = "/getSessions")

@@ -13,9 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ChatService {
-    List<Chat> findUserChats(int id, int pageSize);
+    Map<Integer, Chat> findUserChats(int id, int pageSize);
 
     List<Session> findSessions(int chatId, int page, int pageSize);
 

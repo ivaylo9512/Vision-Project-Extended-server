@@ -37,11 +37,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Transactional
-    public List<Chat> findUserChats(int id, int pageSize) {
-        List<Chat> chats = chatRepository.findUserChats(id, PageRequest.of(0, pageSize));
-        chats.forEach(chat -> {
-            chat.setSessions(sessionRepository.findSessions(chat,PageRequest.of(0, pageSize,
+    public Map<Integer, Chat> findUserChats(int id, int pageSize) {
+        Map<Integer, Chat> chatsMap = new LinkedHashMap<>();
+        chatRepository.findUserChats(id, PageRequest.of(0, pageSize)).forEach(chat -> {
+            chat.setSessions(sessionRepository.findSessions(chat, PageRequest.of(0, pageSize,
                     Sort.Direction.DESC, "session_date")));
 
             UserModel loggedUser = chat.getFirstUserModel();
@@ -49,8 +48,10 @@ public class ChatServiceImpl implements ChatService {
                 chat.setFirstUserModel(chat.getSecondUserModel());
                 chat.setSecondUserModel(loggedUser);
             }
+
+            chatsMap.put(chat.getId(), chat);
         });
-        return chats;
+        return chatsMap;
     }
 
     @Override

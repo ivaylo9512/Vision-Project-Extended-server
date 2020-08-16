@@ -1,10 +1,6 @@
 package com.vision.project.models.DTOs;
 
-import com.vision.project.models.Order;
-import com.vision.project.models.Restaurant;
-import com.vision.project.models.UserModel;
-import com.vision.project.models.UserDetails;
-
+import com.vision.project.models.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +15,7 @@ public class UserDto {
     private String role;
     private String profilePicture;
     private RestaurantDto restaurant;
-    private List<ChatDto> chats;
+    private Map<Integer, ChatDto> chats;
     private LocalDateTime lastCheck;
 
     public UserDto(UserDetails userDetails){
@@ -35,16 +31,16 @@ public class UserDto {
         this.profilePicture = userModel.getProfilePicture();
         this.restaurant = new RestaurantDto(userModel.getRestaurant());
     }
-    public UserDto(UserModel userModel, Restaurant restaurant,LocalDateTime lastCheck){
+    public UserDto(UserModel userModel, Restaurant restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
-        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o)));
         this.lastCheck = lastCheck;
     }
-    public UserDto(UserModel userModel, Restaurant restaurant){
+    public UserDto(UserModel userModel, Restaurant restaurant, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = new RestaurantDto(restaurant);
-        this.chats = userModel.getChats().stream().map(ChatDto::new).collect(Collectors.toList());
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o)));
     }
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
@@ -129,11 +125,11 @@ public class UserDto {
         this.restaurant = restaurant;
     }
 
-    public List<ChatDto> getChats() {
+    public Map<Integer, ChatDto> getChats() {
         return chats;
     }
 
-    public void setChats(List<ChatDto> chats) {
+    public void setChats(Map<Integer, ChatDto> chats) {
         this.chats = chats;
     }
 

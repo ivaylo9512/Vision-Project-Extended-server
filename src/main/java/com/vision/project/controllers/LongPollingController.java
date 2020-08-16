@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
+import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.Restaurant;
@@ -19,7 +20,6 @@ import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +32,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users/polling")
@@ -97,10 +98,10 @@ public class LongPollingController {
         restaurant.setOrders(orderService.findNotReady(restaurant, 0, pageSize));
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
-        user.setChats(chatService.findUserChats(user.getId(), pageSize));
+        Map<Integer, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
 
         longPollingService.addRequest(userRequest);
-        return new UserDto(user, restaurant, LocalDateTime.now());
+        return new UserDto(user, restaurant, LocalDateTime.now(), chats);
     }
 
 

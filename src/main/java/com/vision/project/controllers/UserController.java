@@ -11,7 +11,6 @@ import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +22,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -58,9 +58,9 @@ public class UserController {
     private UserDto initializeUser(UserModel userModel, int pageSize){
         Restaurant restaurant = userModel.getRestaurant();
         restaurant.setOrders(orderService.findNotReady(restaurant, 0, pageSize));
-        userModel.setChats(chatService.findUserChats(userModel.getId(), pageSize));
+        Map<Integer, Chat> chats = chatService.findUserChats(userModel.getId(), pageSize);
 
-        return new UserDto(userModel, restaurant);
+        return new UserDto(userModel, restaurant, chats);
     }
 
     @PostMapping(value = "/register")
