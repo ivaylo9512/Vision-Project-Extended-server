@@ -21,13 +21,13 @@ public class UserDto {
     public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;
-        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
         this.lastCheck = lastCheck;
     }
     public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;
-        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat) o), (existing, replacement) -> existing, LinkedHashMap::new));
+        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
 
     }
     public UserDto(UserModel userModel){

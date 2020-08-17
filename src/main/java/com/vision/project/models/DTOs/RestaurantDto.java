@@ -24,7 +24,7 @@ public class RestaurantDto {
         this.type = restaurant.getType();
         this.menu = restaurant.getMenu();
         this.orders = orders.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto((Order) o),
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
                         (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
