@@ -4,10 +4,11 @@ import com.vision.project.models.UserRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserRequestDto {
-    private List<OrderDto> orders;
+    private Map<Integer, OrderDto> orders;
     private List<MessageDto> messages;
     private List<DishDto> dishes;
     private int userId;
@@ -23,11 +24,11 @@ public class UserRequestDto {
         this.lastCheck = currentRequest.getLastCheck();
     }
 
-    public List<OrderDto> getOrders() {
+    public Map<Integer, OrderDto> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrderDto> orders) {
+    public void setOrders(Map<Integer, OrderDto> orders) {
         this.orders = orders;
     }
 

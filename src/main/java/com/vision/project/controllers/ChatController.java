@@ -1,6 +1,5 @@
 package com.vision.project.controllers;
 
-import com.vision.project.models.Chat;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.DTOs.SessionDto;
@@ -47,7 +46,7 @@ public class ChatController {
         int userId = userDetails.getId();
 
         return chatService.findUserChats(userId, pageSize).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto((Chat)o), (existing, duplicate) -> existing, LinkedHashMap::new));
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, duplicate) -> existing, LinkedHashMap::new));
     }
 
     @GetMapping(value = "/getSessions")
