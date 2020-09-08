@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.FileNotFoundUncheckedException;
 import com.vision.project.services.base.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,17 +27,17 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Resource loadFileAsResource(String fileName) throws FileNotFoundException {
+    public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
             } else {
-                throw new FileNotFoundException("File not found");
+                throw new FileNotFoundUncheckedException("File not found");
             }
         } catch (MalformedURLException e) {
-            throw new FileNotFoundException("File not found " + e);
+            throw new FileNotFoundUncheckedException("File not found " + e);
         }
     }
 }

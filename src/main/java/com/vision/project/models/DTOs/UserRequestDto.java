@@ -1,8 +1,9 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.Order;
 import com.vision.project.models.UserRequest;
-
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +17,8 @@ public class UserRequestDto {
     private LocalDateTime lastCheck;
 
     public UserRequestDto(UserRequest currentRequest){
-        this.orders = currentRequest.getOrders().stream().map(OrderDto::new).collect(Collectors.toList());
+        this.orders = currentRequest.getOrders().stream()
+                .collect(Collectors.toMap(Order::getId, OrderDto::new, (existing, replacement) -> existing, LinkedHashMap::new));
         this.messages = currentRequest.getMessages().stream().map(MessageDto::new).collect(Collectors.toList());
         this.dishes = currentRequest.getDishes().stream().map(DishDto::new).collect(Collectors.toList());
         this.userId = currentRequest.getUserId();

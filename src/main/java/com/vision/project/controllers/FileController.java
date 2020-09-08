@@ -21,7 +21,7 @@ public class FileController {
     }
 
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) throws FileNotFoundException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request){
 
         Resource resource = fileService.loadFileAsResource(fileName);
         String contentType = null;
