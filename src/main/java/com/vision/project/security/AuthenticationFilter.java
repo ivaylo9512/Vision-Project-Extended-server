@@ -1,9 +1,6 @@
 package com.vision.project.security;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.UserModel;
 import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.ChatService;
@@ -12,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private byte[] encodedBytes = Base64.getEncoder().encode(Jwt.jwtSecret.getBytes());
 

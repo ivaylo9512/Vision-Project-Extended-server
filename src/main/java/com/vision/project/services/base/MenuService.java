@@ -1,7 +1,6 @@
 package com.vision.project.services.base;
 
 import com.vision.project.models.Menu;
-
 import java.util.List;
 
 public interface MenuService {

@@ -1,4 +1,5 @@
 package com.vision.project.config;
+
 import com.vision.project.security.*;
 import com.vision.project.services.UserServiceImpl;
 import com.vision.project.services.base.ChatService;
@@ -21,7 +22,6 @@ import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import java.util.Collections;
 
 @EnableWebSecurity

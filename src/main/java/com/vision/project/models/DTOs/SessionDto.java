@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.Chat;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;

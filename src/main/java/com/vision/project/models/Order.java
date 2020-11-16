@@ -1,10 +1,8 @@
 package com.vision.project.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;

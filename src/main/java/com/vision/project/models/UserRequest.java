@@ -2,7 +2,6 @@ package com.vision.project.models;
 
 import com.vision.project.models.DTOs.UserRequestDto;
 import org.springframework.web.context.request.async.DeferredResult;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

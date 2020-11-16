@@ -1,9 +1,6 @@
 package com.vision.project.models.compositePK;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vision.project.models.Chat;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;

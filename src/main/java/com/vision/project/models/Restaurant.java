@@ -1,7 +1,6 @@
 package com.vision.project.models;
 
 import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;

@@ -1,7 +1,6 @@
 package com.vision.project.models;
 
 import com.vision.project.models.compositePK.SessionPK;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
