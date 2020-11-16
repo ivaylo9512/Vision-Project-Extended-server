@@ -9,12 +9,11 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
-    private String name;
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
+
+    private String name;
 
     public Menu() {
     }

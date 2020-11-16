@@ -11,15 +11,6 @@ public class Restaurant {
     @Id
     private int id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "type")
-    private String type;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.LAZY)
     @OrderBy("name")
     private Set<Menu> menu;
@@ -28,6 +19,10 @@ public class Restaurant {
     @OrderBy("created")
     @Where(clause = "ready = false")
     private List<Order> orders;
+
+    private String name;
+    private String address;
+    private String type;
 
     public Restaurant() {
     }

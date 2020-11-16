@@ -1,7 +1,5 @@
 package com.vision.project.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,10 +14,6 @@ public class Dish{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "ready")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean ready;
 
@@ -28,16 +22,17 @@ public class Dish{
     private Order order;
 
     @CreationTimestamp
-    @Column(name = "created", columnDefinition = "DATETIME(6)")
+    @Column(columnDefinition = "DATETIME(6)")
     private LocalDateTime created;
 
     @UpdateTimestamp
-    @Column(name = "updated", columnDefinition = "DATETIME(6)")
+    @Column(columnDefinition = "DATETIME(6)")
     private LocalDateTime updated;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "updated_by")
     private UserModel updatedBy;
+
+    private String name;
 
     public Dish() {
     }

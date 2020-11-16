@@ -14,25 +14,11 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull(message="is required")
-    @Size(min=1, message="is required")
-    @Column(name = "username")
     private String username;
-
-    @NotNull(message="is required")
-    @Size(min=1, message="is required")
     private String password;
-
-    @Column(name = "firstname")
     private String firstName;
-
-    @Column(name = "lastname")
     private String lastName;
-
-    @Column(name = "age")
     private int age;
-
-    @Column(name = "country")
     private String country;
 
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
@@ -40,7 +26,6 @@ public class UserModel {
             inverseJoinColumns = @JoinColumn(name ="second_user" ))
     private List<Chat> chats;
 
-    @Column(name = "profile_picture")
     private String profilePicture;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -7,7 +7,6 @@ public class MessageSpec {
     private String message;
 
     public MessageSpec(){
-
     }
 
     public MessageSpec(int chatId, int senderId, int receiverId, String message) {
