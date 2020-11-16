@@ -6,7 +6,7 @@ import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
-import com.vision.project.models.specs.UserSpec;
+import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.OrderService;
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
+    public UserDto register(@RequestBody RegisterSpec user, HttpServletResponse response) {
         if(SecurityContextHolder.getContext() != null){
             UserDetails loggedUser = (UserDetails)SecurityContextHolder
                     .getContext().getAuthentication().getDetails();
@@ -86,7 +86,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/adminRegistration")
-    public UserDto registerAdmin(@Valid UserSpec user){
+    public UserDto registerAdmin(@Valid RegisterSpec user){
         return new UserDto(userService.register(user,"ROLE_USER"));
     }
 
@@ -97,7 +97,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/auth/changeUserInfo")
-    public UserDto changeUserInfo(@RequestBody UserSpec userModel){
+    public UserDto changeUserInfo(@RequestBody RegisterSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 

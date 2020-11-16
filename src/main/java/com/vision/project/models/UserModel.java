@@ -1,6 +1,6 @@
 package com.vision.project.models;
 
-import com.vision.project.models.specs.UserSpec;
+import com.vision.project.models.specs.RegisterSpec;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -66,9 +66,9 @@ public class UserModel {
         this.restaurant = restaurant;
     }
 
-    public UserModel(UserSpec userSpec, String role) {
-        this.setUsername(userSpec.getUsername());
-        this.setPassword(userSpec.getPassword());
+    public UserModel(RegisterSpec registerSpec, String role) {
+        this.setUsername(registerSpec.getUsername());
+        this.setPassword(registerSpec.getPassword());
         this.setRole(role);
     }
 

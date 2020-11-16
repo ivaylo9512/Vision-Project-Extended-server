@@ -1,7 +1,7 @@
 package com.vision.project.services.base;
 
 import com.vision.project.models.UserModel;
-import com.vision.project.models.specs.UserSpec;
+import com.vision.project.models.specs.RegisterSpec;
 import java.util.List;
 
 public interface UserService {
@@ -10,7 +10,7 @@ public interface UserService {
 
     UserModel findById(int id);
 
-    UserModel register(UserSpec userSpec, String role);
+    UserModel register(RegisterSpec registerSpec, String role);
 
-    UserModel changeUserInfo(int loggedUser, UserSpec userSpec);
+    UserModel changeUserInfo(int loggedUser, RegisterSpec registerSpec);
 }

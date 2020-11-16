@@ -3,7 +3,7 @@ package com.vision.project.services;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
-import com.vision.project.models.specs.UserSpec;
+import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.models.UserDetails;
 import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
@@ -43,14 +43,14 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public UserModel register(UserSpec userSpec, String role) {
-        UserModel userModel = userRepository.findByUsername(userSpec.getUsername());
+    public UserModel register(RegisterSpec registerSpec, String role) {
+        UserModel userModel = userRepository.findByUsername(registerSpec.getUsername());
 
         if (userModel != null) {
             throw new UsernameExistsException("Username is already taken.");
         }
 
-        userModel = new UserModel(userSpec, role);
+        userModel = new UserModel(registerSpec, role);
         userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
         return userRepository.save(userModel);
     }
@@ -74,13 +74,13 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public UserModel changeUserInfo(int loggedUser, UserSpec userSpec){
+    public UserModel changeUserInfo(int loggedUser, RegisterSpec registerSpec){
         UserModel user = userRepository.findById(loggedUser)
                 .orElseThrow(() -> new EntityNotFoundException("Username not found."));
-        user.setFirstName(userSpec.getFirstName());
-        user.setLastName(userSpec.getLastName());
-        user.setAge(userSpec.getAge());
-        user.setCountry(userSpec.getCountry());
+        user.setFirstName(registerSpec.getFirstName());
+        user.setLastName(registerSpec.getLastName());
+        user.setAge(registerSpec.getAge());
+        user.setCountry(registerSpec.getCountry());
 
         return userRepository.save(user);
     }

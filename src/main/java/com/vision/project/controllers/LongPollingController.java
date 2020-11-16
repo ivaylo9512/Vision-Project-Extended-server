@@ -11,7 +11,7 @@ import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.models.specs.UserSpec;
+import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
@@ -64,7 +64,7 @@ public class LongPollingController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@RequestBody UserSpec user, HttpServletResponse response) {
+    public UserDto register(@RequestBody RegisterSpec user, HttpServletResponse response) {
         if(SecurityContextHolder.getContext() != null){
             UserDetails loggedUser = (UserDetails)SecurityContextHolder
                     .getContext().getAuthentication().getDetails();
