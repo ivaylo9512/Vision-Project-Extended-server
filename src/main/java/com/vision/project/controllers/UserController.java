@@ -78,7 +78,6 @@ public class UserController {
 
         String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
                 Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
-
         response.addHeader("Authorization", "Token " + token);
 
         return new UserDto(userService.create(newUser));
@@ -96,7 +95,6 @@ public class UserController {
 
         String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
                 Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
-
         response.addHeader("Authorization", "Token " + token);
 
         return new UserDto(userService.create(newUser));

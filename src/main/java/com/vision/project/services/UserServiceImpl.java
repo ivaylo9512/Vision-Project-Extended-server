@@ -43,16 +43,15 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     }
 
     @Override
-    public UserModel register(RegisterSpec registerSpec, String role) {
-        UserModel userModel = userRepository.findByUsername(registerSpec.getUsername());
+    public UserModel create(UserModel user) {
+        UserModel existingUser = userRepository.findByUsername(user.getUsername());
 
-        if (userModel != null) {
+        if (existingUser != null) {
             throw new UsernameExistsException("Username is already taken.");
         }
 
-        userModel = new UserModel(registerSpec, role);
-        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(),BCrypt.gensalt(4)));
-        return userRepository.save(userModel);
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
+        return userRepository.save(user);
     }
 
     @Override
