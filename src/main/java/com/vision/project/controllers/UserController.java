@@ -1,6 +1,5 @@
 package com.vision.project.controllers;
 
-
 import com.vision.project.exceptions.PasswordsMissMatchException;
 import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
