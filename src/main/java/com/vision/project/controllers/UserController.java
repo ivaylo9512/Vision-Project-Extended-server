@@ -9,6 +9,7 @@ import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.ChatService;
+import com.vision.project.services.base.FileService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.UserService;
 import org.springframework.http.HttpStatus;
@@ -31,11 +32,13 @@ public class UserController {
     private final UserService userService;
     private final OrderService orderService;
     private final ChatService chatService;
+    private final FileService fileService;
 
-    public UserController(UserService userService, OrderService orderService, ChatService chatService) {
+    public UserController(UserService userService, OrderService orderService, ChatService chatService, FileService fileService) {
         this.userService = userService;
         this.orderService = orderService;
         this.chatService = chatService;
+        this.fileService = fileService;
     }
 
     @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
@@ -65,23 +68,20 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@RequestBody RegisterSpec user, HttpServletResponse response) {
-        if(SecurityContextHolder.getContext() != null){
-            UserDetails loggedUser = (UserDetails)SecurityContextHolder
-                    .getContext().getAuthentication().getDetails();
-            if(!loggedUser.getUserModel().getRole().equals("admin")){
-                throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
-            }
-        }else{
-            throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
+    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+        UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+
+        if(registerSpec.getProfileImage() != null){
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            newUser.setProfileImage(profileImage);
         }
 
-        UserModel userModel = userService.register(user,"ROLE_USER");
-        String token = Jwt.generate(new UserDetails(userModel, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(userModel.getRole())))));
+        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
+                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
 
         response.addHeader("Authorization", "Token " + token);
-        return new UserDto(userModel);
+
+        return new UserDto(userService.create(newUser));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
