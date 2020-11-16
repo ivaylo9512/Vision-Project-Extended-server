@@ -1,6 +1,7 @@
 package com.vision.project.services;
 
 import com.vision.project.exceptions.FileNotFoundUncheckedException;
+import com.vision.project.exceptions.FileStorageException;
 import com.vision.project.services.base.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,7 +22,7 @@ public class FileServiceImpl implements FileService {
         try {
             Files.createDirectories(this.fileLocation);
         } catch (Exception e) {
-            throw new RuntimeException("Couldn't create directory");
+            throw new FileStorageException("Couldn't create directory");
         }
     }
 

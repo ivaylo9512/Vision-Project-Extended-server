@@ -2,8 +2,6 @@ package com.vision.project.models;
 
 import com.vision.project.models.specs.RegisterSpec;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -14,25 +12,23 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String country;
-
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},
             inverseJoinColumns = @JoinColumn(name ="second_user" ))
     private List<Chat> chats;
-
-    private String profilePicture;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 
     private String role;
+    private String username;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private String country;
+    private String profilePicture;
 
     public UserModel(){
 
