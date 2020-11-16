@@ -86,8 +86,20 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/adminRegistration")
-    public UserDto registerAdmin(@Valid RegisterSpec user){
-        return new UserDto(userService.register(user,"ROLE_USER"));
+    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+        UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
+
+        if(registerSpec.getProfileImage() != null){
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            newUser.setProfileImage(profileImage);
+        }
+
+        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
+                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
+
+        response.addHeader("Authorization", "Token " + token);
+
+        return new UserDto(userService.create(newUser));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
