@@ -46,6 +46,7 @@ dependencies {
     compile group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
     compile group: 'org.springframework', name: 'spring-messaging'
     compile group: 'org.springframework', name: 'spring-websocket'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 }
 
 jacocoTestReport {
