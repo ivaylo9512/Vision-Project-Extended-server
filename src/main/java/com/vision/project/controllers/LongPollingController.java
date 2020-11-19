@@ -16,6 +16,7 @@ import com.vision.project.security.Jwt;
 import com.vision.project.services.base.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +66,23 @@ public class LongPollingController {
     @PostMapping(value = "/register")
     public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+
+        if(registerSpec.getProfileImage() != null){
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            newUser.setProfileImage(profileImage);
+        }
+
+        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
+                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
+        response.addHeader("Authorization", "Token " + token);
+
+        return new UserDto(userService.create(newUser));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/auth/adminRegistration")
+    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+        UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
 
         if(registerSpec.getProfileImage() != null){
             File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
