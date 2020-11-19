@@ -41,7 +41,7 @@ public class UserController {
         this.fileService = fileService;
     }
 
-    @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
+    @GetMapping(value = "/auth/getLoggedUser")
     public UserDto getLoggedUser(@PathVariable("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
