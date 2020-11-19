@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.FileFormatException;
 import com.vision.project.exceptions.FileNotFoundUncheckedException;
 import com.vision.project.exceptions.FileStorageException;
 import com.vision.project.models.File;
@@ -63,6 +64,13 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
             throw new FileStorageException("Couldn't store the image.");
         }
+    }
+
+    @Override
+    public File update(MultipartFile file, String name, long id){
+        File updatedFile = create(file, name);
+        updatedFile.setId(id);
+        return fileRepository.save(updatedFile);
     }
 
     private void save(File image, MultipartFile receivedFile) throws IOException {
