@@ -21,6 +21,9 @@ public class UserModel {
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
     private String role;
     private String username;
     private String password;
@@ -28,7 +31,6 @@ public class UserModel {
     private String lastName;
     private int age;
     private String country;
-    private String profilePicture;
 
     public UserModel(){
 
