@@ -13,10 +13,7 @@ import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.security.Jwt;
-import com.vision.project.services.base.ChatService;
-import com.vision.project.services.base.LongPollingService;
-import com.vision.project.services.base.OrderService;
-import com.vision.project.services.base.UserService;
+import com.vision.project.services.base.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,15 +35,17 @@ public class LongPollingController {
     private final OrderService orderService;
     private final ChatService chatService;
     private final LongPollingService longPollingService;
+    private final FileService fileService;
 
-    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService) {
+    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService, FileService fileService) {
         this.userService = userService;
         this.orderService = orderService;
         this.chatService = chatService;
         this.longPollingService = longPollingService;
+        this.fileService = fileService;
     }
 
-    @PostMapping("/login/{pageSize}")
+    @PostMapping("/login")
     @Transactional
     public UserDto login(@RequestParam("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
@@ -55,7 +54,7 @@ public class LongPollingController {
         return initializeUser(userDetails.getUserModel(), pageSize);
     }
 
-    @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
+    @GetMapping(value = "/auth/getLoggedUser")
     public UserDto getLoggedUser(@RequestParam("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
@@ -64,29 +63,19 @@ public class LongPollingController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@RequestBody RegisterSpec user, HttpServletResponse response) {
-        if(SecurityContextHolder.getContext() != null){
-            UserDetails loggedUser = (UserDetails)SecurityContextHolder
-                    .getContext().getAuthentication().getDetails();
-            if(!loggedUser.getUserModel().getRole().equals("admin")){
-                throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
-            }
-        }else{
-            throw new RegistrationIsDisabled("Registration is disabled. Only the admin can register!");
+    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+        UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+
+        if(registerSpec.getProfileImage() != null){
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            newUser.setProfileImage(profileImage);
         }
 
-        UserModel userModel = userService.register(user,"ROLE_USER");
-        String token = Jwt.generate(new UserDetails(userModel, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(userModel.getRole())))));
-
+        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
+                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
         response.addHeader("Authorization", "Token " + token);
 
-        Restaurant restaurant = userModel.getRestaurant();
-        UserRequest userRequest = new UserRequest(userModel.getId(), restaurant.getId(), null);
-
-        longPollingService.addRequest(userRequest);
-
-        return new UserDto(userModel);
+        return new UserDto(userService.create(newUser));
     }
 
     private UserDto initializeUser(UserModel user, int pageSize){
