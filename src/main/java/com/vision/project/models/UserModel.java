@@ -21,8 +21,8 @@ public class UserModel {
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 
-    @Column(name = "profile_picture")
-    private String profilePicture;
+    @Column(name = "profile_image")
+    private File profileImage;
 
     private String role;
     private String username;
@@ -37,7 +37,7 @@ public class UserModel {
     }
 
     public UserModel(String username, String password, String role, String firstName,
-                     String lastName, int age, String country, String profilePicture, Restaurant restaurant) {
+                     String lastName, int age, String country, File profileImage, Restaurant restaurant) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -45,7 +45,7 @@ public class UserModel {
         this.lastName = lastName;
         this.age = age;
         this.country = country;
-        this.profilePicture = profilePicture;
+        this.profileImage = profileImage;
         this.restaurant = restaurant;
     }
 
@@ -127,19 +127,19 @@ public class UserModel {
         this.chats = chats;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
     public Restaurant getRestaurant() {
         return restaurant;
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public File getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(File profileImage) {
+        this.profileImage = profileImage;
     }
 }
