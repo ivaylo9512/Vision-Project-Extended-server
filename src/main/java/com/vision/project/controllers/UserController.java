@@ -85,7 +85,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/adminRegistration")
-    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+    public UserDto registerAdmin(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
 
         if(registerSpec.getProfileImage() != null){
