@@ -6,6 +6,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
+    boolean delete(String fileName, UserModel loggedUser);
+
     Resource getAsResource(String fileName);
 
     File update(MultipartFile file, String name, long id, String type);

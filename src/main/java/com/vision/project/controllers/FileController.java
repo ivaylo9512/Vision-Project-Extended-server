@@ -1,36 +1,37 @@
 package com.vision.project.controllers;
 
+import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.FileService;
+import com.vision.project.services.base.UserService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/images")
 public class FileController {
-
     private final FileService fileService;
+    private final UserService userService;
 
-    public FileController(FileService fileService) {
+    public FileController(FileService fileService, UserService userService) {
         this.fileService = fileService;
+        this.userService = userService;
     }
 
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request){
+    public ResponseEntity<Resource> get(@PathVariable String fileName, HttpServletRequest request) {
+        Resource resource = fileService.getAsResource(fileName);
+        String contentType;
 
-        Resource resource = fileService.loadFileAsResource(fileName);
-        String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException e) {
-            System.out.println("Could not get file type");
-        }
-
-        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
@@ -39,5 +40,13 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
                         resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @DeleteMapping("/auth/delete/{name}")
+    public boolean delete(@PathVariable("name") String name){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return fileService.delete(name, userService.findById(loggedUser.getId()));
     }
 }

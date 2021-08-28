@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import javax.persistence.EntityNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -104,6 +105,73 @@ public class FileService {
         fileService.create(multipartFile, "test2", "text", new UserModel());
 
         assertTrue(new java.io.File("./uploads/test2.txt").exists());
+    }
+
+    @Test
+    public void delete_WithOwner(){
+        UserModel owner = new UserModel();
+        owner.setId(2);
+
+        File file = new File();
+        file.setOwner(owner);
+
+        when(fileRepository.findByName("test3.txt")).thenReturn(file);
+
+        boolean isDeleted = fileService.delete("test3.txt", owner);
+
+        assertFalse(new java.io.File("./uploads/test3.txt").exists());
+        assertTrue(isDeleted);
+    }
+
+    @Test
+    public void delete_WithAdmin(){
+        UserModel loggedUser = new UserModel();
+        loggedUser.setRole("ROLE_ADMIN");
+        loggedUser.setId(1);
+
+        UserModel owner = new UserModel();
+        owner.setId(2);
+
+        File file = new File();
+        file.setOwner(owner);
+
+        when(fileRepository.findByName("test1.txt")).thenReturn(file);
+
+        boolean isDeleted = fileService.delete("test1.txt", loggedUser);
+
+        assertFalse(new java.io.File("./uploads/test1.txt").exists());
+        assertTrue(isDeleted);
+    }
+
+    @Test
+    public void delete_WhenFileIsNotInDB_NotFound(){
+        UserModel loggedUser = new UserModel();
+        loggedUser.setRole("ROLE_ADMIN");
+
+        when(fileRepository.findByName("test1.txt")).thenReturn(null);
+
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> fileService.delete("test1.txt", loggedUser));
+
+        assertEquals(thrown.getMessage(), "File not found.");
+    }
+
+    @Test
+    public void delete_WhenFileIsNotInFolder(){
+        UserModel loggedUser = new UserModel();
+        loggedUser.setId(2);
+        loggedUser.setRole("ROLE_ADMIN");
+
+        File file = new File();
+        file.setOwner(loggedUser);
+
+        when(fileRepository.findByName("test11.txt")).thenReturn(file);
+
+        boolean isDeleted = fileService.delete("test11.txt", loggedUser);
+        assertFalse(isDeleted);
+
+        verify(fileRepository, times(0)).delete(any(File.class));
     }
 
     @Test

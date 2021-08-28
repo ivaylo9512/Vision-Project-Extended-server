@@ -67,6 +67,26 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public boolean delete(String fileName, UserModel loggedUser) {
+        File file = findByName(fileName);
+        if(file == null){
+            throw new EntityNotFoundException("File not found.");
+        }
+
+        if(file.getOwner().getId() != loggedUser.getId()
+                && !loggedUser.getRole().equals("ROLE_ADMIN")){
+            throw new UnauthorizedException("Unauthorized");
+        }
+
+        if(new java.io.File("./uploads/" + fileName).delete()){
+            fileRepository.delete(file);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public Resource getAsResource(String fileName){
         try {
             Path filePath = this.fileLocation.resolve(fileName).normalize();
