@@ -1,58 +1,46 @@
-buildscript {
-    ext {
-        springBootVersion = '2.0.4.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+    id 'org.springframework.boot' version '2.5.0'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'jacoco'
-apply plugin: 'war'
-
 group = 'com.vision'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+version = '1.0-SNAPSHOT'
+sourceCompatibility = 11
+targetCompatibility = 11
 
+test {
+    useJUnitPlatform()
+}
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-security")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
-    compile group: 'org.springframework.security', name: 'spring-security-jwt'
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
-    compile('javax.xml.bind:jaxb-api:2.3.0')
-    compile('javax.activation:activation:1.1')
-    compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
-    compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.2'
-    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
-    compile group: 'com.h2database', name: 'h2', version: '1.4.192'
-    compile group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
-    compile group: 'org.springframework', name: 'spring-messaging'
-    compile group: 'org.springframework', name: 'spring-websocket'
-}
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation group: 'org.springframework', name: 'spring-messaging'
+    implementation group: 'org.springframework', name: 'spring-websocket'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
+    implementation group: 'org.springframework.security', name: 'spring-security-jwt'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    implementation group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    implementation  group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation ('javax.xml.bind:jaxb-api:2.3.1')
+    implementation ('javax.activation:activation:1.1.1')
+    implementation ('org.glassfish.jaxb:jaxb-runtime:3.0.1')
+    implementation  group: 'mysql', name: 'mysql-connector-java'
+    implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
+    implementation group: 'com.h2database', name: 'h2', version: '1.4.192'
+    implementation group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
 
-check.dependsOn jacocoTestReport
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.2'
+}
