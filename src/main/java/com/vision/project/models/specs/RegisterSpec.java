@@ -7,6 +7,7 @@ public class RegisterSpec {
 
     private String username;
     private String password;
+    private String repeatPassword;
     private String firstName;
     private String lastName;
     private int age;
@@ -86,5 +87,13 @@ public class RegisterSpec {
 
     public void setProfileImage(MultipartFile profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
     }
 }

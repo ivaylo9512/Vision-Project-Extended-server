@@ -30,6 +30,7 @@ public class Dish{
     private LocalDateTime updated;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "updated_by")
     private UserModel updatedBy;
 
     private String name;

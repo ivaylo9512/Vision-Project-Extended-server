@@ -12,6 +12,7 @@ public class Message{
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver")
     private UserModel receiver;
 
     @JsonIgnore
