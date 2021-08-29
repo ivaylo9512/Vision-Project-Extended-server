@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.exceptions.PasswordsMissMatchException;
-import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
@@ -16,22 +15,19 @@ import com.vision.project.security.Jwt;
 import com.vision.project.services.base.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users/polling")
 public class LongPollingController {
-
     private final UserService userService;
     private final OrderService orderService;
     private final ChatService chatService;
@@ -46,7 +42,7 @@ public class LongPollingController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login/{pageSize}")
     @Transactional
     public UserDto login(@RequestParam("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
@@ -55,7 +51,7 @@ public class LongPollingController {
         return initializeUser(userDetails.getUserModel(), pageSize);
     }
 
-    @GetMapping(value = "/auth/getLoggedUser")
+    @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
     public UserDto getLoggedUser(@RequestParam("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
@@ -64,36 +60,26 @@ public class LongPollingController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
+    public UserDto register(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
         UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+        userService.create(newUser);
 
         if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
             newUser.setProfileImage(profileImage);
         }
 
-        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
+        String token = Jwt.generate(new UserDetails(newUser, List.of(
+                new SimpleGrantedAuthority("ROLE_USER"))));
+
         response.addHeader("Authorization", "Token " + token);
 
-        return new UserDto(userService.create(newUser));
-    }
+        Restaurant restaurant = newUser.getRestaurant();
+        UserRequest userRequest = new UserRequest(newUser.getId(), restaurant.getId(), null);
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/auth/adminRegistration")
-    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
-        UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
+        longPollingService.addRequest(userRequest);
 
-        if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
-            newUser.setProfileImage(profileImage);
-        }
-
-        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
-        response.addHeader("Authorization", "Token " + token);
-
-        return new UserDto(userService.create(newUser));
+        return new UserDto(userService.save(newUser));
     }
 
     private UserDto initializeUser(UserModel user, int pageSize){
@@ -112,7 +98,7 @@ public class LongPollingController {
     @PostMapping(value = "/auth/waitData")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    public DeferredResult waitData(@RequestBody LocalDateTime lastCheck){
+    public DeferredResult<UserRequestDto> waitData(@RequestBody LocalDateTime lastCheck){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
@@ -140,13 +126,6 @@ public class LongPollingController {
     ResponseEntity handleUsernameExistsException(UsernameExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler
-    ResponseEntity handleRegistrationIsDisabled(RegistrationIsDisabled e) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
                 .body(e.getMessage());
     }
 }

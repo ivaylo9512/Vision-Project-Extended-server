@@ -13,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -22,13 +21,10 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService,UserDetailsService {
-
     private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -39,7 +35,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     @Override
     public UserModel findById(int id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User doesn't exist."));
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
     }
 
     @Override
@@ -52,6 +48,11 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 
         user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserModel save(UserModel userModel){
+        return userRepository.save(userModel);
     }
 
     @Override
@@ -75,7 +76,8 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     @Override
     public UserModel changeUserInfo(int loggedUser, RegisterSpec registerSpec){
         UserModel user = userRepository.findById(loggedUser)
-                .orElseThrow(() -> new EntityNotFoundException("Username not found."));
+                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+
         user.setFirstName(registerSpec.getFirstName());
         user.setLastName(registerSpec.getLastName());
         user.setAge(registerSpec.getAge());

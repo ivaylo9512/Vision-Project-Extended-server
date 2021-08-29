@@ -16,6 +16,7 @@ public class UserDetails extends User {
         this.id = id;
         this.restaurantId = restaurantId;
     }
+
     public UserDetails(UserModel userModel, List<SimpleGrantedAuthority> authorities){
         super(userModel.getUsername(), userModel.getPassword(), authorities);
         this.id = userModel.getId();

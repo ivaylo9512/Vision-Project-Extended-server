@@ -1,7 +1,6 @@
 package com.vision.project.controllers;
 
 import com.vision.project.exceptions.PasswordsMissMatchException;
-import com.vision.project.exceptions.RegistrationIsDisabled;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
@@ -20,15 +19,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
-
     private final UserService userService;
     private final OrderService orderService;
     private final ChatService chatService;
@@ -70,34 +66,32 @@ public class UserController {
     @PostMapping(value = "/register")
     public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+        userService.create(newUser);
 
         if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
             newUser.setProfileImage(profileImage);
         }
 
-        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
+        String token = Jwt.generate(new UserDetails(newUser, List.of(
+                new SimpleGrantedAuthority("ROLE_USER"))));
         response.addHeader("Authorization", "Token " + token);
 
-        return new UserDto(userService.create(newUser));
+        return new UserDto(userService.save(newUser));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/auth/adminRegistration")
+    @PostMapping(value = "/auth/registerAdmin")
     public UserDto registerAdmin(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
+        userService.create(newUser);
 
         if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo");
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
             newUser.setProfileImage(profileImage);
         }
 
-        String token = Jwt.generate(new UserDetails(newUser, new ArrayList<>(
-                Collections.singletonList(new SimpleGrantedAuthority(newUser.getRole())))));
-        response.addHeader("Authorization", "Token " + token);
-
-        return new UserDto(userService.create(newUser));
+        return new UserDto(userService.save(newUser));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -114,20 +108,14 @@ public class UserController {
         return new UserDto(userService.changeUserInfo(loggedUser.getId(), userModel));
     }
     @ExceptionHandler
-    ResponseEntity handleUsernameExistsException(UsernameExistsException e) {
+    ResponseEntity<String> handleUsernameExistsException(UsernameExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
-    @ExceptionHandler
-    ResponseEntity handleRegistrationIsDisabled(RegistrationIsDisabled e) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(e.getMessage());
-    }
 
     @ExceptionHandler
-    ResponseEntity handlePasswordsMissMatchException(PasswordsMissMatchException e) {
+    ResponseEntity<String> handlePasswordsMissMatchException(PasswordsMissMatchException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());

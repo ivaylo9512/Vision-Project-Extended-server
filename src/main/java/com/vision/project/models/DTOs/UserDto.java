@@ -38,7 +38,7 @@ public class UserDto {
         this.lastName = userModel.getLastName();
         this.country = userModel.getCountry();
         this.role = userModel.getRole();
-        this.profilePicture = userModel.getProfilePicture();
+        this.profilePicture = userModel.getProfileImage().getName();
     }
 
     public String getUsername() {

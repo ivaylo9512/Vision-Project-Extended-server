@@ -7,7 +7,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class UserModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,7 +20,8 @@ public class UserModel {
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 
-    @Column(name = "profile_image")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_image")
     private File profileImage;
 
     private String role;

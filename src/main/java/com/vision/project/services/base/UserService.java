@@ -11,5 +11,7 @@ public interface UserService {
 
     UserModel create(UserModel user);
 
+    UserModel save(UserModel userModel);
+
     UserModel changeUserInfo(int loggedUser, RegisterSpec registerSpec);
 }
