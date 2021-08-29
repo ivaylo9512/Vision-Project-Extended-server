@@ -12,6 +12,9 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    private UserModel owner;
+
     private String name;
     private String type;
     private double size;
@@ -70,5 +73,13 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserModel getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserModel owner) {
+        this.owner = owner;
     }
 }

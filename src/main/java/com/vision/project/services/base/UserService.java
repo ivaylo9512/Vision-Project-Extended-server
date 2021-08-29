@@ -1,7 +1,9 @@
 package com.vision.project.services.base;
 
+import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
-import com.vision.project.models.specs.RegisterSpec;
+import com.vision.project.models.specs.NewPasswordSpec;
+import com.vision.project.models.specs.UserSpec;
 import java.util.List;
 
 public interface UserService {
@@ -13,5 +15,8 @@ public interface UserService {
 
     UserModel save(UserModel userModel);
 
-    UserModel changeUserInfo(int loggedUser, RegisterSpec registerSpec);
+
+    UserModel changePassword(NewPasswordSpec passwordSpec, UserDetails loggedUser);
+
+    UserModel changeUserInfo(UserSpec userSpec, UserDetails loggedUser);
 }

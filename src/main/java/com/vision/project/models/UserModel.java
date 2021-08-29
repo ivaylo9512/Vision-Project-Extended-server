@@ -55,6 +55,18 @@ public class UserModel {
         this.setRole(role);
     }
 
+    public UserModel(String username, String password, String role){
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public UserModel(int id, String username, String password, String role, Restaurant restaurant){
+        this(username, password, role);
+        this.id = id;
+        this.restaurant = restaurant;
+    }
+
     public String getUsername() {
         return username;
     }

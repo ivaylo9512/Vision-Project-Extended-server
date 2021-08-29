@@ -4,7 +4,6 @@ import com.vision.project.models.UserModel;
 import org.springframework.web.multipart.MultipartFile;
 
 public class RegisterSpec {
-
     private String username;
     private String password;
     private String repeatPassword;
@@ -18,11 +17,18 @@ public class RegisterSpec {
     public RegisterSpec() {
 
     }
+
     public RegisterSpec(UserModel user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.age = user.getAge();
         this.country = user.getCountry();
+    }
+
+    public RegisterSpec(String username, String password, String repeatPassword) {
+        this.username = username;
+        this.password = password;
+        this.repeatPassword = repeatPassword;
     }
 
     public String getUsername() {
