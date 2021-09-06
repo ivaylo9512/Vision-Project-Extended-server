@@ -24,6 +24,9 @@ public class UserModel {
     @JoinColumn(name = "profile_image")
     private File profileImage;
 
+    @Column(name = "is_enabled")
+    private boolean isEnabled = false;
+
     private String role;
     private String username;
     private String password;
@@ -153,5 +156,13 @@ public class UserModel {
 
     public void setProfileImage(File profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

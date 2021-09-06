@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.DisabledUserException;
 import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Restaurant;
@@ -36,8 +37,14 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 
     @Override
     public UserModel findById(int id) {
-        return userRepository.findById(id)
+        UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found."));
+
+        if(!user.isEnabled()){
+            throw new DisabledUserException("You must complete the registration. Check your email.");
+        }
+
+        return user;
     }
 
     @Override

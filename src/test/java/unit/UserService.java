@@ -1,5 +1,6 @@
 package unit;
 
+import com.vision.project.exceptions.DisabledUserException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserDetails;
@@ -46,6 +47,19 @@ public class UserService {
     }
 
     @Test
+    public void findById_WithNotEnabledUser() {
+        UserModel user = new UserModel();
+        user.setEnabled(false);
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        DisabledUserException thrown = assertThrows(DisabledUserException.class,
+                () -> userService.findById(1));
+
+        assertEquals(thrown.getMessage(), "You must complete the registration. Check your email.");
+    }
+
+    @Test
     public void RegisterUser_WithAlreadyTakenUsername_UsernameExists() {
         RegisterSpec newRegistration = new RegisterSpec();
         newRegistration.setUsername("Test");
@@ -82,6 +96,7 @@ public class UserService {
 
         UserModel userModel = new UserModel();
         userModel.setPassword("currentPassword");
+        userModel.setEnabled(true);
 
         when(userRepository.findById(2)).thenReturn(Optional.of(userModel));
         when(userRepository.save(userModel)).thenReturn(userModel);
@@ -101,6 +116,7 @@ public class UserService {
 
         UserModel userModel = new UserModel();
         userModel.setPassword("currentPassword");
+        userModel.setEnabled(true);
 
         when(userRepository.findById(2)).thenReturn(Optional.of(userModel));
 
