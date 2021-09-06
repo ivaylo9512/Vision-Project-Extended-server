@@ -105,6 +105,8 @@ public class FileService {
         fileService.create(multipartFile, "test2", "text", new UserModel());
 
         assertTrue(new java.io.File("./uploads/test2.txt").exists());
+
+       input.close();
     }
 
     @Test
