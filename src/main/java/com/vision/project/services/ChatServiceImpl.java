@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.Chat;
 import com.vision.project.models.Message;
 import com.vision.project.models.Session;
@@ -72,7 +73,7 @@ public class ChatServiceImpl implements ChatService {
         int chatSecondUser = chat.getSecondUserModel().getId();
 
         if ((sender != chatFirstUser && sender != chatSecondUser) || (receiver != chatFirstUser && receiver != chatSecondUser)) {
-            throw new EntityNotFoundException("Users don't match the given chat.");
+            throw new UnauthorizedException("Users don't match the given chat.");
         }
 
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))
