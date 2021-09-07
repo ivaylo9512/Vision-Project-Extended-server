@@ -61,24 +61,24 @@ public class UserService {
 
     @Test
     public void RegisterUser_WithAlreadyTakenUsername_UsernameExists() {
-        RegisterSpec newRegistration = new RegisterSpec();
-        newRegistration.setUsername("Test");
-        UserModel registeredUserModel = new UserModel(newRegistration, "ROLE_USER");
+        UserModel user = new UserModel("test", "test@gmail.com", "password", "ROLE_USER");
 
-        when(userRepository.findByUsername("Test")).thenReturn(registeredUserModel);
+        UserModel existingUser = new UserModel();
+        existingUser.setUsername("test");
+
+        when(userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(existingUser);
 
         UsernameExistsException thrown = assertThrows(UsernameExistsException.class,
-                () -> userService.create(registeredUserModel));
+                () -> userService.create(user));
 
         assertEquals(thrown.getMessage(), "Username is already taken.");
     }
 
     @Test
     public void SuccessfulRegistration() {
-        RegisterSpec newRegistration = new RegisterSpec("Test", "testPassword", "testPassword");
-        UserModel userModel = new UserModel(newRegistration, "ROLE_USER");
+        UserModel userModel = new UserModel("test", "testEmail@gmail.com","password", "ROLE_USER");
 
-        when(userRepository.findByUsername("Test")).thenReturn(null);
+        when(userRepository.findByUsernameOrEmail(userModel.getUsername(), userModel.getEmail())).thenReturn(null);
         when(userRepository.save(userModel)).thenReturn(userModel);
 
         UserModel user = userService.create(userModel);

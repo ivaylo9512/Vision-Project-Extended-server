@@ -41,26 +41,6 @@ public class AppConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em
-                = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
-        em.setPackagesToScan("com.vision.project.models");
-        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
-        em.setJpaProperties(additionalProperties());
-        return em;
-    }
-    @Bean
-    public DataSource dataSource(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/vision-project?serverTimezone=GMT%2B3&useSSL=false");
-        dataSource.setUsername( "root" );
-        dataSource.setPassword( "1234" );
-        return dataSource;
-    }
-    @Bean
     public PlatformTransactionManager transactionManager(
             EntityManagerFactory emf){
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -74,11 +54,4 @@ public class AppConfig {
 
 
     public static final DateTimeFormatter FORMATTER = ofPattern("yyyy-MM-dd@HH:mm:ss.SSS");
-
-    Properties additionalProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLMyISAMDialect");
-
-        return properties;
-    }
 }

@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class RegisterSpec {
     private String username;
+    private String email;
     private String password;
     private String repeatPassword;
     private String firstName;
@@ -101,5 +102,13 @@ public class RegisterSpec {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

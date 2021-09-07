@@ -3,6 +3,7 @@ package com.vision.project.models.specs;
 public class UserSpec {
     private int id;
     private String username;
+    private String email;
     private String firstName;
     private String lastName;
     private int age;
@@ -67,5 +68,13 @@ public class UserSpec {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

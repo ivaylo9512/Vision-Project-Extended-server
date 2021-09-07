@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 public class UserDto {
     private int id;
     private String username;
+    private String email;
     private String firstName;
     private String lastName;
     private int age;
@@ -33,6 +34,7 @@ public class UserDto {
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
         this.username = userModel.getUsername();
+        this.email = userModel.getEmail();
         this.age = userModel.getAge();
         this.firstName = userModel.getFirstName();
         this.lastName = userModel.getLastName();
@@ -127,5 +129,13 @@ public class UserDto {
 
     public void setLastCheck(LocalDateTime lastCheck) {
         this.lastCheck = lastCheck;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

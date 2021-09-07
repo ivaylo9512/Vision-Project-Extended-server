@@ -27,8 +27,13 @@ public class UserModel {
     @Column(name = "is_enabled")
     private boolean isEnabled = false;
 
-    private String role;
+    @Column(unique = true)
     private String username;
+
+    @Column(unique = true)
+    private String email;
+
+    private String role;
     private String password;
     private String firstName;
     private String lastName;
@@ -62,6 +67,11 @@ public class UserModel {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public UserModel(String username, String password, String role, String email){
+        this(username, password, role);
+        this.email = email;
     }
 
     public UserModel(int id, String username, String password, String role, Restaurant restaurant){
@@ -164,5 +174,13 @@ public class UserModel {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
