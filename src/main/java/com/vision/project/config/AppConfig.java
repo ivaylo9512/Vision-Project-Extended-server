@@ -29,7 +29,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.vision.project.repositories.base")
 public class AppConfig {
-
     @Bean(name = "OBJECT_MAPPER_BEAN")
     @Primary
     public ObjectMapper jsonObjectMapper() {
