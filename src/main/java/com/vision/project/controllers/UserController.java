@@ -1,5 +1,6 @@
 package com.vision.project.controllers;
 
+import com.vision.project.exceptions.EmailExistsException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserDto;
@@ -61,6 +62,13 @@ public class UserController {
 
     @ExceptionHandler
     ResponseEntity<String> handleUsernameExistsException(UsernameExistsException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    ResponseEntity<String> handleEmailExistsException(EmailExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
