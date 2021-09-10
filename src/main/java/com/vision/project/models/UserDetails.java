@@ -20,7 +20,7 @@ public class UserDetails extends User {
     public UserDetails(UserModel userModel, List<SimpleGrantedAuthority> authorities){
         super(userModel.getUsername(), userModel.getPassword(), authorities);
         this.id = userModel.getId();
-        this.restaurantId = userModel.getRestaurant().getId();
+        setRestaurantId(userModel.getRestaurant());
         this.userModel = userModel;
     }
     public int getId() {
@@ -37,6 +37,12 @@ public class UserDetails extends User {
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public void setRestaurantId(Restaurant restaurant) {
+        if(restaurant != null){
+            this.restaurantId = restaurant.getId();
+        }
     }
 
     public UserModel getUserModel() {

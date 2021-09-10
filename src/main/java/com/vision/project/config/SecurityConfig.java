@@ -1,8 +1,7 @@
 package com.vision.project.config;
 
 import com.vision.project.security.*;
-import com.vision.project.services.UserServiceImpl;
-import com.vision.project.services.base.ChatService;
+import com.vision.project.services.base.UserService;
 import org.apache.http.HttpHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,11 +25,11 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final AuthorizationProvider authorizationProvider;
     private final FailureHandler failureHandler = new FailureHandler();
 
-    public SecurityConfig(UserServiceImpl userService, AuthorizationProvider authorizationProvider) {
+    public SecurityConfig(UserService userService, AuthorizationProvider authorizationProvider) {
         this.userService = userService;
         this.authorizationProvider = authorizationProvider;
     }
@@ -49,12 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://192.168.0.106:3006");
         config.addAllowedHeader("*");
         config.addExposedHeader(HttpHeaders.AUTHORIZATION);
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
+
         return new CorsFilter(source);
     }
 
@@ -80,14 +80,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationManager(authenticationManagerAuthorization());
         filter.setAuthenticationFailureHandler(failureHandler);
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> {});
+
         return filter;
     }
 
     private AuthenticationFilter authenticationFilter() throws Exception{
-        final AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
         authenticationFilter.setFilterProcessesUrl("/api/users/**/login");
         authenticationFilter.setAuthenticationFailureHandler(new FailureHandler());
         authenticationFilter.setAuthenticationManager(authenticationManager());
+
         return authenticationFilter;
     }
 }

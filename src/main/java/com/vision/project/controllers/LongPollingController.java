@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.vision.project.exceptions.EmailExistsException;
 import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
@@ -14,6 +15,7 @@ import com.vision.project.security.Jwt;
 import com.vision.project.services.base.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +44,6 @@ public class LongPollingController {
     }
 
     @PostMapping("/login/{pageSize}")
-    @Transactional
     public UserDto login(@RequestParam("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -81,6 +82,26 @@ public class LongPollingController {
         return new UserDto(userService.save(newUser));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/auth/registerAdmin")
+    public UserDto registerAdmin(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
+        UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
+        userService.create(newUser);
+
+        if(registerSpec.getProfileImage() != null){
+            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
+            newUser.setProfileImage(profileImage);
+        }
+
+        Restaurant restaurant = newUser.getRestaurant();
+        UserRequest userRequest = new UserRequest(newUser.getId(), restaurant.getId(), null);
+
+        longPollingService.addRequest(userRequest);
+
+        return new UserDto(userService.save(newUser));
+    }
+
+    @Transactional
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
         Map<Integer, Order> orders = orderService.findNotReady(restaurant.getId(), 0, pageSize);
@@ -116,6 +137,13 @@ public class LongPollingController {
 
     @ExceptionHandler
     ResponseEntity<String> handleUsernameExistsException(UsernameExistsException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    ResponseEntity<String> handleEmailExistsException(EmailExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());

@@ -16,7 +16,7 @@ public class UserDto {
     private int age;
     private String country;
     private String role;
-    private String profilePicture;
+    private String profileImage;
     private RestaurantDto restaurant;
     private Map<Integer, ChatDto> chats;
     private LocalDateTime lastCheck;
@@ -45,16 +45,16 @@ public class UserDto {
         this.role = role;
     }
 
-    public UserDto(UserModel userModel){
-        this.id = userModel.getId();
-        this.username = userModel.getUsername();
-        this.email = userModel.getEmail();
-        this.age = userModel.getAge();
-        this.firstName = userModel.getFirstName();
-        this.lastName = userModel.getLastName();
-        this.country = userModel.getCountry();
-        this.role = userModel.getRole();
-        this.profilePicture = userModel.getProfileImage().getName();
+    public UserDto(UserModel user){
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.age = user.getAge();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.country = user.getCountry();
+        this.role = user.getRole();
+        setProfileImage(user.getProfileImage());
     }
 
     public String getUsername() {
@@ -114,13 +114,18 @@ public class UserDto {
     }
 
     public String getProfilePicture() {
-        return profilePicture;
+        return profileImage;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
+    public void setProfileImage(File profileImage) {
+        if(profileImage != null){
+            this.profileImage = profileImage.getName();
+        }
+    }
     public RestaurantDto getRestaurant() {
         return restaurant;
     }

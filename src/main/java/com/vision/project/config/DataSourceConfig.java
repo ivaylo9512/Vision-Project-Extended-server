@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Properties;
 
 @Configuration
-@Profile("production")
 public class DataSourceConfig {
     private final Environment env;
 
@@ -57,7 +56,7 @@ public class DataSourceConfig {
 
     Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLMyISAMDialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
 
         return properties;
     }
