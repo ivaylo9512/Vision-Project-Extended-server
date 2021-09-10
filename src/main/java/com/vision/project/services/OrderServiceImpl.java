@@ -38,10 +38,10 @@ public class OrderServiceImpl implements OrderService {
             dish.setOrder(order);
         }
 
-        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
+        Restaurant restaurant = restaurantRepository.getById(restaurantId);
         order.setRestaurant(restaurant);
 
-        order.setUser(userRepository.getOne(userId));
+        order.setUser(userRepository.getById(userId));
         order = orderRepository.save(order);
 
         return order;
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         for (Dish orderDish: order.getDishes()) {
             if(orderDish.getId() == dishId ){
                 if(!orderDish.getReady()) {
-                    orderDish.setUpdatedBy(userRepository.getOne(userId));
+                    orderDish.setUpdatedBy(userRepository.getById(userId));
                     orderDish.setReady(true);
                     order.setUpdated(LocalDateTime.now());
 
@@ -96,18 +96,18 @@ public class OrderServiceImpl implements OrderService {
     public Map<Integer, Order> findNotReady(int restaurantId, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.DESC, "created");
 
-        return orderRepository.findNotReady(restaurantRepository.getOne(restaurantId), pageable).stream()
+        return orderRepository.findNotReady(restaurantRepository.getById(restaurantId), pageable).stream()
                 .collect(Collectors.toMap(Order::getId, order -> order, (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
     @Override
     public List<Order> findAllNotReady(int restaurantId) {
-        return orderRepository.findAllNotReady(restaurantRepository.getOne(restaurantId));
+        return orderRepository.findAllNotReady(restaurantRepository.getById(restaurantId));
     }
 
     @Override
     public List<Order> findMoreRecent(LocalDateTime lastCheck, int restaurantId) {
-        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
+        Restaurant restaurant = restaurantRepository.getById(restaurantId);
         return orderRepository.findMoreRecent(lastCheck, restaurant);
     }
 

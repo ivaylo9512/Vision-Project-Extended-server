@@ -57,7 +57,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<Session> findSessions(int chatId, int page, int pageSize){
-        return sessionRepository.findSessions(chatRepository.getOne(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+        return sessionRepository.findSessions(chatRepository.getById(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
     @Transactional
@@ -79,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))
                 .orElse(new Session(chat, LocalDate.now()));
 
-        UserModel user = userRepository.getOne(receiver);
+        UserModel user = userRepository.getById(receiver);
         Message message = new Message(user,LocalTime.now(),messageSpec.getMessage(),session);
 
         return messageRepository.save(message);
@@ -87,6 +87,6 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck) {
-        return messageRepository.findMoreRecentMessages(userRepository.getOne(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
+        return messageRepository.findMoreRecentMessages(userRepository.getById(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
     }
 }

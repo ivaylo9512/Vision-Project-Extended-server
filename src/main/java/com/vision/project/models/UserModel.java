@@ -44,23 +44,25 @@ public class UserModel {
 
     }
 
-    public UserModel(String username, String password, String role, String firstName,
-                     String lastName, int age, String country, File profileImage, Restaurant restaurant) {
+    public UserModel(String username, String email, String password, String firstName,
+                     String lastName, int age, String country) {
         this.username = username;
+        this.email = email;
         this.password = password;
-        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.country = country;
-        this.profileImage = profileImage;
-        this.restaurant = restaurant;
+    }
+
+    public UserModel(String username, String email, String password, String role, String firstName,
+                     String lastName, int age, String country) {
+        this(username, email, password, firstName, lastName, age, country);
+        this.role = role;
     }
 
     public UserModel(RegisterSpec registerSpec, String role) {
-        this.setUsername(registerSpec.getUsername());
-        this.setPassword(registerSpec.getPassword());
-        this.setRole(role);
+        this(registerSpec.getUsername(), registerSpec.getPassword(), role);
     }
 
     public UserModel(String username, String password, String role){

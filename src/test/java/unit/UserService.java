@@ -173,7 +173,7 @@ public class UserService {
 
     @Test()
     public void changeUserInfo_WithSameId(){
-        UserSpec newUser = new UserSpec(1, "newUsername", "firstName",
+        UserSpec newUser = new UserSpec(1, "newUsername", "newUser@gmail.com", "firstName",
                 "lastName", 25, "Country");
 
         UserModel oldUser = new UserModel(1, "username",
@@ -196,7 +196,7 @@ public class UserService {
 
     @Test()
     public void changeUserInfo_WithAdmin(){
-        UserSpec newUser = new UserSpec(1, "newUsername", "firstName",
+        UserSpec newUser = new UserSpec(1, "newUsername", "newUser@gmail.com", "firstName",
                 "lastName", 25, "Country");
 
         UserModel oldUser = new UserModel();
@@ -222,7 +222,7 @@ public class UserService {
 
     @Test()
     public void changeUserInfo_WhenSameOldNewUsername(){
-        UserSpec newUser = new UserSpec(1, "username", "firstName", "lastName", 25, "Country");
+        UserSpec newUser = new UserSpec(1, "username", "newUser@gmail.com", "firstName", "lastName", 25, "Country");
 
         UserModel oldUser = new UserModel(1, "username",
                 "password", "ROLE_USER", new Restaurant());
@@ -243,7 +243,7 @@ public class UserService {
 
     @Test()
     public void changeUserInfo_WhenUsernameIsTaken(){
-        UserSpec newUser = new UserSpec(1, "newUsername", "firstName",
+        UserSpec newUser = new UserSpec(1, "newUsername", "newUser@gmail.com", "firstName",
                 "lastName", 25, "Country");
 
         UserModel oldUser = new UserModel(1, "username", "password", "ROLE_USER", new Restaurant());

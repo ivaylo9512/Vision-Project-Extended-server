@@ -1,6 +1,8 @@
 package com.vision.project.models.DTOs;
 
 import com.vision.project.models.*;
+import com.vision.project.models.specs.UserSpec;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +33,18 @@ public class UserDto {
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
 
     }
+
+    public UserDto(UserSpec user, String role) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.age = user.getAge();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.country = user.getCountry();
+        this.role = role;
+    }
+
     public UserDto(UserModel userModel){
         this.id = userModel.getId();
         this.username = userModel.getUsername();

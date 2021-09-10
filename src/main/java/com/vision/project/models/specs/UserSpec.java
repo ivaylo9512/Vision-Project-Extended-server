@@ -13,13 +13,14 @@ public class UserSpec {
 
     }
 
-    public UserSpec(int id, String username, String firstName, String lastName, int age, String country) {
+    public UserSpec(int id, String username, String email, String firstName, String lastName, int age, String country) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.country = country;
+        this.email = email;
     }
 
     public String getUsername() {

@@ -4,7 +4,6 @@ import com.vision.project.security.*;
 import com.vision.project.services.UserServiceImpl;
 import com.vision.project.services.base.ChatService;
 import org.apache.http.HttpHeaders;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,15 +27,14 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private final UserServiceImpl userService;
+    private final AuthorizationProvider authorizationProvider;
+    private final FailureHandler failureHandler = new FailureHandler();
 
-    @Autowired
-    private UserServiceImpl userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthorizationProvider authorizationProvider;
-    @Autowired
-    private ChatService chatService;
+    public SecurityConfig(UserServiceImpl userService, AuthorizationProvider authorizationProvider) {
+        this.userService = userService;
+        this.authorizationProvider = authorizationProvider;
+    }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -52,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
+        config.addAllowedOrigin("http://192.168.0.106:3006");
         config.addAllowedHeader("*");
         config.addExposedHeader(HttpHeaders.AUTHORIZATION);
         config.addAllowedMethod("*");
@@ -69,7 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("**/api/auth/**").authenticated()
                 .and()
                 .addFilterBefore(authenticationFilter(), ConcurrentSessionFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().accessDeniedHandler(failureHandler);
 
         http.addFilterBefore(authorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();
@@ -78,17 +78,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthorizationFilter authorizationFilter() {
         AuthorizationFilter filter = new AuthorizationFilter();
         filter.setAuthenticationManager(authenticationManagerAuthorization());
-        filter.setAuthenticationFailureHandler(new FailureHandler());
+        filter.setAuthenticationFailureHandler(failureHandler);
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> {});
         return filter;
     }
 
     private AuthenticationFilter authenticationFilter() throws Exception{
-        final AuthenticationFilter authenticationFilter = new AuthenticationFilter(chatService);
+        final AuthenticationFilter authenticationFilter = new AuthenticationFilter();
         authenticationFilter.setFilterProcessesUrl("/api/users/**/login");
         authenticationFilter.setAuthenticationFailureHandler(new FailureHandler());
         authenticationFilter.setAuthenticationManager(authenticationManager());
         return authenticationFilter;
     }
-
 }
