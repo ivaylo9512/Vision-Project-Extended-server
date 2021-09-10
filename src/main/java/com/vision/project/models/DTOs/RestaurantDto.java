@@ -27,6 +27,14 @@ public class RestaurantDto {
                         (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
+    public RestaurantDto(Restaurant restaurant) {
+        this.id = restaurant.getId();
+        this.name = restaurant.getName();
+        this.menu = restaurant.getMenu();
+        this.address = restaurant.getAddress();
+        this.type = restaurant.getType();
+    }
+
     public int getId() {
         return id;
     }

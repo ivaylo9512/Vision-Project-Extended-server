@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.vision.project.models.specs.RestaurantSpec;
 import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Restaurant {
     private String name;
     private String address;
     private String type;
+    private String token;
 
     public Restaurant() {
     }
@@ -33,6 +35,13 @@ public class Restaurant {
         this.address = address;
         this.type = type;
         this.menu = menu;
+    }
+
+    public Restaurant(RestaurantSpec restaurant) {
+        this.address = restaurant.getAddress();
+        this.name = restaurant.getName();
+        this.type = restaurant.getType();
+        this.menu = restaurant.getMenu();
     }
 
     public int getId() {
@@ -81,5 +90,13 @@ public class Restaurant {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
