@@ -61,8 +61,9 @@ public class UserModel {
         this.role = role;
     }
 
-    public UserModel(RegisterSpec registerSpec, String role) {
+    public UserModel(RegisterSpec registerSpec, Restaurant restaurant, String role) {
         this(registerSpec.getUsername(), registerSpec.getPassword(), role);
+        this.restaurant = restaurant;
     }
 
     public UserModel(String username, String password, String role){

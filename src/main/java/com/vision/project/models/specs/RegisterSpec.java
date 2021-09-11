@@ -13,6 +13,7 @@ public class RegisterSpec {
     private int age;
     private String country;
     private String role;
+    private String restaurantToken;
     private MultipartFile profileImage;
 
     public RegisterSpec() {
@@ -110,5 +111,13 @@ public class RegisterSpec {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRestaurantToken() {
+        return restaurantToken;
+    }
+
+    public void setRestaurantToken(String restaurantToken) {
+        this.restaurantToken = restaurantToken;
     }
 }

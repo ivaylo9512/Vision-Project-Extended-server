@@ -158,10 +158,8 @@ public class UserService {
         UserSpec userSpec = new UserSpec();
         userSpec.setId(1);
 
-        UserModel loggedUserModel = new UserModel(1, "username",
+        UserModel loggedUser = new UserModel(1, "username",
                 "password", "ROLE_ADMIN", new Restaurant());
-        UserDetails loggedUser = new UserDetails(loggedUserModel, List.of(
-                new SimpleGrantedAuthority(loggedUserModel.getRole())));
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
@@ -178,14 +176,12 @@ public class UserService {
 
         UserModel oldUser = new UserModel(1, "username",
                 "password", "ROLE_USER", new Restaurant());
-        UserDetails loggedUser = new UserDetails(oldUser, List.of(
-                new SimpleGrantedAuthority(oldUser.getRole())));
 
         when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.save(oldUser)).thenReturn(oldUser);
         when(userRepository.findByUsername("newUsername")).thenReturn(null);
 
-        userService.changeUserInfo(newUser, loggedUser);
+        userService.changeUserInfo(newUser, oldUser);
 
         assertEquals(newUser.getUsername(), oldUser.getUsername());
         assertEquals(newUser.getFirstName(), oldUser.getFirstName());
@@ -202,10 +198,8 @@ public class UserService {
         UserModel oldUser = new UserModel();
         oldUser.setUsername("username");
 
-        UserModel loggedUserModel = new UserModel(2, "username",
+        UserModel loggedUser = new UserModel(2, "username",
                 "password", "ROLE_ADMIN", new Restaurant());
-        UserDetails loggedUser = new UserDetails(loggedUserModel, List.of(
-                new SimpleGrantedAuthority(loggedUserModel.getRole())));
 
         when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.save(oldUser)).thenReturn(oldUser);
@@ -227,13 +221,10 @@ public class UserService {
         UserModel oldUser = new UserModel(1, "username",
                 "password", "ROLE_USER", new Restaurant());
 
-        UserDetails loggedUser = new UserDetails(oldUser, List.of(
-                new SimpleGrantedAuthority(oldUser.getRole())));
-
         when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.save(oldUser)).thenReturn(oldUser);
 
-        userService.changeUserInfo(newUser, loggedUser);
+        userService.changeUserInfo(newUser, oldUser);
 
         assertEquals(oldUser.getFirstName(), newUser.getFirstName());
         assertEquals(oldUser.getLastName(), newUser.getLastName());
@@ -247,15 +238,13 @@ public class UserService {
                 "lastName", 25, "Country");
 
         UserModel oldUser = new UserModel(1, "username", "password", "ROLE_USER", new Restaurant());
-        UserDetails loggedUser = new UserDetails(oldUser, List.of(
-                new SimpleGrantedAuthority(oldUser.getRole())));
 
         when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.findByUsername("newUsername")).thenReturn(new UserModel());
 
         UsernameExistsException thrown = assertThrows(
                 UsernameExistsException.class,
-                () -> userService.changeUserInfo(newUser, loggedUser)
+                () -> userService.changeUserInfo(newUser, oldUser)
         );
 
         assertEquals(thrown.getMessage(), "Username is already taken.");

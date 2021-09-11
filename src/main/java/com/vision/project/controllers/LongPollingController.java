@@ -20,6 +20,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -34,13 +36,15 @@ public class LongPollingController {
     private final ChatService chatService;
     private final LongPollingService longPollingService;
     private final FileService fileService;
+    private final RestaurantService restaurantService;
 
-    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService, FileService fileService) {
+    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService, FileService fileService, RestaurantService restaurantService) {
         this.userService = userService;
         this.orderService = orderService;
         this.chatService = chatService;
         this.longPollingService = longPollingService;
         this.fileService = fileService;
+        this.restaurantService = restaurantService;
     }
 
     @PostMapping("/login/{pageSize}")
@@ -61,39 +65,43 @@ public class LongPollingController {
 
     @PostMapping(value = "/register")
     public UserDto register(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
-        UserModel newUser = new UserModel(registerSpec, "ROLE_USER");
+        Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
+        UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_USER");
+
         userService.create(newUser);
 
-        if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
-            newUser.setProfileImage(profileImage);
-        }
+        createPhoto(registerSpec.getProfileImage(), newUser);
+        createRequest(newUser);
 
         String token = Jwt.generate(new UserDetails(newUser, List.of(
                 new SimpleGrantedAuthority("ROLE_USER"))));
-
         response.addHeader("Authorization", "Token " + token);
 
-        Restaurant restaurant = newUser.getRestaurant();
-        UserRequest userRequest = new UserRequest(newUser.getId(), restaurant.getId(), null);
-
-        longPollingService.addRequest(userRequest);
-
         return new UserDto(userService.save(newUser));
+    }
+
+    private void createRequest(UserModel newUser) {
+        UserRequest userRequest = new UserRequest(newUser.getId(), newUser.getRestaurant().getId(), null);
+        longPollingService.addRequest(userRequest);
+    }
+
+    private void createPhoto(MultipartFile image, UserModel newUser) {
+        if(image != null){
+            File profileImage = fileService.create(image, newUser.getId() + "logo", "image", newUser);
+            newUser.setProfileImage(profileImage);
+        }
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/registerAdmin")
     public UserDto registerAdmin(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
-        UserModel newUser = new UserModel(registerSpec, "ROLE_ADMIN");
+        Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
+        UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_ADMIN");
         userService.create(newUser);
 
-        if(registerSpec.getProfileImage() != null){
-            File profileImage = fileService.create(registerSpec.getProfileImage(), newUser.getId() + "logo", "image", newUser);
-            newUser.setProfileImage(profileImage);
-        }
+        createPhoto(registerSpec.getProfileImage(), newUser);
+        createRequest(newUser);
 
-        Restaurant restaurant = newUser.getRestaurant();
         UserRequest userRequest = new UserRequest(newUser.getId(), restaurant.getId(), null);
 
         longPollingService.addRequest(userRequest);

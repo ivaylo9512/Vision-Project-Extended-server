@@ -95,9 +95,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel changeUserInfo(UserSpec userSpec, UserDetails loggedUser){
+    public UserModel changeUserInfo(UserSpec userSpec, UserModel loggedUser){
         if(userSpec.getId() != loggedUser.getId() &&
-                !loggedUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+                !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("Unauthorized");
         }
 
