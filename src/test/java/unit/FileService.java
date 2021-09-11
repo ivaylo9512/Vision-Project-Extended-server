@@ -35,16 +35,16 @@ public class FileService {
 
     @BeforeAll
     private static void setup() throws IOException {
-        new java.io.File("./uploads/test.txt").createNewFile();
-        new java.io.File("./uploads/test1.txt").createNewFile();
-        new java.io.File("./uploads/test3.txt").createNewFile();
+        new java.io.File("./uploads/logo.txt").createNewFile();
+        new java.io.File("./uploads/logo1.txt").createNewFile();
+        new java.io.File("./uploads/logo3.txt").createNewFile();
     }
 
     @AfterAll
     private static void reset() throws IOException {
-        new java.io.File("./uploads/test.txt").delete();
-        new java.io.File("./uploads/test1.txt").delete();
-        new java.io.File("./uploads/test2.txt").delete();
+        new java.io.File("./uploads/logo.txt").delete();
+        new java.io.File("./uploads/logo1.txt").delete();
+        new java.io.File("./uploads/logo2.txt").delete();
         new java.io.File("./uploads/test3.txt").delete();
     }
 
@@ -56,14 +56,14 @@ public class FileService {
                 "image/png",
                 "image132".getBytes());
 
-        File savedFile = fileService.generate(file, "savedName", "image");
+        File savedFile = fileService.generate(file, "logo", "image");
 
-        assertEquals(savedFile.getName(), "savedName.png");
+        assertEquals(savedFile.getResourceType(), "logo");
         assertEquals(savedFile.getType(), "image/png");
     }
 
     @Test
-    public void create_WhenTypeDoesNotMatch_FileFormat() {
+    public void generate_WhenTypeDoesNotMatch_FileFormat() {
         MockMultipartFile file = new MockMultipartFile(
                 "text132",
                 "text132.txt",
@@ -71,57 +71,37 @@ public class FileService {
                 "text132".getBytes());
 
         FileFormatException thrown = assertThrows(FileFormatException.class,
-                () -> fileService.create(file, "savedName", "image", new UserModel()));
+                () -> fileService.generate(file, "logo", "image"));
 
         assertEquals(thrown.getMessage(), "File should be of type image");
     }
 
     @Test
-    public void create() throws Exception{
-        MockMultipartFile file = new MockMultipartFile(
-                "image132",
-                "image132.png",
-                "image/png",
-                "image132".getBytes());
-
-        File generatedFile = new File("savedName.png", 22.0, "image/png");
-
-        doNothing().when(fileService).save(generatedFile, file);
-        when(fileService.generate(file, "savedName.png", "image")).thenReturn(generatedFile);
-        when(fileRepository.save(generatedFile)).thenReturn(generatedFile);
-
-        File savedFile = fileService.create(file, "savedName.png", "image", new UserModel());
-
-        assertEquals(savedFile.getName(), "savedName.png");
-        assertEquals(savedFile.getType(), "image/png");
-    }
-
-    @Test
-    public void createAndSave() throws Exception{
-        FileInputStream input = new FileInputStream("./uploads/test.txt");
-        MultipartFile multipartFile = new MockMultipartFile("test", "test.txt", "text/plain",
+    public void save() throws Exception{
+        FileInputStream input = new FileInputStream("./uploads/logo.txt");
+        MultipartFile multipartFile = new MockMultipartFile("test", "logo.txt", "text/plain",
                 IOUtils.toByteArray(input));
+        input.close();
 
-        fileService.create(multipartFile, "test2", "text", new UserModel());
+        fileService.save("logo2", multipartFile);
 
-        assertTrue(new java.io.File("./uploads/test2.txt").exists());
-
-       input.close();
+        assertTrue(new java.io.File("./uploads/logo2.txt").exists());
     }
 
     @Test
     public void delete_WithOwner(){
         UserModel owner = new UserModel();
-        owner.setId(2);
+        owner.setId(1);
 
         File file = new File();
         file.setOwner(owner);
+        file.setExtension("txt");
 
-        when(fileRepository.findByName("test3.txt")).thenReturn(file);
+        when(fileRepository.findByName("logo", 1)).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("test3.txt", owner);
+        boolean isDeleted = fileService.delete("logo", 1, owner);
 
-        assertFalse(new java.io.File("./uploads/test3.txt").exists());
+        assertFalse(new java.io.File("./uploads/logo1.txt").exists());
         assertTrue(isDeleted);
     }
 
@@ -132,16 +112,17 @@ public class FileService {
         loggedUser.setId(1);
 
         UserModel owner = new UserModel();
-        owner.setId(2);
+        owner.setId(3);
 
         File file = new File();
         file.setOwner(owner);
+        file.setExtension("txt");
 
-        when(fileRepository.findByName("test1.txt")).thenReturn(file);
+        when(fileRepository.findByName("logo", owner.getId())).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("test1.txt", loggedUser);
+        boolean isDeleted = fileService.delete("logo", owner.getId(), loggedUser);
 
-        assertFalse(new java.io.File("./uploads/test1.txt").exists());
+        assertFalse(new java.io.File("./uploads/logo3.txt").exists());
         assertTrue(isDeleted);
     }
 
@@ -150,11 +131,11 @@ public class FileService {
         UserModel loggedUser = new UserModel();
         loggedUser.setRole("ROLE_ADMIN");
 
-        when(fileRepository.findByName("test1.txt")).thenReturn(null);
+        when(fileRepository.findByName("logo", 11)).thenReturn(null);
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> fileService.delete("test1.txt", loggedUser));
+                () -> fileService.delete("logo", 11, loggedUser));
 
         assertEquals(thrown.getMessage(), "File not found.");
     }
@@ -168,9 +149,9 @@ public class FileService {
         File file = new File();
         file.setOwner(loggedUser);
 
-        when(fileRepository.findByName("test11.txt")).thenReturn(file);
+        when(fileRepository.findByName("logo", 11)).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("test11.txt", loggedUser);
+        boolean isDeleted = fileService.delete("logo", 11, loggedUser);
         assertFalse(isDeleted);
 
         verify(fileRepository, times(0)).delete(any(File.class));
@@ -178,8 +159,8 @@ public class FileService {
 
     @Test
     public void find(){
-        Resource resource = fileService.getAsResource("test.txt");
+        Resource resource = fileService.getAsResource("logo.txt");
 
-        assertEquals(resource.getFilename(), "test.txt");
+        assertEquals(resource.getFilename(), "logo.txt");
     }
 }

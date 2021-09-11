@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -65,13 +64,21 @@ public class LongPollingController {
 
     @PostMapping(value = "/register")
     public UserDto register(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
+        MultipartFile profileImage = registerSpec.getProfileImage();
+        File file = null;
+
+        if(profileImage != null){
+            file = fileService.generate(profileImage,"logo", "image/png");
+        }
+
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
         UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_USER");
 
         userService.create(newUser);
 
-        createPhoto(registerSpec.getProfileImage(), newUser);
-        createRequest(newUser);
+        if(file != null){
+            fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
+        }
 
         String token = Jwt.generate(new UserDetails(newUser, List.of(
                 new SimpleGrantedAuthority("ROLE_USER"))));
@@ -80,33 +87,25 @@ public class LongPollingController {
         return new UserDto(userService.save(newUser));
     }
 
-    private void createRequest(UserModel newUser) {
-        UserRequest userRequest = new UserRequest(newUser.getId(), newUser.getRestaurant().getId(), null);
-        longPollingService.addRequest(userRequest);
-    }
-
-    private void createPhoto(MultipartFile image, UserModel newUser) {
-        if(image != null){
-            File profileImage = fileService.create(image, newUser.getId() + "logo", "image", newUser);
-            newUser.setProfileImage(profileImage);
-        }
-    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/registerAdmin")
     public UserDto registerAdmin(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
+        MultipartFile profileImage = registerSpec.getProfileImage();
+        File file = null;
+
+        if(profileImage != null){
+            file = fileService.generate(profileImage,"logo", "image/png");
+        }
+
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
         UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_ADMIN");
         userService.create(newUser);
 
-        createPhoto(registerSpec.getProfileImage(), newUser);
-        createRequest(newUser);
+        if(file != null){
+            fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
+        }
 
-        UserRequest userRequest = new UserRequest(newUser.getId(), restaurant.getId(), null);
-
-        longPollingService.addRequest(userRequest);
-
-        return new UserDto(userService.save(newUser));
+        return new UserDto(newUser);
     }
 
     @Transactional

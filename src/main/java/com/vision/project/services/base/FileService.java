@@ -4,15 +4,16 @@ import com.vision.project.models.File;
 import com.vision.project.models.UserModel;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.FileNotFoundException;
 
 public interface FileService {
-    boolean delete(String fileName, UserModel loggedUser);
+    boolean delete(String resourceType, long ownerId, UserModel loggedUser);
 
-    Resource getAsResource(String fileName);
+    Resource getAsResource(String fileName) throws FileNotFoundException;
 
-    File update(MultipartFile file, String name, long id, String type);
+    File findByName(String resourceType, long ownerId);
 
-    File create(MultipartFile receivedFile, String name, String type, UserModel owner);
+    void save(String name, MultipartFile receivedFile);
 
-    File findByName(String fileName);
+    File generate(MultipartFile receivedFile, String resourceType, String fileType);
 }

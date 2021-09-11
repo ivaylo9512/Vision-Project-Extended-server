@@ -12,10 +12,14 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "resource_type")
+    private String resourceType;
+
     @ManyToOne
+    @PrimaryKeyJoinColumn
     private UserModel owner;
 
-    private String name;
+    private String extension;
     private String type;
     private double size;
 
@@ -23,10 +27,11 @@ public class File {
 
     }
 
-    public File(String name, double size, String type){
-        this.name = name;
+    public File(String resourceType, double size, String type, String extension){
+        this.resourceType = resourceType;
         this.size = size;
         this.type = type;
+        this.extension = extension;
     }
 
     @Override
@@ -67,12 +72,20 @@ public class File {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getResourceType() {
+        return resourceType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public UserModel getOwner() {

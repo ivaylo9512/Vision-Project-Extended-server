@@ -2,7 +2,6 @@ package com.vision.project.models.DTOs;
 
 import com.vision.project.models.*;
 import com.vision.project.models.specs.UserSpec;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +26,7 @@ public class UserDto {
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
         this.lastCheck = lastCheck;
     }
+
     public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;
@@ -123,7 +123,7 @@ public class UserDto {
 
     public void setProfileImage(File profileImage) {
         if(profileImage != null){
-            this.profileImage = profileImage.getName();
+            this.profileImage = profileImage.getResourceType() + id + "." + profileImage.getExtension();
         }
     }
     public RestaurantDto getRestaurant() {
