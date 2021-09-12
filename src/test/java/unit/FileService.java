@@ -97,9 +97,9 @@ public class FileService {
         file.setOwner(owner);
         file.setExtension("txt");
 
-        when(fileRepository.findByName("logo", 1)).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("logo", 1, owner);
+        boolean isDeleted = fileService.delete("logo", owner, owner);
 
         assertFalse(new java.io.File("./uploads/logo1.txt").exists());
         assertTrue(isDeleted);
@@ -118,9 +118,9 @@ public class FileService {
         file.setOwner(owner);
         file.setExtension("txt");
 
-        when(fileRepository.findByName("logo", owner.getId())).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("logo", owner.getId(), loggedUser);
+        boolean isDeleted = fileService.delete("logo", owner, loggedUser);
 
         assertFalse(new java.io.File("./uploads/logo3.txt").exists());
         assertTrue(isDeleted);
@@ -131,11 +131,14 @@ public class FileService {
         UserModel loggedUser = new UserModel();
         loggedUser.setRole("ROLE_ADMIN");
 
-        when(fileRepository.findByName("logo", 11)).thenReturn(null);
+        UserModel owner = new UserModel();
+        owner.setId(11);
+
+        when(fileRepository.findByName("logo", owner)).thenReturn(null);
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
-                () -> fileService.delete("logo", 11, loggedUser));
+                () -> fileService.delete("logo", owner, loggedUser));
 
         assertEquals(thrown.getMessage(), "File not found.");
     }
@@ -146,12 +149,15 @@ public class FileService {
         loggedUser.setId(2);
         loggedUser.setRole("ROLE_ADMIN");
 
+        UserModel owner = new UserModel();
+        owner.setId(11);
+
         File file = new File();
-        file.setOwner(loggedUser);
+        file.setOwner(owner);
 
-        when(fileRepository.findByName("logo", 11)).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(file);
 
-        boolean isDeleted = fileService.delete("logo", 11, loggedUser);
+        boolean isDeleted = fileService.delete("logo", owner, loggedUser);
         assertFalse(isDeleted);
 
         verify(fileRepository, times(0)).delete(any(File.class));

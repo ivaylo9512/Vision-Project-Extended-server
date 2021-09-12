@@ -15,8 +15,7 @@ public class File {
     @Column(name = "resource_type")
     private String resourceType;
 
-    @ManyToOne
-    @PrimaryKeyJoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserModel owner;
 
     private String extension;

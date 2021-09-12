@@ -12,7 +12,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -39,18 +38,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean delete(String resourceType, long ownerId, UserModel loggedUser) {
-        if(ownerId != loggedUser.getId()
+    public boolean delete(String resourceType, UserModel owner, UserModel loggedUser) {
+        if(owner.getId() != loggedUser.getId()
                 && !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("Unauthorized");
         }
 
-        File file = findByName(resourceType, ownerId);
+        File file = findByName(resourceType, owner);
         if(file == null){
             throw new EntityNotFoundException("File not found.");
         }
 
-        boolean isDeleted = new java.io.File("./uploads/" + resourceType + ownerId + "." + file.getExtension()).delete();
+        boolean isDeleted = new java.io.File("./uploads/" + resourceType + owner.getId() + "." + file.getExtension()).delete();
         if(isDeleted){
             fileRepository.delete(file);
             return true;
@@ -76,8 +75,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File findByName(String resourceType, long ownerId){
-        return fileRepository.findByName(resourceType, ownerId);
+    public File findByName(String resourceType, UserModel owner){
+        return fileRepository.findByName(resourceType, owner);
     }
 
     @Override

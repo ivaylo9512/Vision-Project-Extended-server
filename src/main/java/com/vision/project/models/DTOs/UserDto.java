@@ -123,9 +123,11 @@ public class UserDto {
 
     public void setProfileImage(File profileImage) {
         if(profileImage != null){
-            this.profileImage = profileImage.getResourceType() + id + "." + profileImage.getExtension();
+            this.profileImage = profileImage.getResourceType() + profileImage.getOwner().getId() +
+                    "." + profileImage.getExtension();
         }
     }
+
     public RestaurantDto getRestaurant() {
         return restaurant;
     }

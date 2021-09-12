@@ -61,9 +61,10 @@ public class UserModel {
         this.role = role;
     }
 
-    public UserModel(RegisterSpec registerSpec, Restaurant restaurant, String role) {
+    public UserModel(RegisterSpec registerSpec, File profileImage, Restaurant restaurant, String role) {
         this(registerSpec.getUsername(), registerSpec.getPassword(), role);
         this.restaurant = restaurant;
+        setProfileImage(profileImage);
     }
 
     public UserModel(String username, String password, String role){
@@ -168,7 +169,10 @@ public class UserModel {
     }
 
     public void setProfileImage(File profileImage) {
-        this.profileImage = profileImage;
+        if(profileImage != null){
+            this.profileImage = profileImage;
+            profileImage.setOwner(this);
+        }
     }
 
     public boolean isEnabled() {

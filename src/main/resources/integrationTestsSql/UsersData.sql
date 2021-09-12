@@ -12,11 +12,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
--- Dumping database structure for vision-project
+-- Dumping database structure for restaurant-app-test
 CREATE DATABASE IF NOT EXISTS `restaurant-app-test` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `restaurant-app-test`;
 
--- Dumping structure for table vision-project.users
+-- Dumping structure for table restaurant-app-test.users
 DELETE FROM `users`;
 ALTER TABLE `users` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `users` (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `FK77vld2hq44lseflaur47ne72c` (`restaurant`)
 ) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
--- Dumping data for table chat-app-test.users: ~3 rows (approximately)
+-- Dumping data for table restaurant-app-test.users: ~3 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `age`, `country`, `firstName`, `lastName`, `password`, `role`, `username`, `email`, `profile_image`, `is_enabled`) VALUES
 	(1, 25, 'Bulgaria', 'firstName', 'lastName', '$2a$04$PFraPHMqOOa7qiBJX5Mmq.STptiykt4m1H.p7rfpzzg/x1mQ9Ega6', 'ROLE_ADMIN', 'adminUser', 'adminUser@gmail.com', NULL, true),

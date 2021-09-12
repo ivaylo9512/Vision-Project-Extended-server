@@ -63,7 +63,7 @@ public class LongPollingController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
+    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         MultipartFile profileImage = registerSpec.getProfileImage();
         File file = null;
 
@@ -72,7 +72,7 @@ public class LongPollingController {
         }
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
-        UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_USER");
+        UserModel newUser = new UserModel(registerSpec, file, restaurant, "ROLE_USER");
 
         userService.create(newUser);
 
@@ -89,7 +89,7 @@ public class LongPollingController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/registerAdmin")
-    public UserDto registerAdmin(@RequestBody RegisterSpec registerSpec, HttpServletResponse response) {
+    public UserDto registerAdmin(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) {
         MultipartFile profileImage = registerSpec.getProfileImage();
         File file = null;
 
@@ -98,7 +98,7 @@ public class LongPollingController {
         }
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
-        UserModel newUser = new UserModel(registerSpec, restaurant, "ROLE_ADMIN");
+        UserModel newUser = new UserModel(registerSpec, file, restaurant, "ROLE_ADMIN");
         userService.create(newUser);
 
         if(file != null){

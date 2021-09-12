@@ -48,6 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserModel getById(int id){
+        return userRepository.getById(id);
+    }
+
+    @Override
     public UserModel create(UserModel user) {
         UserModel existingUser = userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail());
         if (existingUser != null) {

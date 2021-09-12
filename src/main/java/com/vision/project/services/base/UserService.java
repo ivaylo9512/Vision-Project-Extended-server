@@ -13,6 +13,8 @@ public interface UserService extends UserDetailsService {
 
     UserModel findById(int id);
 
+    UserModel getById(int id);
+
     UserModel create(UserModel user);
 
     UserModel save(UserModel userModel);
