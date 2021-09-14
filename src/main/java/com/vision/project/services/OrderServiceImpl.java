@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
-    private OrderRepository orderRepository;
-    private RestaurantRepository restaurantRepository;
-    private UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository;
 
 
     public OrderServiceImpl(OrderRepository orderRepository, RestaurantRepository restaurantRepository, UserRepository userRepository) {

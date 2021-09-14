@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -45,7 +47,7 @@ public class FileService {
         new java.io.File("./uploads/logo.txt").delete();
         new java.io.File("./uploads/logo1.txt").delete();
         new java.io.File("./uploads/logo2.txt").delete();
-        new java.io.File("./uploads/test3.txt").delete();
+        new java.io.File("./uploads/logo3.txt").delete();
     }
 
     @Test
@@ -77,7 +79,21 @@ public class FileService {
     }
 
     @Test
-    public void save() throws Exception{
+    public void generate_WhenTypeIsNull_FileFormat() {
+        MockMultipartFile file = new MockMultipartFile(
+                "text132",
+                "text132.txt",
+                null,
+                "text132".getBytes());
+
+        FileFormatException thrown = assertThrows(FileFormatException.class,
+                () -> fileService.generate(file, "logo", "image"));
+
+        assertEquals(thrown.getMessage(), "File should be of type image");
+    }
+
+    @Test
+    public void createAndSave() throws Exception{
         FileInputStream input = new FileInputStream("./uploads/logo.txt");
         MultipartFile multipartFile = new MockMultipartFile("test", "logo.txt", "text/plain",
                 IOUtils.toByteArray(input));
@@ -97,7 +113,7 @@ public class FileService {
         file.setOwner(owner);
         file.setExtension("txt");
 
-        when(fileRepository.findByName("logo", owner)).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(Optional.of(file));
 
         boolean isDeleted = fileService.delete("logo", owner, owner);
 
@@ -118,7 +134,7 @@ public class FileService {
         file.setOwner(owner);
         file.setExtension("txt");
 
-        when(fileRepository.findByName("logo", owner)).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(Optional.of(file));
 
         boolean isDeleted = fileService.delete("logo", owner, loggedUser);
 
@@ -134,7 +150,7 @@ public class FileService {
         UserModel owner = new UserModel();
         owner.setId(11);
 
-        when(fileRepository.findByName("logo", owner)).thenReturn(null);
+        when(fileRepository.findByName("logo", owner)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
@@ -155,7 +171,7 @@ public class FileService {
         File file = new File();
         file.setOwner(owner);
 
-        when(fileRepository.findByName("logo", owner)).thenReturn(file);
+        when(fileRepository.findByName("logo", owner)).thenReturn(Optional.of(file));
 
         boolean isDeleted = fileService.delete("logo", owner, loggedUser);
         assertFalse(isDeleted);
@@ -164,9 +180,17 @@ public class FileService {
     }
 
     @Test
-    public void find(){
+    public void getAsResource() throws MalformedURLException {
         Resource resource = fileService.getAsResource("logo.txt");
 
         assertEquals(resource.getFilename(), "logo.txt");
+    }
+
+    @Test
+    public void getAsResource_WhenFileNonexistent(){
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
+                () -> fileService.getAsResource("nonexistent.txt"));
+
+        assertEquals(thrown.getMessage(), "File not found");
     }
 }
