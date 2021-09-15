@@ -125,4 +125,12 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
+
+    @Override
+    public void setEnabled(boolean state, int id){
+        UserModel user = userRepository.getById(id);
+        user.setEnabled(true);
+
+        userRepository.save(user);
+    }
 }

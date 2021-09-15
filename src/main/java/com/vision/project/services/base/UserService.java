@@ -23,4 +23,6 @@ public interface UserService extends UserDetailsService {
     UserModel changePassword(NewPasswordSpec passwordSpec, UserDetails loggedUser);
 
     UserModel changeUserInfo(UserSpec userSpec, UserModel loggedUser);
+
+    void setEnabled(boolean state, int id);
 }

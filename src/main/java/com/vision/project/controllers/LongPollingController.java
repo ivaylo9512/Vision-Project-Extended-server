@@ -11,6 +11,7 @@ import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
 import com.vision.project.models.specs.RegisterSpec;
+import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
 import com.vision.project.services.base.*;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -63,6 +65,18 @@ public class LongPollingController {
         return initializeUser(userService.findById(loggedUser.getId()), pageSize);
     }
 
+    @GetMapping(value = "/findById/{id}")
+    public UserDto findById(@PathVariable(name = "id") int id){
+        return new UserDto(userService.findById(id));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping(value = "/auth/setEnabled/{state}/{id}")
+    public void setEnable(@PathVariable(name = "state") boolean state,
+                          @PathVariable(name = "id") int id){
+        userService.setEnabled(state, id);
+    }
+
     @PostMapping(value = "/register")
     public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
         MultipartFile profileImage = registerSpec.getProfileImage();
@@ -85,7 +99,7 @@ public class LongPollingController {
                 new SimpleGrantedAuthority("ROLE_USER"))));
         response.addHeader("Authorization", "Token " + token);
 
-        return new UserDto(userService.save(newUser));
+        return new UserDto(newUser);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -100,6 +114,7 @@ public class LongPollingController {
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
         UserModel newUser = new UserModel(registerSpec, file, restaurant, "ROLE_ADMIN");
+        newUser.setEnabled(true);
         userService.create(newUser);
 
         if(file != null){
@@ -122,6 +137,13 @@ public class LongPollingController {
         return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);
     }
 
+    @PostMapping(value = "/auth/changeUserInfo")
+    public UserDto changeUserInfo(@Valid @RequestBody UserSpec userModel){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new UserDto(userService.changeUserInfo(userModel, userService.findById(loggedUser.getId())));
+    }
 
     @PostMapping(value = "/auth/waitData")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

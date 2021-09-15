@@ -17,7 +17,7 @@ public class UserDto {
     private String role;
     private String profileImage;
     private RestaurantDto restaurant;
-    private Map<Integer, ChatDto> chats;
+    private Map<Integer, ChatDto> chats = new HashMap<>();
     private LocalDateTime lastCheck;
 
     public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
@@ -54,6 +54,7 @@ public class UserDto {
         this.lastName = user.getLastName();
         this.country = user.getCountry();
         this.role = user.getRole();
+        this.restaurant = new RestaurantDto(user.getRestaurant());
         setProfileImage(user.getProfileImage());
     }
 
@@ -113,7 +114,7 @@ public class UserDto {
         this.country = country;
     }
 
-    public String getProfilePicture() {
+    public String getProfileImage() {
         return profileImage;
     }
 
@@ -132,7 +133,7 @@ public class UserDto {
         return restaurant;
     }
 
-    public void RestaurantDto(RestaurantDto restaurant) {
+    public void setRestaurant(RestaurantDto restaurant) {
         this.restaurant = restaurant;
     }
 

@@ -56,14 +56,15 @@ public class UserModel {
     }
 
     public UserModel(String username, String email, String password, String role, String firstName,
-                     String lastName, int age, String country) {
+                     String lastName, int age, String country, Restaurant restaurant) {
         this(username, email, password, firstName, lastName, age, country);
         this.role = role;
+        this.restaurant = restaurant;
     }
 
     public UserModel(RegisterSpec registerSpec, File profileImage, Restaurant restaurant, String role) {
-        this(registerSpec.getUsername(), registerSpec.getPassword(), role);
-        this.restaurant = restaurant;
+        this(registerSpec.getUsername(), registerSpec.getEmail(), registerSpec.getPassword(), role,
+                registerSpec.getFirstName(), registerSpec.getLastName(), registerSpec.getAge(), registerSpec.getCountry(), restaurant);
         setProfileImage(profileImage);
     }
 
