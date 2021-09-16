@@ -27,7 +27,6 @@ public class AppConfig {
     @Primary
     public ObjectMapper jsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
-                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .modules(new JavaTimeModule())
                 .build();

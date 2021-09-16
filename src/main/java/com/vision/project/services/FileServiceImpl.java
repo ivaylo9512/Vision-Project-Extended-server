@@ -1,7 +1,6 @@
 package com.vision.project.services;
 
 import com.vision.project.exceptions.FileFormatException;
-import com.vision.project.exceptions.FileStorageException;
 import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.File;
 import com.vision.project.models.UserModel;

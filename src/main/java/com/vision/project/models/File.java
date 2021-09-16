@@ -16,6 +16,7 @@ public class File {
     private String resourceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner")
     private UserModel owner;
 
     private String extension;

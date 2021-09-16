@@ -3,6 +3,8 @@ package com.vision.project.models.DTOs;
 import com.vision.project.models.Menu;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +16,10 @@ public class RestaurantDto {
     private String address;
     private String type;
     private Set<Menu> menu;
-    private Map<Integer, OrderDto> orders;
+    private Map<Integer, OrderDto> orders = new HashMap<>();
+
+    public RestaurantDto() {
+    }
 
     public RestaurantDto(Restaurant restaurant, Map<Integer, Order> orders){
         this.id = restaurant.getId();

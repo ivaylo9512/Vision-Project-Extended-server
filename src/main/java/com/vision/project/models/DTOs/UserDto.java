@@ -20,6 +20,9 @@ public class UserDto {
     private Map<Integer, ChatDto> chats = new HashMap<>();
     private LocalDateTime lastCheck;
 
+    public UserDto() {
+    }
+
     public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;

@@ -14,7 +14,7 @@ public class Order{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "order", fetch = FetchType.EAGER)
     private List<Dish> dishes;
 
     @CreationTimestamp

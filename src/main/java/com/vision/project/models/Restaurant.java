@@ -21,6 +21,9 @@ public class Restaurant {
     @Where(clause = "ready = false")
     private List<Order> orders;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
+    private List<UserModel> users;
+
     private String name;
     private String address;
     private String type;
@@ -98,5 +101,13 @@ public class Restaurant {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public List<UserModel> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserModel> users) {
+        this.users = users;
     }
 }

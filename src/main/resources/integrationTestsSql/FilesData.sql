@@ -12,11 +12,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Dumping database structure for chat-app-test
-CREATE DATABASE IF NOT EXISTS `chat-app-test` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `chat-app-test`;
+-- Dumping database structure for restaurant-app-test
+CREATE DATABASE IF NOT EXISTS `restaurant-app-test` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `restaurant-app-test`;
 
--- Dumping structure for table chat-app-test.files
+-- Dumping structure for table restaurant-app-test.files
 DELETE FROM `files`;
 ALTER TABLE `files` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `files` (
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   CONSTRAINT `FK_files_users` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
--- Dumping data for table chat-app-test.files: ~8 rows (approximately)
+-- Dumping data for table restaurant-app-test.files: ~8 rows (approximately)
 /*!40000 ALTER TABLE `files` DISABLE KEYS */;
 INSERT INTO `files` (`id`, `resource_type`, `owner`, `extension`, `type`, `size`) VALUES
 	(1, 'profileImage', 1, 'png', 'image/png', 43250),

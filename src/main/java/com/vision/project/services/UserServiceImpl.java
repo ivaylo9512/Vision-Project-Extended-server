@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
 
-        return new UserDetails(userModel,authorities);
+        return new UserDetails(userModel, authorities);
     }
 
     @Override
@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setUsername(userSpec.getUsername());
+        user.setEmail(userSpec.getEmail());
         user.setFirstName(userSpec.getFirstName());
         user.setLastName(userSpec.getLastName());
         user.setAge(userSpec.getAge());

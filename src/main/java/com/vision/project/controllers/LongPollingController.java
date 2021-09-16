@@ -50,7 +50,7 @@ public class LongPollingController {
     }
 
     @PostMapping("/login/{pageSize}")
-    public UserDto login(@RequestParam("pageSize") int pageSize){
+    public UserDto login(@PathVariable("pageSize") int pageSize){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 

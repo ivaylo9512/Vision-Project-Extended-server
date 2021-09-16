@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AuthenticationFilter authenticationFilter() throws Exception{
         AuthenticationFilter authenticationFilter = new AuthenticationFilter();
-        authenticationFilter.setFilterProcessesUrl("/api/users/**/login");
+        authenticationFilter.setFilterProcessesUrl("/api/users/**/login/**");
         authenticationFilter.setAuthenticationFailureHandler(new FailureHandler());
         authenticationFilter.setAuthenticationManager(authenticationManager());
 
