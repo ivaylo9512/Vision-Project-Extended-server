@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mockStatic;
 public class RestaurantApplicationTest {
     @Test
     public void start(){
-        try (MockedStatic<SpringApplication> mocked = mockStatic(SpringApplication.class)) {
+        try(MockedStatic<SpringApplication> mocked = mockStatic(SpringApplication.class)) {
 
             mocked.when(() -> SpringApplication.run(RestaurantApplication.class,
                             "arg1", "arg2"))
