@@ -89,7 +89,7 @@ public class UserService {
     @Test
     public void ChangePassword(){
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails loggedUser = new UserDetails("TEST", "TEST", authorities, 2, 1);
+        UserDetails loggedUser = new UserDetails("test", "test", authorities, 2, 1);
 
         NewPasswordSpec passwordSpec = new NewPasswordSpec("user", "currentPassword", "newTestPassword");
 

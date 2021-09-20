@@ -36,7 +36,17 @@ public class RegisterSpec {
     private String restaurantToken;
 
     public RegisterSpec() {
+    }
 
+    public RegisterSpec(String username, String password, String email, MultipartFile profileImage, String firstName, String lastName, String country, int age) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.country = country;
+        this.age = age;
     }
 
     public String getUsername() {
