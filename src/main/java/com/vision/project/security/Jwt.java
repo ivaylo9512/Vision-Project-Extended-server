@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class Jwt {
     private static int jwtExpirationInMs = 10000000;
     static String jwtSecret = "MyJwtSecret";
-    private static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
+    private final static byte[] encodedJwtSecret = Base64.getEncoder().encode(jwtSecret.getBytes());
 
     public static String generate(UserDetails user) {
         Date now = new Date();
@@ -59,5 +59,13 @@ public class Jwt {
             throw new BadCredentialsException("Jwt token is incorrect");
         }
         return user;
+    }
+
+    public static int getJwtExpirationInMs() {
+        return jwtExpirationInMs;
+    }
+
+    public static void setJwtExpirationInMs(int jwtExpirationInMs) {
+        Jwt.jwtExpirationInMs = jwtExpirationInMs;
     }
 }

@@ -39,7 +39,7 @@ public class FileServiceImpl implements FileService {
             throw new UnauthorizedException("Unauthorized");
         }
 
-        File file = findByName(resourceType, owner);
+        File file = findByType(resourceType, owner);
 
         boolean isDeleted = new java.io.File("./uploads/" + resourceType + owner.getId() + "." + file.getExtension()).delete();
         if(isDeleted){
@@ -63,8 +63,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File findByName(String resourceType, UserModel owner){
-        return fileRepository.findByName(resourceType, owner).orElseThrow(() ->
+    public File findByType(String resourceType, UserModel owner){
+        return fileRepository.findByType(resourceType, owner).orElseThrow(() ->
                 new EntityNotFoundException("File not found."));
     }
 

@@ -1,36 +1,42 @@
 package com.vision.project.models.specs;
 
-import com.vision.project.models.UserModel;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 public class RegisterSpec {
+    @Length(min = 8, max=20, message = "Username must be between 8 and 20 characters.")
+    @NotNull(message = "You must provide username.")
     private String username;
+
+    @Email(message = "Must be a valid email.")
+    @NotNull(message = "You must provide an email.")
     private String email;
-    private String password;
-    private String repeatPassword;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String country;
-    private String role;
-    private String restaurantToken;
+
     private MultipartFile profileImage;
+
+    @Length(min = 10, max=25, message = "Password must be between 10 and 25 characters.")
+    @NotNull(message = "You must provide password.")
+    private String password;
+
+    @NotNull(message = "You must provide first name.")
+    private String firstName;
+
+    @NotNull(message = "You must provide last name.")
+    private String lastName;
+
+    @NotNull(message = "You must provide age.")
+    private Integer age;
+
+    @NotNull(message = "You must provide country.")
+    private String country;
+
+    @NotNull(message = "You must provide restaurant token.")
+    private String restaurantToken;
 
     public RegisterSpec() {
 
-    }
-
-    public RegisterSpec(UserModel user) {
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.age = user.getAge();
-        this.country = user.getCountry();
-    }
-
-    public RegisterSpec(String username, String password, String repeatPassword) {
-        this.username = username;
-        this.password = password;
-        this.repeatPassword = repeatPassword;
     }
 
     public String getUsername() {
@@ -81,28 +87,12 @@ public class RegisterSpec {
         this.country = country;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public MultipartFile getProfileImage() {
         return profileImage;
     }
 
     public void setProfileImage(MultipartFile profileImage) {
         this.profileImage = profileImage;
-    }
-
-    public String getRepeatPassword() {
-        return repeatPassword;
-    }
-
-    public void setRepeatPassword(String repeatPassword) {
-        this.repeatPassword = repeatPassword;
     }
 
     public String getEmail() {

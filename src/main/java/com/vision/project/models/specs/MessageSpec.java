@@ -1,9 +1,18 @@
 package com.vision.project.models.specs;
 
+import javax.validation.constraints.NotNull;
+
 public class MessageSpec {
+    @NotNull(message = "You must provide chat id.")
     private int chatId;
+
+    @NotNull(message = "You must provide sender id.")
     private int senderId;
+
+    @NotNull(message = "You must provide receiver id.")
     private int receiverId;
+
+    @NotNull(message = "You must provide message.")
     private String message;
 
     public MessageSpec(){

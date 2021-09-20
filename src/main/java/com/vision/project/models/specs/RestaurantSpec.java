@@ -2,12 +2,19 @@ package com.vision.project.models.specs;
 
 import com.vision.project.models.Menu;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class RestaurantSpec {
+    @NotNull(message = "You must provide name.")
     private String name;
+
+    @NotNull(message = "You must provide type.")
     private String type;
+
+    @NotNull(message = "You must provide address.")
     private String address;
+
     private Set<Menu> menu;
 
     public String getName() {

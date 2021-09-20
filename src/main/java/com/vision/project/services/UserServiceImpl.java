@@ -91,7 +91,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel changePassword(NewPasswordSpec passwordSpec, UserDetails loggedUser){
         UserModel user = this.findById(loggedUser.getId());
-        if (!user.getPassword().equals(passwordSpec.getCurrentPassword())){
+
+        if (!BCrypt.checkpw(passwordSpec.getCurrentPassword(), user.getPassword())){
             throw new BadCredentialsException("Invalid current password.");
         }
 

@@ -1,14 +1,33 @@
 package com.vision.project.models.specs;
 
-public class UserSpec {
-    private int id;
-    private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String country;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+public class UserSpec {
+    @NotNull(message = "You must provide an id.")
+    private int id;
+
+    @Length(min = 8, max=20, message = "Username must be between 8 and 20 characters.")
+    @NotNull(message = "You must provide username.")
+    private String username;
+
+    @Email(message = "Must be a valid email.")
+    @NotNull(message = "You must provide an email.")
+    private String email;
+
+    @NotNull(message = "You must provide first name.")
+    private String firstName;
+
+    @NotNull(message = "You must provide last name.")
+    private String lastName;
+
+    @NotNull(message = "You must provide age.")
+    private int age;
+
+    @NotNull(message = "You must provide country.")
+    private String country;
     public UserSpec() {
 
     }

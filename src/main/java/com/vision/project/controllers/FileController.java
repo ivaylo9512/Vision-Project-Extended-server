@@ -1,6 +1,6 @@
 package com.vision.project.controllers;
 
-import com.vision.project.models.File;
+import com.vision.project.models.DTOs.FileDto;
 import com.vision.project.models.UserDetails;
 import com.vision.project.services.base.FileService;
 import com.vision.project.services.base.UserService;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 @RestController
-@RequestMapping(value = "/images")
+@RequestMapping(value = "/api/files")
 public class FileController {
     private final FileService fileService;
     private final UserService userService;
@@ -43,16 +43,15 @@ public class FileController {
                 .body(resource);
     }
 
-    @GetMapping("/findByName/{resourceType}/{ownerId}")
-    public File findByName(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") int ownerId){
-        return fileService.findByName(resourceType, userService.getById(ownerId));
+    @GetMapping("/findByType/{resourceType}/{ownerId}")
+    public FileDto findByType(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") int ownerId){
+        return new FileDto(fileService.findByType(resourceType, userService.getById(ownerId)));
     }
 
     @DeleteMapping("/auth/delete/{resourceType}/{ownerId}")
     public boolean delete(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") int ownerId){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
-
         return fileService.delete(resourceType, userService.getById(ownerId), userService.findById(loggedUser.getId()));
     }
 }

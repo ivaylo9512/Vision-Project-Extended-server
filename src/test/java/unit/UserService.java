@@ -91,11 +91,10 @@ public class UserService {
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails loggedUser = new UserDetails("TEST", "TEST", authorities, 2, 1);
 
-        NewPasswordSpec passwordSpec = new NewPasswordSpec("user",
-                "currentPassword", "newTestPassword", "newTestPassword");
+        NewPasswordSpec passwordSpec = new NewPasswordSpec("user", "currentPassword", "newTestPassword");
 
         UserModel userModel = new UserModel();
-        userModel.setPassword("currentPassword");
+        userModel.setPassword(BCrypt.hashpw(passwordSpec.getCurrentPassword(),BCrypt.gensalt(4)));
         userModel.setEnabled(true);
 
         when(userRepository.findById(2)).thenReturn(Optional.of(userModel));
@@ -111,11 +110,10 @@ public class UserService {
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails loggedUser = new UserDetails("TEST", "TEST", authorities, 2, 1);
 
-        NewPasswordSpec passwordSpec = new NewPasswordSpec("user",
-                "incorrect", "newTestPassword", "newTestPassword");
+        NewPasswordSpec passwordSpec = new NewPasswordSpec("user", "incorrect", "newTestPassword");
 
         UserModel userModel = new UserModel();
-        userModel.setPassword("currentPassword");
+        userModel.setPassword(BCrypt.hashpw("currentPassword",BCrypt.gensalt(4)));
         userModel.setEnabled(true);
 
         when(userRepository.findById(2)).thenReturn(Optional.of(userModel));

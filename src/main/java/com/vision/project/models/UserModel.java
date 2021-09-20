@@ -1,6 +1,8 @@
 package com.vision.project.models;
 
 import com.vision.project.models.specs.RegisterSpec;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class UserModel {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private File profileImage;
 
     @Column(name = "is_enabled")

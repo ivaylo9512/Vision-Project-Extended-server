@@ -10,6 +10,7 @@ import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
+import com.vision.project.models.specs.NewPasswordSpec;
 import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.security.Jwt;
@@ -78,12 +79,12 @@ public class LongPollingController {
     }
 
     @PostMapping(value = "/register")
-    public UserDto register(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
+    public UserDto register(@Valid @ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
         MultipartFile profileImage = registerSpec.getProfileImage();
         File file = null;
 
         if(profileImage != null){
-            file = fileService.generate(profileImage,"logo", "image/png");
+            file = fileService.generate(profileImage,"profileImage", "image");
         }
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
@@ -104,12 +105,12 @@ public class LongPollingController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/registerAdmin")
-    public UserDto registerAdmin(@ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
+    public UserDto registerAdmin(@Valid @ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
         MultipartFile profileImage = registerSpec.getProfileImage();
         File file = null;
 
         if(profileImage != null){
-            file = fileService.generate(profileImage,"logo", "image/png");
+            file = fileService.generate(profileImage,"profileImage", "image");
         }
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
@@ -135,6 +136,14 @@ public class LongPollingController {
 
         longPollingService.addRequest(userRequest);
         return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);
+    }
+
+    @PatchMapping(value = "/auth/changePassword")
+    public UserDto changePassword(@Valid @RequestBody NewPasswordSpec newPasswordSpec){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new UserDto(userService.changePassword(newPasswordSpec, loggedUser));
     }
 
     @PostMapping(value = "/auth/changeUserInfo")

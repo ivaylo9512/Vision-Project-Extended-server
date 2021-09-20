@@ -1,16 +1,27 @@
 package com.vision.project.models.specs;
 
-public class NewPasswordSpec {
-    private String username;
-    private String currentPassword;
-    private String newPassword;
-    private String repeatNewPassword;
+import org.hibernate.validator.constraints.Length;
 
-    public NewPasswordSpec(String username, String currentPassword, String newPassword, String repeatNewPassword) {
+import javax.validation.constraints.NotNull;
+
+public class NewPasswordSpec {
+    @NotNull(message = "You must provide username.")
+    private String username;
+
+    @NotNull(message = "You must provide current password.")
+    private String currentPassword;
+
+    @Length(min = 10, max=25, message = "Password must be between 10 and 25 characters.")
+    @NotNull(message = "You must provide new password.")
+    private String newPassword;
+
+    public NewPasswordSpec(){
+    }
+
+    public NewPasswordSpec(String username, String currentPassword, String newPassword) {
         this.username = username;
         this.currentPassword = currentPassword;
         this.newPassword = newPassword;
-        this.repeatNewPassword = repeatNewPassword;
     }
 
     public String getCurrentPassword() {
@@ -27,14 +38,6 @@ public class NewPasswordSpec {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
-    }
-
-    public String getRepeatNewPassword() {
-        return repeatNewPassword;
-    }
-
-    public void setRepeatNewPassword(String repeatNewPassword) {
-        this.repeatNewPassword = repeatNewPassword;
     }
 
     public String getUsername() {
