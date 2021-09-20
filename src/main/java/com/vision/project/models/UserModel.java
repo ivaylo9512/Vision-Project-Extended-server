@@ -48,7 +48,7 @@ public class UserModel {
     }
 
     public UserModel(String username, String email, String password, String firstName,
-                     String lastName, int age, String country) {
+                     String lastName, int age, String country, String role, Restaurant restaurant) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -56,18 +56,19 @@ public class UserModel {
         this.lastName = lastName;
         this.age = age;
         this.country = country;
-    }
-
-    public UserModel(String username, String email, String password, String role, String firstName,
-                     String lastName, int age, String country, Restaurant restaurant) {
-        this(username, email, password, firstName, lastName, age, country);
         this.role = role;
         this.restaurant = restaurant;
     }
 
+    public UserModel(int id, String username, String email, String password, String role, String firstName,
+                     String lastName, int age, String country, Restaurant restaurant) {
+        this(username, email, password, firstName, lastName, age, country, role, restaurant);
+        this.id = id;
+    }
+
     public UserModel(RegisterSpec registerSpec, File profileImage, Restaurant restaurant, String role) {
-        this(registerSpec.getUsername(), registerSpec.getEmail(), registerSpec.getPassword(), role,
-                registerSpec.getFirstName(), registerSpec.getLastName(), registerSpec.getAge(), registerSpec.getCountry(), restaurant);
+        this(registerSpec.getUsername(), registerSpec.getEmail(), registerSpec.getPassword(),
+                registerSpec.getFirstName(), registerSpec.getLastName(), registerSpec.getAge(), registerSpec.getCountry(), role, restaurant);
         setProfileImage(profileImage);
     }
 

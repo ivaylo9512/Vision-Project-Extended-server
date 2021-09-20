@@ -135,7 +135,7 @@ public class Users {
     }
 
     private final Restaurant restaurant = new Restaurant(1, "testName", "testAddress", "fast food", new HashSet<>());
-    private final UserModel user = new UserModel("username", "username@gmail.com", "password1234","ROLE_USER", "firstname",
+    private final UserModel user = new UserModel(1, "username", "username@gmail.com", "password1234","ROLE_USER", "firstname",
             "lastname", 25, "Bulgaria", restaurant);
     private final UserDto userDto = new UserDto(user);
 
@@ -175,7 +175,7 @@ public class Users {
     @WithMockUser(value = "spring")
     @Test
     public void register() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/register", "ROLE_USER",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "username", "username@gmail.com", null, true))
                 .andExpect(status().isOk());
 
@@ -186,7 +186,7 @@ public class Users {
     @WithMockUser(value = "spring")
     @Test
     public void registerAdmin() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/auth/registerAdmin", "ROLE_ADMIN",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/auth/registerAdmin", "ROLE_ADMIN",
                         "username", "username@gmail.com", adminToken, true))
                 .andExpect(content().string(containsString(objectMapper.writeValueAsString(userDto))));
 
@@ -196,7 +196,7 @@ public class Users {
     @WithMockUser(value = "spring")
     @Test
     public void registerAdmin_WithUserThatIsNotAdmin_Unauthorized() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/auth/registerAdmin", "ROLE_ADMIN",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/auth/registerAdmin", "ROLE_ADMIN",
                         "username", "username@gmail.com", userToken, true))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Access is denied"));
@@ -204,29 +204,28 @@ public class Users {
 
     @Test
     public void register_WhenUsernameIsTaken() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/register", "ROLE_USER",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "testUser", "username@gmail.com", null, true))
                 .andExpect(content().string(containsString("Username is already taken.")));
     }
 
     private void checkDBForUser(UserDto user) throws Exception{
-        mockMvc.perform(get("/api/users/polling/findById/" + user.getId()))
+        mockMvc.perform(get("/api/users/findById/" + user.getId()))
                 .andExpect(content().string(objectMapper.writeValueAsString(user)));
     }
 
     private void enableUser(long id) throws Exception{
-        mockMvc.perform(patch("/api/users/polling/auth/setEnabled/true/" + id)
+        mockMvc.perform(patch("/api/users/auth/setEnabled/true/" + id)
                         .header("Authorization", adminToken))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void login() throws Exception {
-        UserModel user = new UserModel("adminUser", "adminUser@gmail.com", "password","ROLE_ADMIN", "firstName",
+        UserModel user = new UserModel(1, "adminUser", "adminUser@gmail.com", "password","ROLE_ADMIN", "firstName",
                 "lastName", 25, "Bulgaria", restaurant);
 
         UserDto userDto = new UserDto(user);
-        userDto.setId(1);
         userDto.setProfileImage("profileImage1.png");
 
         String response = mockMvc.perform(post("/api/users/polling/login/5")
@@ -245,7 +244,7 @@ public class Users {
 
     @Test
     public void login_WithWrongPassword_ShouldThrow() throws Exception {
-        mockMvc.perform(post("/api/users/polling/login")
+        mockMvc.perform(post("/api/users/polling/login/3")
                         .contentType("Application/json")
                         .content("{\"username\": \"username\", \"password\": \"incorrect\"}"))
                 .andExpect(status().is(401))
@@ -254,7 +253,7 @@ public class Users {
 
     @Test
     public void login_WithWrongUsername_ShouldThrow() throws Exception {
-        mockMvc.perform(post("/api/users/polling/login")
+        mockMvc.perform(post("/api/users/polling/login/3")
                         .contentType("Application/json")
                         .content("{\"username\": \"incorrect\", \"password\": \"password\"}"))
                 .andExpect(status().is(401))
@@ -263,9 +262,8 @@ public class Users {
 
     @Test
     void findById() throws Exception {
-        UserDto user = new UserDto(new UserModel("adminUser", "adminUser@gmail.com", "password", "ROLE_ADMIN",
+        UserDto user = new UserDto(new UserModel(1, "adminUser", "adminUser@gmail.com", "password", "ROLE_ADMIN",
                 "firstName", "lastName", 25, "Bulgaria", restaurant));
-        user.setId(1);
         user.setProfileImage("profileImage1.png");
 
         checkDBForUser(user);
@@ -273,7 +271,7 @@ public class Users {
 
     @Test
     void findById_WithNonExistentId() throws Exception {
-        mockMvc.perform(get("/api/users/polling/findById/222"))
+        mockMvc.perform(get("/api/users/findById/222"))
                 .andExpect(status().isNotFound());
     }
 
@@ -285,7 +283,7 @@ public class Users {
         userDto.setRestaurant(new RestaurantDto(restaurant));
         userDto.setProfileImage("profileImage1.png");
 
-        mockMvc.perform(post("/api/users/polling/auth/changeUserInfo")
+        mockMvc.perform(post("/api/users/auth/changeUserInfo")
                 .header("Authorization", adminToken)
                 .contentType("Application/json")
                 .content(objectMapper.writeValueAsString(userSpec)))
@@ -298,14 +296,13 @@ public class Users {
     @Test
     public void changePassword() throws Exception {
         NewPasswordSpec passwordSpec = new NewPasswordSpec("adminUser", "password", "newPassword");
-        UserModel user = new UserModel("adminUser", "adminUser@gmail.com", "newPassword", "ROLE_ADMIN", "firstName",
+        UserModel user = new UserModel(1, "adminUser", "adminUser@gmail.com", "newPassword", "ROLE_ADMIN", "firstName",
                 "lastName", 25, "Bulgaria", restaurant);
 
         UserDto userDto = new UserDto(user);
-        userDto.setId(1);
         userDto.setProfileImage("profileImage1.png");
 
-        mockMvc.perform(patch("/api/users/polling/auth/changePassword")
+        mockMvc.perform(patch("/api/users/auth/changePassword")
                         .header("Authorization", adminToken)
                         .contentType("Application/json")
                         .content(objectMapper.writeValueAsString(passwordSpec)))
@@ -332,7 +329,7 @@ public class Users {
                 IOUtils.toByteArray(input));
         input.close();
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/api/users/polling/register")
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/api/users/register")
                 .file(profileImage)
                 .param("username", user.getUsername())
                 .param("email", user.getEmail())
@@ -350,7 +347,7 @@ public class Users {
 
     @Test
     public void register_WithoutProfileImage() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/register", "ROLE_USER",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "username", "username@gmail.com", null, false))
                 .andExpect(status().isOk());
 
@@ -360,7 +357,7 @@ public class Users {
 
     @Test
     public void registerAdmin_WithoutProfileImage() throws Exception {
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/auth/registerAdmin", "ROLE_ADMIN",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/auth/registerAdmin", "ROLE_ADMIN",
                         "username", "username@gmail.com", adminToken, false))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(objectMapper.writeValueAsString(userDto))));
@@ -370,7 +367,7 @@ public class Users {
 
     @Test
     public void register_WithWrongFields() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/api/users/polling/register")
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/api/users/register")
                 .param("password", "short")
                 .param("username", "short");
 
@@ -394,7 +391,7 @@ public class Users {
 
     @Test
     public void changePassword_WithWrongFields() throws Exception {
-        String response = mockMvc.perform(patch("/api/users/polling/auth/changePassword")
+        String response = mockMvc.perform(patch("/api/users/auth/changePassword")
                         .content("{\"newPassword\": \"short\"}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", adminToken))
@@ -412,7 +409,7 @@ public class Users {
 
     @Test
     void registerAdmin_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/auth/registerAdmin", "ROLE_ADMIN",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/auth/registerAdmin", "ROLE_ADMIN",
                         "username", "username@gmail.com", null, true))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
@@ -428,7 +425,7 @@ public class Users {
 
     @Test
     void registerAdmin_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(createMediaRegisterRequest("/api/users/polling/auth/registerAdmin", "ROLE_ADMIN",
+        mockMvc.perform(createMediaRegisterRequest("/api/users/auth/registerAdmin", "ROLE_ADMIN",
                         "username", "username@gmail.com", "Token incorrect", true))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));
@@ -436,7 +433,7 @@ public class Users {
 
     @Test
     void changeUserInfo_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/polling/auth/changeUserInfo"))
+        mockMvc.perform(post("/api/users/auth/changeUserInfo"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
     }
@@ -451,22 +448,7 @@ public class Users {
 
     @Test
     void changeUserInfo_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/polling/auth/changeUserInfo")
-                        .header("Authorization", "Token incorrect"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Jwt token is incorrect"));
-    }
-
-    @Test
-    void searchForUsers_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/users/polling/auth/searchForUsers/2"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Jwt token is missing"));
-    }
-
-    @Test
-    void searchForUsers_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/users/polling/auth/searchForUsers/2")
+        mockMvc.perform(post("/api/users/auth/changeUserInfo")
                         .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));
@@ -474,14 +456,14 @@ public class Users {
 
     @Test
     void changePassword_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/polling/auth/changePassword"))
+        mockMvc.perform(post("/api/users/auth/changePassword"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
     }
 
     @Test
     void changePassword_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/users/polling/auth/changePassword")
+        mockMvc.perform(get("/api/users/auth/changePassword")
                         .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));

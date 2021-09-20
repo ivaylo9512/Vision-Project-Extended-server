@@ -4,30 +4,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.vision.project.exceptions.EmailExistsException;
-import com.vision.project.exceptions.UsernameExistsException;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
 import com.vision.project.models.DTOs.UserRequestDto;
-import com.vision.project.models.specs.NewPasswordSpec;
-import com.vision.project.models.specs.RegisterSpec;
-import com.vision.project.models.specs.UserSpec;
-import com.vision.project.security.Jwt;
 import com.vision.project.services.base.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.util.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -38,16 +23,12 @@ public class LongPollingController {
     private final OrderService orderService;
     private final ChatService chatService;
     private final LongPollingService longPollingService;
-    private final FileService fileService;
-    private final RestaurantService restaurantService;
 
-    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService, FileService fileService, RestaurantService restaurantService) {
+    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService) {
         this.userService = userService;
         this.orderService = orderService;
         this.chatService = chatService;
         this.longPollingService = longPollingService;
-        this.fileService = fileService;
-        this.restaurantService = restaurantService;
     }
 
     @PostMapping("/login/{pageSize}")
@@ -66,65 +47,6 @@ public class LongPollingController {
         return initializeUser(userService.findById(loggedUser.getId()), pageSize);
     }
 
-    @GetMapping(value = "/findById/{id}")
-    public UserDto findById(@PathVariable(name = "id") int id){
-        return new UserDto(userService.findById(id));
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping(value = "/auth/setEnabled/{state}/{id}")
-    public void setEnable(@PathVariable(name = "state") boolean state,
-                          @PathVariable(name = "id") int id){
-        userService.setEnabled(state, id);
-    }
-
-    @PostMapping(value = "/register")
-    public UserDto register(@Valid @ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
-        MultipartFile profileImage = registerSpec.getProfileImage();
-        File file = null;
-
-        if(profileImage != null){
-            file = fileService.generate(profileImage,"profileImage", "image");
-        }
-
-        Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
-        UserModel newUser = new UserModel(registerSpec, file, restaurant, "ROLE_USER");
-
-        userService.create(newUser);
-
-        if(file != null){
-            fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
-        }
-
-        String token = Jwt.generate(new UserDetails(newUser, List.of(
-                new SimpleGrantedAuthority("ROLE_USER"))));
-        response.addHeader("Authorization", "Token " + token);
-
-        return new UserDto(newUser);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/auth/registerAdmin")
-    public UserDto registerAdmin(@Valid @ModelAttribute RegisterSpec registerSpec, HttpServletResponse response) throws IOException {
-        MultipartFile profileImage = registerSpec.getProfileImage();
-        File file = null;
-
-        if(profileImage != null){
-            file = fileService.generate(profileImage,"profileImage", "image");
-        }
-
-        Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
-        UserModel newUser = new UserModel(registerSpec, file, restaurant, "ROLE_ADMIN");
-        newUser.setEnabled(true);
-        userService.create(newUser);
-
-        if(file != null){
-            fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
-        }
-
-        return new UserDto(newUser);
-    }
-
     @Transactional
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
@@ -136,22 +58,6 @@ public class LongPollingController {
 
         longPollingService.addRequest(userRequest);
         return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);
-    }
-
-    @PatchMapping(value = "/auth/changePassword")
-    public UserDto changePassword(@Valid @RequestBody NewPasswordSpec newPasswordSpec){
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-
-        return new UserDto(userService.changePassword(newPasswordSpec, loggedUser));
-    }
-
-    @PostMapping(value = "/auth/changeUserInfo")
-    public UserDto changeUserInfo(@Valid @RequestBody UserSpec userModel){
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getDetails();
-
-        return new UserDto(userService.changeUserInfo(userModel, userService.findById(loggedUser.getId())));
     }
 
     @PostMapping(value = "/auth/waitData")
@@ -172,19 +78,5 @@ public class LongPollingController {
         longPollingService.setAndAddRequest(userRequest);
 
         return request;
-    }
-
-    @ExceptionHandler
-    ResponseEntity<String> handleUsernameExistsException(UsernameExistsException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler
-    ResponseEntity<String> handleEmailExistsException(EmailExistsException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
     }
 }
