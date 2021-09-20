@@ -32,27 +32,25 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant create(RestaurantSpec restaurantSpec){
-        Restaurant restaurant = new Restaurant(restaurantSpec);
-        restaurantSpec.getMenu().forEach(menu -> menu.setRestaurant(restaurant));
+    public Restaurant create(Restaurant restaurant){
+        restaurant.getMenu().forEach(menu -> menu.setRestaurant(restaurant));
 
         restaurantRepository.save(restaurant);
         restaurant.setToken(UUID.randomUUID().toString() + restaurant.getId());
         restaurantRepository.save(restaurant);
 
+        System.out.println(restaurant.getToken());
+
         return restaurant;
     }
 
     @Override
-    public boolean delete(int id, UserModel loggedUser){
-        Restaurant restaurant = restaurantRepository.getById(id);
-
-        if(restaurant.getId() != loggedUser.getId() &&
-                loggedUser.getRole().equals("ROLE_ADMIN")){
+    public void delete(int id, UserModel loggedUser){
+        if(id != loggedUser.getRestaurant().getId() &&
+                !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("You are not authorized to delete this restaurant.");
         }
 
-        restaurantRepository.delete(restaurant);
-        return true;
+        restaurantRepository.deleteById(id);
     }
 }

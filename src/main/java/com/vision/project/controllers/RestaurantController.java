@@ -1,6 +1,7 @@
 package com.vision.project.controllers;
 
 import com.vision.project.models.DTOs.RestaurantDto;
+import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.RestaurantSpec;
 import com.vision.project.services.base.RestaurantService;
@@ -31,14 +32,14 @@ public class RestaurantController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/create")
     public RestaurantDto create(@Valid @RequestBody RestaurantSpec restaurant){
-        return new RestaurantDto(restaurantService.create(restaurant));
+        return new RestaurantDto(restaurantService.create(new Restaurant(restaurant)));
     }
 
     @PostMapping(value = "/delete/{id}")
-    public boolean delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") int id){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return restaurantService.delete(id, userService.findById(loggedUser.getId()));
+        restaurantService.delete(id, userService.findById(loggedUser.getId()));
     }
 }

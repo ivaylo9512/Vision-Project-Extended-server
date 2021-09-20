@@ -3,7 +3,6 @@ package com.vision.project.models.DTOs;
 import com.vision.project.models.Menu;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class RestaurantDto {
     private String name;
     private String address;
     private String type;
-    private Set<Menu> menu;
+    private Set<MenuDto> menu;
     private Map<Integer, OrderDto> orders = new HashMap<>();
 
     public RestaurantDto() {
@@ -26,18 +25,18 @@ public class RestaurantDto {
         this.name = restaurant.getName();
         this.address = restaurant.getAddress();
         this.type = restaurant.getType();
-        this.menu = restaurant.getMenu();
         this.orders = orders.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
                         (existing, replacement) -> existing, LinkedHashMap::new));
+        toMenuDto(restaurant.getMenu(), restaurant.getId());
     }
 
     public RestaurantDto(Restaurant restaurant) {
         this.id = restaurant.getId();
         this.name = restaurant.getName();
-        this.menu = restaurant.getMenu();
         this.address = restaurant.getAddress();
         this.type = restaurant.getType();
+        toMenuDto(restaurant.getMenu(), restaurant.getId());
     }
 
     public int getId() {
@@ -72,11 +71,11 @@ public class RestaurantDto {
         this.type = type;
     }
 
-    public Set<Menu> getMenu() {
+    public Set<MenuDto> getMenu() {
         return menu;
     }
 
-    public void setMenu(Set<Menu> menu) {
+    public void setMenu(Set<MenuDto> menu) {
         this.menu = menu;
     }
 
@@ -86,5 +85,12 @@ public class RestaurantDto {
 
     public void setOrders(Map<Integer, OrderDto> orders) {
         this.orders = orders;
+    }
+
+
+    private void toMenuDto(Set<Menu> menu, int restaurantId) {
+        if(menu != null){
+            this.menu = menu.stream().map(m -> new MenuDto(m.getName(), restaurantId)).collect(Collectors.toSet());
+        }
     }
 }

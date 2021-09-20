@@ -15,6 +15,13 @@ public class RestaurantSpec {
     @NotNull(message = "You must provide address.")
     private String address;
 
+    public RestaurantSpec(String name, String type, String address, Set<Menu> menu) {
+        this.name = name;
+        this.type = type;
+        this.address = address;
+        this.menu = menu;
+    }
+
     private Set<Menu> menu;
 
     public String getName() {
