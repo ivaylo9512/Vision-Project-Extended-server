@@ -26,7 +26,7 @@ public class FileController {
     }
 
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> get(@PathVariable String fileName, HttpServletRequest request) throws MalformedURLException {
+    public ResponseEntity<Resource> getAsResource(@PathVariable String fileName, HttpServletRequest request) throws MalformedURLException {
         Resource resource = fileService.getAsResource(fileName);
         String contentType;
 

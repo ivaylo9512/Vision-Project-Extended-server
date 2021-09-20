@@ -24,7 +24,6 @@ public class File {
     private double size;
 
     public File() {
-
     }
 
     public File(String resourceType, double size, String type, String extension){
@@ -32,6 +31,14 @@ public class File {
         this.size = size;
         this.type = type;
         this.extension = extension;
+    }
+
+    public File(String resourceType, double size, String type, String extension, UserModel owner){
+        this.resourceType = resourceType;
+        this.size = size;
+        this.type = type;
+        this.extension = extension;
+        this.owner = owner;
     }
 
     @Override
