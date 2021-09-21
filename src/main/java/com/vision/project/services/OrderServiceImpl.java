@@ -100,19 +100,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllNotReady(int restaurantId) {
-        return orderRepository.findAllNotReady(restaurantRepository.getById(restaurantId));
-    }
-
-    @Override
     public List<Order> findMoreRecent(LocalDateTime lastCheck, int restaurantId) {
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
         return orderRepository.findMoreRecent(lastCheck, restaurant);
-    }
-
-    @Override
-    public List<Order> findAll() {
-        return orderRepository.findAll();
     }
 
 }

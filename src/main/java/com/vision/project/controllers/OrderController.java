@@ -25,17 +25,6 @@ public class OrderController {
         this.longPollingService = longPollingService;
     }
 
-    @GetMapping(value = "/findAll")
-    public List<OrderDto> findAllOrders(){
-        return orderService.findAll().stream().map(OrderDto::new).collect(Collectors.toList());
-    }
-
-    @GetMapping(value = "/findAllNotReady/{restaurantId}")
-    public List<OrderDto> findAllNotReady(@PathVariable("restaurantId") int restaurantId){
-        return orderService.findAllNotReady(restaurantId).stream()
-                .map(OrderDto::new).collect(Collectors.toList());
-    }
-
     @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
     public Map<Integer, OrderDto> findNotReady(@PathVariable("page") int page,
                                       @PathVariable("pageSize") int pageSize,

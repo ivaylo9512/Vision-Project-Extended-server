@@ -11,10 +11,6 @@ public interface OrderService {
 
     Map<Integer, Order> findNotReady(int restaurantId, int page, int pageSize);
 
-    List<Order> findAllNotReady(int restaurantId);
-
-    List<Order> findAll();
-
     Order create(Order order, int restaurantId, int userId);
 
     Dish update(int orderId, int dishId, int userId);
