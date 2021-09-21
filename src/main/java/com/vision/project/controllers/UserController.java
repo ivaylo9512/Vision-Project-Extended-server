@@ -95,7 +95,7 @@ public class UserController {
         return new UserDto(userService.changePassword(newPasswordSpec, loggedUser));
     }
 
-    @PostMapping(value = "/auth/changeUserInfo")
+    @PatchMapping(value = "/auth/changeUserInfo")
     public UserDto changeUserInfo(@Valid @RequestBody UserSpec userModel){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

@@ -1,14 +1,17 @@
 package com.vision.project.controllers;
 
 import com.vision.project.models.DTOs.ChatDto;
+import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.DTOs.SessionDto;
 import com.vision.project.models.UserDetails;
+import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +23,6 @@ public class ChatController {
     private final ChatService chatService;
     private final UserService userService;
     private final LongPollingService longPollingService;
-
 
     public ChatController(ChatService chatService, UserService userService, LongPollingService longPollingService) {
         this.chatService = chatService;
@@ -45,5 +47,14 @@ public class ChatController {
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
         return chatService.findSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
+    }
+
+    @PostMapping("/newMessage")
+    public MessageDto message(@Valid @RequestBody MessageSpec message) throws  Exception {
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        message.setSenderId(loggedUser.getId());
+        return new MessageDto(longPollingService.addMessage(message));
     }
 }

@@ -24,7 +24,7 @@ public class UserSpec {
     private String lastName;
 
     @NotNull(message = "You must provide age.")
-    private int age;
+    private Integer age;
 
     @NotNull(message = "You must provide country.")
     private String country;

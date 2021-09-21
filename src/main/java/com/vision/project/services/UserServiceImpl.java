@@ -13,6 +13,7 @@ import com.vision.project.repositories.base.UserRepository;
 import com.vision.project.services.base.UserService;
 import org.hibernate.Hibernate;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel findById(int id) {
         UserModel user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
 
         if(!user.isEnabled()){
             throw new DisabledUserException("You must complete the registration. Check your email.");
@@ -108,13 +109,16 @@ public class UserServiceImpl implements UserService {
         }
 
         UserModel user = userRepository.findById(userSpec.getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found."));
+                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
 
-        if(!user.getUsername().equals(userSpec.getUsername())){
-            UserModel existingUser = userRepository.findByUsername(userSpec.getUsername());
+        if(!user.getUsername().equals(userSpec.getUsername()) || !user.getEmail().equals(userSpec.getEmail())){
+            UserModel existingUser = userRepository.findByUsernameOrEmail(userSpec.getUsername(), userSpec.getEmail());
 
             if(existingUser != null){
-                throw new UsernameExistsException("Username is already taken.");
+                if(existingUser.getUsername().equals(userSpec.getUsername())){
+                    throw new UsernameExistsException("Username is already taken.");
+                }
+                throw new EmailExistsException("Email is already taken.");
             }
         }
 
@@ -130,9 +134,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setEnabled(boolean state, int id){
-        UserModel user = userRepository.getById(id);
-        user.setEnabled(true);
+        UserModel user = userRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("UserModel not found."));
+        user.setEnabled(state);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void delete(int id, UserDetails loggedUser) {
+        UserModel user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
+
+        if(id != loggedUser.getId() &&
+                !AuthorityUtils.authorityListToSet(loggedUser.getAuthorities()).contains("ROLE_ADMIN")){
+            throw new UnauthorizedException("You are not allowed to modify the user.");
+        }
+
+        userRepository.delete(user);
     }
 }

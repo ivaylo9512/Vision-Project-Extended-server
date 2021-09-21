@@ -209,6 +209,14 @@ public class Users {
                 .andExpect(content().string(containsString("Username is already taken.")));
     }
 
+    @Test
+    public void register_WhenEmailIsTaken() throws Exception {
+        mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
+                        "nonExistent", "adminUser@gmail.com", null, true))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Email is already taken.")));
+    }
+
     private void checkDBForUser(UserDto user) throws Exception{
         mockMvc.perform(get("/api/users/findById/" + user.getId()))
                 .andExpect(content().string(objectMapper.writeValueAsString(user)));
@@ -283,7 +291,7 @@ public class Users {
         userDto.setRestaurant(new RestaurantDto(restaurant));
         userDto.setProfileImage("profileImage1.png");
 
-        mockMvc.perform(post("/api/users/auth/changeUserInfo")
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
                 .header("Authorization", adminToken)
                 .contentType("Application/json")
                 .content(objectMapper.writeValueAsString(userSpec)))
@@ -291,6 +299,32 @@ public class Users {
                 .andExpect(content().string(objectMapper.writeValueAsString(userDto)));
 
         checkDBForUser(userDto);
+    }
+
+    @Test
+    public void changeUserInfo_WhenUsernameIsTaken() throws Exception {
+        UserSpec userSpec = new UserSpec(1, "testUser", "newUsername@gmail.com", "newFirstName",
+                "newLastName", 26, "newCountry");
+
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
+                        .header("Authorization", adminToken)
+                        .contentType("Application/json")
+                        .content(objectMapper.writeValueAsString(userSpec)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Username is already taken."));
+    }
+
+    @Test
+    public void changeUserInfo_WhenEmailIsTaken() throws Exception {
+        UserSpec userSpec = new UserSpec(1, "newUsername", "testUser@gmail.com", "newFirstName",
+                "newLastName", 26, "newCountry");
+
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
+                        .header("Authorization", adminToken)
+                        .contentType("Application/json")
+                        .content(objectMapper.writeValueAsString(userSpec)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Email is already taken."));
     }
 
     @Test
@@ -390,6 +424,27 @@ public class Users {
     }
 
     @Test
+    void changeUserInfo_WithWrongFields() throws Exception {
+        String response = mockMvc.perform(patch("/api/users/auth/changeUserInfo")
+                        .content("{\"username\": \"short\", \"email\": \"incorrect\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", adminToken))
+                .andExpect(status().isUnprocessableEntity())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Map<String, String> errors = objectMapper.readValue(response, new TypeReference<>() {});
+
+        assertEquals(errors.get("username"), "Username must be between 8 and 20 characters.");
+        assertEquals(errors.get("email"), "Must be a valid email.");
+        assertEquals(errors.get("firstName"), "You must provide first name.");
+        assertEquals(errors.get("lastName"), "You must provide last name.");
+        assertEquals(errors.get("country"), "You must provide country.");
+        assertEquals(errors.get("age"), "You must provide age.");
+    }
+
+    @Test
     public void changePassword_WithWrongFields() throws Exception {
         String response = mockMvc.perform(patch("/api/users/auth/changePassword")
                         .content("{\"newPassword\": \"short\"}")
@@ -433,14 +488,14 @@ public class Users {
 
     @Test
     void changeUserInfo_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/auth/changeUserInfo"))
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
     }
 
     @Test
     void changeUserInfo_WithTokenWithoutPrefix() throws Exception{
-        mockMvc.perform(post("/api/users/auth/changeUserInfo")
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
                         .header("Authorization", "Incorrect token"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
@@ -448,7 +503,7 @@ public class Users {
 
     @Test
     void changeUserInfo_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/auth/changeUserInfo")
+        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
                         .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));
@@ -456,14 +511,14 @@ public class Users {
 
     @Test
     void changePassword_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(post("/api/users/auth/changePassword"))
+        mockMvc.perform(patch("/api/users/auth/changePassword"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
     }
 
     @Test
     void changePassword_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/users/auth/changePassword")
+        mockMvc.perform(patch("/api/users/auth/changePassword")
                         .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));

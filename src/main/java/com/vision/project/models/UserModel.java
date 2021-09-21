@@ -78,15 +78,22 @@ public class UserModel {
         this.role = role;
     }
 
-    public UserModel(String username, String password, String role, String email){
-        this(username, password, role);
+    public UserModel(String username, String email, String password, String role){
+        this.username = username;
         this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     public UserModel(int id, String username, String password, String role, Restaurant restaurant){
         this(username, password, role);
         this.id = id;
         this.restaurant = restaurant;
+    }
+
+    public UserModel(int id, String username, String password, String role){
+        this(username, password, role);
+        this.id = id;
     }
 
     public String getUsername() {
