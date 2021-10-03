@@ -23,6 +23,11 @@ public class EmailToken {
     public EmailToken() {
     }
 
+    public EmailToken(String token, UserModel user) {
+        this.token = token;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
