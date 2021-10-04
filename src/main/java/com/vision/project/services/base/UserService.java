@@ -27,4 +27,6 @@ public interface UserService extends UserDetailsService {
     void setEnabled(boolean state, int id);
 
     void delete(int id, UserDetails loggedUser);
+
+    void delete(UserModel user);
 }

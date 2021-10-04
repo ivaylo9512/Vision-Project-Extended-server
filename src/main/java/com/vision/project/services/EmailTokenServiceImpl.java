@@ -6,12 +6,14 @@ import com.vision.project.repositories.base.EmailTokenRepository;
 import com.vision.project.services.base.EmailTokenService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
+@Service
 public class EmailTokenServiceImpl implements EmailTokenService {
     private final EmailTokenRepository tokenRepository;
     private final JavaMailSender javaMailSender;

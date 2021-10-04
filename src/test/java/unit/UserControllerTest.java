@@ -11,6 +11,7 @@ import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.models.specs.UserSpec;
 import com.vision.project.services.FileServiceImpl;
 import com.vision.project.services.UserServiceImpl;
+import com.vision.project.services.base.EmailTokenService;
 import com.vision.project.services.base.RestaurantService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,9 @@ public class UserControllerTest {
 
     @Mock
     private RestaurantService restaurantService;
+
+    @Mock
+    private EmailTokenService emailTokenService;
 
     @Mock
     private FileServiceImpl fileService;
@@ -64,7 +68,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void register() throws IOException {
+    public void register() throws IOException, MessagingException {
         RegisterSpec register = new RegisterSpec("username", "email@gmail.com", "password", multipartFile, "firstName", "lastName", "Bulgaria", 25);
 
         userModel.setProfileImage(profileImage);
@@ -73,10 +77,12 @@ public class UserControllerTest {
         ArgumentCaptor<UserModel> captor = ArgumentCaptor.forClass(UserModel.class);
         when(userService.create(any(UserModel.class))).thenReturn(userModel);
         when(fileService.generate(multipartFile, "profileImage", "image")).thenReturn(profileImage);
+        doNothing().when(emailTokenService).sendVerificationEmail(userModel);
 
         userController.register(register);
 
         verify(fileService, times(1)).save("profileImage1", multipartFile);
+        verify(emailTokenService, times(1)).sendVerificationEmail(userModel);
         verify(userService).create(captor.capture());
         UserModel passedToCreate = captor.getValue();
 

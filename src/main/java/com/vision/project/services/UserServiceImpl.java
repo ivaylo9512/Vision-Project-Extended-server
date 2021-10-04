@@ -73,6 +73,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void delete(int id, UserDetails loggedUser) {
+        UserModel user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
+
+        if(id != loggedUser.getId() &&
+                !AuthorityUtils.authorityListToSet(loggedUser.getAuthorities()).contains("ROLE_ADMIN")){
+            throw new UnauthorizedException("You are not allowed to modify the user.");
+        }
+
+        userRepository.delete(user);
+    }
+
+    @Override
+    public void delete(UserModel user) {
+        userRepository.delete(user);
+    }
+
+    @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserModel userModel = userRepository.findByUsername(username);
@@ -139,18 +157,5 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(state);
 
         userRepository.save(user);
-    }
-
-    @Override
-    public void delete(int id, UserDetails loggedUser) {
-        UserModel user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
-
-        if(id != loggedUser.getId() &&
-                !AuthorityUtils.authorityListToSet(loggedUser.getAuthorities()).contains("ROLE_ADMIN")){
-            throw new UnauthorizedException("You are not allowed to modify the user.");
-        }
-
-        userRepository.delete(user);
     }
 }
