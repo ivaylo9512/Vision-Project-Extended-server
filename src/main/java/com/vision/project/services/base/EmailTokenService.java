@@ -2,11 +2,14 @@ package com.vision.project.services.base;
 
 import com.vision.project.models.EmailToken;
 import com.vision.project.models.UserModel;
+import javax.mail.MessagingException;
 
 public interface EmailTokenService {
     void createVerificationToken(UserModel user, String token);
 
-    EmailToken getVerificationToken(String VerificationToken);
+    EmailToken getToken(String token);
 
-    UserModel getUser(String verificationToken);
+    void delete(EmailToken token);
+
+    void sendVerificationEmail(UserModel user) throws MessagingException;
 }
