@@ -5,9 +5,9 @@ import com.vision.project.models.UserModel;
 import javax.mail.MessagingException;
 
 public interface EmailTokenService {
-    void createVerificationToken(UserModel user, String token);
+    void create(EmailToken token);
 
-    EmailToken getToken(String token);
+    EmailToken findByToken(String token);
 
     void delete(EmailToken token);
 
