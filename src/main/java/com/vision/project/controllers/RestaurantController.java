@@ -11,7 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
-@RestController(value = "/api/restaurant/auth")
+@RestController()
+@RequestMapping(value = "/api/restaurant/auth")
 public class RestaurantController {
     private final RestaurantService restaurantService;
     private final UserService userService;
