@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findById/{id}")
-    public OrderDto order(@PathVariable(name = "id") int id) throws IOException {
+    public OrderDto findById(@PathVariable(name = "id") int id) throws IOException {
         return new OrderDto(orderService.findById(id));
     }
 
