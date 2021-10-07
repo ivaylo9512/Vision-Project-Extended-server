@@ -84,6 +84,7 @@ public class Users {
         rdp.addScript(new ClassPathResource("integrationTestsSql/UsersData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/FilesData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/RestaurantsData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/EmailTokenData.sql"));
         rdp.execute(dataSource);
     }
 
@@ -97,6 +98,7 @@ public class Users {
         ResourceDatabasePopulator rdp = new ResourceDatabasePopulator();
         rdp.addScript(new ClassPathResource("integrationTestsSql/RestaurantsData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/FilesData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/EmailTokenData.sql"));
         rdp.execute(dataSource);
 
         UserModel admin = new UserModel("adminUser", "password", "ROLE_ADMIN");
@@ -251,6 +253,15 @@ public class Users {
     }
 
     @Test
+    public void login_WithNotEnabled() throws Exception {
+        mockMvc.perform(post("/api/users/login")
+                .contentType("Application/json")
+                .content("{\"username\": \"testThird\", \"password\": \"password\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("You must complete the registration. Check your email."));
+    }
+
+    @Test
     public void login_WithWrongPassword_ShouldThrow() throws Exception {
         mockMvc.perform(post("/api/users/polling/login/3")
                         .contentType("Application/json")
@@ -269,6 +280,31 @@ public class Users {
     }
 
     @Test
+    void activate() throws Exception {
+        mockMvc.perform(get("/api/users/activate/token1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/users/polling/login/3")
+                        .contentType("Application/json")
+                        .content("{\"username\": \"testThird\", \"password\": \"password\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void activate_WithExpiredToken() throws Exception {
+        mockMvc.perform(get("/api/users/activate/token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Token has expired. Repeat your registration."));
+    }
+
+    @Test
+    void activate_WithNotFound() throws Exception {
+        mockMvc.perform(get("/api/users/activate/tokenIncorrect"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Incorrect token."));
+    }
+
+    @Test
     void findById() throws Exception {
         UserDto user = new UserDto(new UserModel(1, "adminUser", "adminUser@gmail.com", "password", "ROLE_ADMIN",
                 "firstName", "lastName", 25, "Bulgaria", restaurant));
@@ -281,6 +317,13 @@ public class Users {
     void findById_WithNonExistentId() throws Exception {
         mockMvc.perform(get("/api/users/findById/222"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void findById_withNotEnabled() throws Exception {
+        mockMvc.perform(get("/api/users/findById/6"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("User is unavailable."));
     }
 
     @Test

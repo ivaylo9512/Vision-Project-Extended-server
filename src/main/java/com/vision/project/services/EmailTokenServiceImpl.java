@@ -1,5 +1,6 @@
 package com.vision.project.services;
 
+import com.vision.project.exceptions.InvalidInputException;
 import com.vision.project.models.EmailToken;
 import com.vision.project.models.UserModel;
 import com.vision.project.repositories.base.EmailTokenRepository;
@@ -31,7 +32,7 @@ public class EmailTokenServiceImpl implements EmailTokenService {
     @Override
     public EmailToken findByToken(String token) {
         return tokenRepository.findByToken(token).orElseThrow(() ->
-                new EntityNotFoundException("Incorrect token."));
+                new InvalidInputException("Incorrect token."));
     }
 
     @Override

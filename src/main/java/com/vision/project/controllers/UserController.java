@@ -88,8 +88,6 @@ public class UserController {
 
         userService.save(user);
         emailTokenService.delete(emailToken);
-
-        httpServletResponse.sendRedirect("https://localhost:4200");
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

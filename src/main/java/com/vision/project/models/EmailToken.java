@@ -17,6 +17,7 @@ public class EmailToken {
     @OneToOne(cascade = CascadeType.DETACH)
     private UserModel user;
 
+    @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
 
     public EmailToken() {

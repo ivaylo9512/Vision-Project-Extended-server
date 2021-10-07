@@ -1,5 +1,6 @@
 package unit;
 
+import com.vision.project.exceptions.InvalidInputException;
 import com.vision.project.models.EmailToken;
 import com.vision.project.models.UserModel;
 import com.vision.project.repositories.base.EmailTokenRepository;
@@ -15,11 +16,11 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,7 +84,7 @@ public class EmailTokenServiceTest {
     }
 
     @Test
-    public void getToken() {
+    public void findByToken() {
         EmailToken token = new EmailToken();
         token.setToken("token");
 
@@ -92,6 +93,16 @@ public class EmailTokenServiceTest {
         EmailToken foundToken = emailTokenService.findByToken(token.getToken());
 
         assertEquals(foundToken, token);
+    }
+
+    @Test
+    public void findByToken_WithNotFound() {
+        when(emailTokenRepository.findByToken("token")).thenReturn(Optional.empty());
+
+        InvalidInputException thrown = assertThrows(InvalidInputException.class,
+                () -> emailTokenService.findByToken("token"));
+
+        assertEquals(thrown.getMessage(), "Incorrect token.");
     }
 
     @Test

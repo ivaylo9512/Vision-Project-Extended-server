@@ -59,19 +59,6 @@ public class UserService {
     }
 
     @Test
-    public void findById_WithNotEnabledUser() {
-        UserModel user = new UserModel();
-        user.setEnabled(false);
-
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-
-        DisabledUserException thrown = assertThrows(DisabledUserException.class,
-                () -> userService.findById(1));
-
-        assertEquals(thrown.getMessage(), "You must complete the registration. Check your email.");
-    }
-
-    @Test
     public void register_WithAlreadyTakenUsername() {
         UserModel user = new UserModel("test", "test@gmail.com", "password", "ROLE_USER");
 
@@ -185,26 +172,40 @@ public class UserService {
     @Test
     public void loadByUsername(){
         UserModel userModel = new UserModel(1, "username", "password", "ROLE_ADMIN", new Restaurant());
+        userModel.setEnabled(true);
 
         UserDetails userDetails = new UserDetails(userModel, List.of(
                 new SimpleGrantedAuthority(userModel.getRole())));
 
-        when(userRepository.findByUsername("username")).thenReturn(userModel);
+        when(userRepository.findByUsername("username")).thenReturn(Optional.of(userModel));
 
         UserDetails user = userService.loadUserByUsername("username");
         assertEquals(userDetails, user);
     }
 
     @Test
+    public void loadUserByUsername_WithNotEnabledUser() {
+        UserModel user = new UserModel();
+        user.setEnabled(false);
+
+        when(userRepository.findByUsername("username")).thenReturn(Optional.of(user));
+
+        DisabledUserException thrown = assertThrows(DisabledUserException.class,
+                () -> userService.loadUserByUsername("username"));
+
+        assertEquals(thrown.getMessage(), "You must complete the registration. Check your email.");
+    }
+
+    @Test
     public void loadByUsername_WithNonExistentUsername(){
-        when(userRepository.findByUsername("username")).thenReturn(null);
+        when(userRepository.findByUsername("username")).thenReturn(Optional.empty());
 
         BadCredentialsException thrown = assertThrows(
                 BadCredentialsException.class,
                 () -> userService.loadUserByUsername("username")
         );
 
-        assertEquals(thrown.getMessage(), "Bad credentials");
+        assertEquals(thrown.getMessage(), "Bad credentials.");
     }
 
     @Test()

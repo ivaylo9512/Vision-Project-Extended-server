@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
 
         if(!user.isEnabled()){
-            throw new DisabledUserException("You must complete the registration. Check your email.");
+            throw new UnauthorizedException("User is unavailable.");
         }
 
         return user;
@@ -93,18 +93,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel userModel = userRepository.findByUsername(username);
-        if(userModel == null){
-            throw new BadCredentialsException("Bad credentials");
+        UserModel user = userRepository.findByUsername(username).orElseThrow(
+                () -> new BadCredentialsException("Bad credentials."));
+
+        if(!user.isEnabled()){
+            throw new DisabledUserException("You must complete the registration. Check your email.");
         }
 
-        Restaurant restaurant = userModel.getRestaurant();
+        Restaurant restaurant = user.getRestaurant();
         Hibernate.initialize(restaurant.getMenu());
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(userModel.getRole()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
-        return new UserDetails(userModel, authorities);
+        return new UserDetails(user, authorities);
     }
 
     @Override

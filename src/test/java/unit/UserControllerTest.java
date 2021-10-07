@@ -1,11 +1,9 @@
 package unit;
 
 import com.vision.project.controllers.UserController;
+import com.vision.project.exceptions.UnauthorizedException;
+import com.vision.project.models.*;
 import com.vision.project.models.DTOs.UserDto;
-import com.vision.project.models.File;
-import com.vision.project.models.Restaurant;
-import com.vision.project.models.UserDetails;
-import com.vision.project.models.UserModel;
 import com.vision.project.models.specs.NewPasswordSpec;
 import com.vision.project.models.specs.RegisterSpec;
 import com.vision.project.models.specs.UserSpec;
@@ -18,17 +16,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -115,6 +117,47 @@ public class UserControllerTest {
         assertEquals(passedToCreate.getProfileImage(), profileImage);
         assertEquals(passedToCreate.getProfileImage().getOwner().getUsername(), userModel.getUsername());
         assertEquals(passedToCreate.getRole(), userModel.getRole());
+    }
+
+    @Test
+    public void activate() throws IOException {
+        MockHttpServletResponse response = Mockito.spy(new MockHttpServletResponse());
+        EmailToken token = new EmailToken();
+        UserModel user = new UserModel();
+
+        user.setEnabled(false);
+        token.setExpiryDate(LocalDateTime.now().plusDays(1));
+        token.setUser(user);
+
+        when(emailTokenService.findByToken("token")).thenReturn(token);
+
+        userController.activate("token", response);
+
+        assertTrue(user.isEnabled());
+        verify(userService, times(1)).save(user);
+        verify(emailTokenService, times(1)).delete(token);
+    }
+
+    @Test
+    public void activate_WithExpiredToken() throws IOException {
+        MockHttpServletResponse response = Mockito.spy(new MockHttpServletResponse());
+        EmailToken token = new EmailToken();
+        UserModel user = new UserModel();
+
+        user.setEnabled(false);
+        token.setExpiryDate(LocalDateTime.now().minusDays(1));
+        token.setUser(user);
+
+        when(emailTokenService.findByToken("token")).thenReturn(token);
+
+        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
+                () -> userController.activate("token", response));
+
+        assertEquals(thrown.getMessage(), "Token has expired. Repeat your registration.");
+        assertFalse(user.isEnabled());
+        verify(userService, times(0)).save(user);
+        verify(userService, times(1)).delete(user);
+        verify(emailTokenService, times(1)).delete(token);
     }
 
     @Test

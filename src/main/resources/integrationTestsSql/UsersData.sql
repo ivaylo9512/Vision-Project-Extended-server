@@ -49,8 +49,8 @@ INSERT INTO `users` (`id`, `age`, `country`, `firstName`, `lastName`, `password`
 	(3, 25, 'Bulgaria', 'firstNameThird', 'lastName3', '$2a$04$JrrsioMxE3HE7bJ/sXLWD.0Ty8iJB1W4zgxumoFmn9rWl5a0vATa6', 'ROLE_USER', 'testUser1', 'testUser1@gmail.com', 3, true, 1),
 	(4, 24, 'Spain', 'First', 'Last', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'user1', 'user1@gmail.com', 4, true, 2),
 	(5, 32, 'Italy', 'testFirst', 'testLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'firstTest', 'firstTest@gmail.com', 5, true, 3),
-	(6, 24, 'Spain', 'secondFirst', 'secondLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'secondTest', 'secondTest@gmail.com', 6, true, 4),
-	(7, 29, 'Italy', 'testThirdFirst', 'testThirdLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'testThird', 'testThird@gmail.com', 7, true, 1),
+	(6, 24, 'Spain', 'secondFirst', 'secondLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'secondTest', 'secondTest@gmail.com', 6, false, 4),
+	(7, 29, 'Italy', 'testThirdFirst', 'testThirdLast', '$2a$04$PFraPHMqOOa7qiBJX5Mmq.STptiykt4m1H.p7rfpzzg/x1mQ9Ega6', 'ROLE_USER', 'testThird', 'testThird@gmail.com', 7, false, 1),
 	(8, 29, 'Italy', 'testForthFirst', 'testForthLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'testForth', 'testForth@gmail.com', 8, true, 2),
 	(9, 40, 'Spain', 'testFifthFirst', 'testFifthLast', '$2a$04$CMuyMiF6Wo5a4lbSdA68X.pj7jzYD6OPtv2KMLm.jl.B61waR/e9W', 'ROLE_USER', 'testFifth', 'testFifth@gmail.com', 9, true, 3);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;

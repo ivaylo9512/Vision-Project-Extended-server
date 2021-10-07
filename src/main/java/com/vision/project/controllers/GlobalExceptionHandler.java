@@ -85,9 +85,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-    ResponseEntity<String> disabledUserException(DisabledUserException e){
+    ResponseEntity<String> handleInvalidInputException(InvalidInputException e){
         return ResponseEntity
-                .status(HttpStatus.LOCKED)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
 }
