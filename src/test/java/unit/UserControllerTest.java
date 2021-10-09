@@ -139,7 +139,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void activate_WithExpiredToken() throws IOException {
+    public void activate_WithExpiredToken() {
         MockHttpServletResponse response = Mockito.spy(new MockHttpServletResponse());
         EmailToken token = new EmailToken();
         UserModel user = new UserModel();

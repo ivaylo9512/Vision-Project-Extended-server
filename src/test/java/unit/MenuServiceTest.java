@@ -148,4 +148,107 @@ public class MenuServiceTest {
 
         assertEquals(thrown.getMessage(), "Menu not found.");
     }
+
+    @Test
+    public void update_WithDifferentUserRestaurant_NotAdmin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel userModel = new UserModel();
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_USER");
+
+        MenuUpdateSpec menuUpdateSpec = new MenuUpdateSpec("name", 2);
+        menuUpdateSpec.setId(2);
+
+        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
+                () -> menuService.update(menuUpdateSpec, userModel));
+
+        assertEquals(thrown.getMessage(), "Unauthorized.");
+    }
+
+    @Test
+    public void update_WithDifferentUserRestaurant_Admin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel user = new UserModel();
+        user.setRestaurant(restaurant);
+        user.setRole("ROLE_ADMIN");
+
+        MenuUpdateSpec menuUpdateSpec = new MenuUpdateSpec("name", 2);
+        menuUpdateSpec.setId(2);
+
+        Menu menu = new Menu();
+
+        when(menuRepository.findById(menuUpdateSpec.getId())).thenReturn(Optional.of(menu));
+        when(menuRepository.save(menu)).thenReturn(menu);
+
+        Menu savedMenu = menuService.update(menuUpdateSpec, user);
+
+        verify(menuRepository, times(1)).save(menu);
+        assertEquals(savedMenu.getName(), menuUpdateSpec.getName());
+    }
+
+    @Test
+    public void create() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel user = new UserModel();
+        user.setRestaurant(restaurant);
+        user.setRole("ROLE_USER");
+
+        Menu menu = new Menu();
+        menu.setRestaurant(restaurant);
+
+        when(menuRepository.save(menu)).thenReturn(menu);
+
+        Menu savedMenu = menuService.create(menu, user);
+
+        assertEquals(savedMenu, menu);
+    }
+
+    @Test
+    public void create_WithDifferentUserRestaurant_NotAdmin() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel user = new UserModel();
+        user.setRestaurant(restaurant);
+        user.setRole("ROLE_USER");
+
+        Restaurant restaurant1 = new Restaurant();
+        restaurant1.setId(2);
+
+        Menu menu = new Menu();
+        menu.setRestaurant(restaurant1);
+
+        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
+                () -> menuService.create(menu, user));
+
+        assertEquals(thrown.getMessage(), "Unauthorized.");
+    }
+
+    @Test
+    public void create_WithDifferentUserRestaurant_Admin() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel user = new UserModel();
+        user.setRestaurant(restaurant);
+        user.setRole("ROLE_ADMIN");
+
+        Restaurant restaurant1 = new Restaurant();
+        restaurant1.setId(2);
+
+        Menu menu = new Menu();
+        menu.setRestaurant(restaurant1);
+
+        when(menuRepository.save(menu)).thenReturn(menu);
+
+        Menu savedMenu = menuService.create(menu, user);
+
+        assertEquals(savedMenu, menu);
+    }
 }
