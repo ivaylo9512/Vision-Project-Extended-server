@@ -22,7 +22,7 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = menuRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Menu not found."));
 
         if(loggedUser.getRestaurant().getId() != menu.getRestaurant().getId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException("Unauthorized.");
         }
 
         menuRepository.delete(menu);
@@ -31,7 +31,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu update(MenuUpdateSpec menuUpdateSpec, UserModel loggedUser) {
         if(loggedUser.getRestaurant().getId() != menuUpdateSpec.getRestaurantId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException("Unauthorized.");
         }
 
         Menu menu = menuRepository.findById(menuUpdateSpec.getId()).orElseThrow(() ->
@@ -44,7 +44,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu create(Menu menu, UserModel loggedUser) {
         if(loggedUser.getRestaurant().getId() != menu.getRestaurant().getId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException("Unauthorized.");
         }
 
         return menuRepository.save(menu);
