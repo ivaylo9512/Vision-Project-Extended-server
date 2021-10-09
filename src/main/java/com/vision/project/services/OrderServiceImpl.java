@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
 
-        List<Dish> notReady = new ArrayList<>();
+        order.setReady(true);
         boolean updated = false;
 
         Dish updatedDish = null;
@@ -61,25 +61,19 @@ public class OrderServiceImpl implements OrderService {
                 if(!orderDish.getReady()) {
                     orderDish.setUpdatedBy(userRepository.getById(userId));
                     orderDish.setReady(true);
-                    order.setUpdated(LocalDateTime.now());
 
                     updated = true;
                 }
                 updatedDish = orderDish;
             }
             if(!orderDish.getReady()){
-                notReady.add(orderDish);
+                order.setReady(false);
             }
         }
-        if(notReady.size() == 0){
-            order.setReady(true);
-        }
 
-        if(updated) {
-            order = orderRepository.save(order);
+        if(updated || order.isReady()) {
+            orderRepository.save(order);
         }
-
-        updatedDish.setUpdated(order.getUpdated());
 
         return updatedDish;
     }

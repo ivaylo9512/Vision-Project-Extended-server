@@ -35,10 +35,18 @@ public class MenuController {
     }
 
     @PatchMapping("/update")
-    public MenuDto create(@RequestBody() MenuUpdateSpec menuUpdateSpec){
+    public MenuDto update(@RequestBody() MenuUpdateSpec menuUpdateSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
         return new MenuDto(menuService.update(menuUpdateSpec, userService.findById(loggedUser.getId())));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable("id") int id){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        menuService.delete(id, userService.findById(loggedUser.getId()));
     }
 }

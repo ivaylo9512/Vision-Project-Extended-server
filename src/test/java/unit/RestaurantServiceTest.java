@@ -122,15 +122,15 @@ public class RestaurantServiceTest {
 
     @Test
     public void create() {
-        Menu menu = new Menu();
-        Menu menu1 = new Menu();
-        Set<Menu> menuList = new HashSet<>(Set.of(menu, menu1));
-
-        menu.setName("menu");
-        menu1.setName("menu1");
-
+        Set<Menu> menuList = new HashSet<>();
         Restaurant restaurant = new Restaurant(1, "restaurant", "address", "type", menuList);
         restaurant.setId(1);
+
+        Menu menu = new Menu("menu", restaurant);
+        Menu menu1 = new Menu("menu1", restaurant);
+
+        menuList.add(menu);
+        menuList.add(menu1);
 
         RestaurantSpec restaurantSpec = new RestaurantSpec("restaurant", "type", "address", menuList);
         UUID uuid = UUID.randomUUID();
