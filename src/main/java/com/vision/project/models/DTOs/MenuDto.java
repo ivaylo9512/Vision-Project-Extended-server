@@ -1,8 +1,11 @@
 package com.vision.project.models.DTOs;
 
+import com.vision.project.models.Menu;
+
 import java.util.Objects;
 
 public class MenuDto {
+    private int id;
     private String name;
     private int restaurantId;
 
@@ -11,6 +14,11 @@ public class MenuDto {
         this.restaurantId = restaurantId;
     }
 
+    public MenuDto(Menu menu){
+        this.id = menu.getId();
+        this.name = menu.getName();
+        this.restaurantId = menu.getRestaurant().getId();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -38,5 +46,13 @@ public class MenuDto {
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

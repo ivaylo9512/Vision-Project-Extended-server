@@ -40,7 +40,6 @@ public class RestaurantControllerTest {
     private final UserDetails user = new UserDetails(userModel, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
     private final UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, user.getId());
 
-
     @Test
     public void findById(){
         restaurant.setMenu(Set.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
@@ -80,7 +79,7 @@ public class RestaurantControllerTest {
                 Set.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
         Restaurant restaurant = new Restaurant(restaurantSpec);
 
-        when(restaurantService.create(any(Restaurant.class))).thenReturn(restaurant);
+        when(restaurantService.create(eq(restaurant))).thenReturn(restaurant);
 
         RestaurantDto restaurantDto = restaurantController.create(restaurantSpec);
         Set<MenuDto> menuDto = restaurantDto.getMenu();
@@ -90,6 +89,6 @@ public class RestaurantControllerTest {
         assertEquals(restaurantDto.getName(), restaurantSpec.getName());
         assertEquals(restaurantDto.getType(), restaurantSpec.getType());
         restaurantSpec.getMenu().forEach(menu -> assertTrue(menuDto.contains(
-                new MenuDto(menu.getName(), restaurant.getId()))));
+                new MenuDto(menu.getName(), menu.getRestaurant().getId()))));
     }
 }

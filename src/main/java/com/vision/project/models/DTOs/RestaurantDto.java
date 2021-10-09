@@ -20,23 +20,23 @@ public class RestaurantDto {
     public RestaurantDto() {
     }
 
+    public RestaurantDto(int id, String name, String address, String type, Set<Menu> menu) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.type = type;
+        toMenuDto(menu);
+    }
+
     public RestaurantDto(Restaurant restaurant, Map<Integer, Order> orders){
-        this.id = restaurant.getId();
-        this.name = restaurant.getName();
-        this.address = restaurant.getAddress();
-        this.type = restaurant.getType();
+        this(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getType(), restaurant.getMenu());
         this.orders = orders.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
                         (existing, replacement) -> existing, LinkedHashMap::new));
-        toMenuDto(restaurant.getMenu(), restaurant.getId());
     }
 
     public RestaurantDto(Restaurant restaurant) {
-        this.id = restaurant.getId();
-        this.name = restaurant.getName();
-        this.address = restaurant.getAddress();
-        this.type = restaurant.getType();
-        toMenuDto(restaurant.getMenu(), restaurant.getId());
+        this(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getType(), restaurant.getMenu());
     }
 
     public int getId() {
@@ -88,9 +88,9 @@ public class RestaurantDto {
     }
 
 
-    private void toMenuDto(Set<Menu> menu, int restaurantId) {
+    private void toMenuDto(Set<Menu> menu) {
         if(menu != null){
-            this.menu = menu.stream().map(m -> new MenuDto(m.getName(), restaurantId)).collect(Collectors.toSet());
+            this.menu = menu.stream().map((MenuDto::new)).collect(Collectors.toSet());
         }
     }
 }

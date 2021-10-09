@@ -4,6 +4,7 @@ import com.vision.project.models.specs.RestaurantSpec;
 import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,19 @@ public class Restaurant {
     private String token;
 
     public Restaurant() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Restaurant that = (Restaurant) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public Restaurant(int id, String name, String address, String type, Set<Menu> menu) {

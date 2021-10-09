@@ -1,6 +1,7 @@
 package unit;
 
 import com.vision.project.exceptions.InvalidRestaurantTokenException;
+import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.Menu;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
@@ -35,6 +36,8 @@ public class RestaurantServiceTest {
 
         UserModel userModel = new UserModel();
         userModel.setId(1);
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_USER");
 
         when(restaurantRepository.findById(1)).thenReturn(Optional.of(restaurant));
 
@@ -45,8 +48,13 @@ public class RestaurantServiceTest {
 
     @Test
     public void findById_WithNotFound(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
         UserModel userModel = new UserModel();
         userModel.setId(1);
+        userModel.setRole("ROLE_ADMIN");
+        userModel.setRestaurant(restaurant);
 
         when(restaurantRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -54,6 +62,40 @@ public class RestaurantServiceTest {
                 () -> restaurantService.findById(1, userModel));
 
         assertEquals(thrown.getMessage(), "Restaurant not found.");
+    }
+
+
+    @Test
+    public void findById_WithDifferentUserRestaurant_NotAdmin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(2);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_USER");
+
+        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
+                () -> restaurantService.findById(1, userModel));
+
+        assertEquals(thrown.getMessage(), "Unauthorized.");
+    }
+
+    @Test
+    public void findById_WithDifferentUserRestaurant_Admin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(2);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_ADMIN");
+
+        when(restaurantRepository.findById(1)).thenReturn(Optional.of(restaurant));
+
+        Restaurant foundRestaurant = restaurantService.findById(1, userModel);
+
+        assertEquals(restaurant, foundRestaurant);
     }
 
     @Test

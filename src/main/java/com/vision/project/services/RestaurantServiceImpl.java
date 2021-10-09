@@ -21,6 +21,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public Restaurant findById(int id, UserModel loggedUser){
+        if(loggedUser.getRestaurant().getId() != id && !loggedUser.getRole().equals("ROLE_ADMIN")){
+            throw new UnauthorizedException("Unauthorized.");
+        }
+
         return restaurantRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Restaurant not found."));
     }
