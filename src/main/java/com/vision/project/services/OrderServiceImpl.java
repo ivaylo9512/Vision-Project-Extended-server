@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(int id, UserModel loggedUser) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
+        Order order = orderRepository.findByIdAndRestaurant(id, loggedUser.getRestaurant()).orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
 
         if(order.getRestaurant().getId() != loggedUser.getRestaurant().getId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("Unauthorized.");
@@ -79,5 +79,4 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findMoreRecent(LocalDateTime lastCheck, Restaurant restaurant) {
         return orderRepository.findMoreRecent(lastCheck, restaurant);
     }
-
 }

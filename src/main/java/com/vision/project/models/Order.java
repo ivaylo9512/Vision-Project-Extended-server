@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -48,7 +49,7 @@ public class Order{
     public Order(OrderCreateSpec orderSpec, Restaurant restaurant, UserModel user){
         this.restaurant = restaurant;
         this.user = user;
-        orderSpec.getDishes().forEach(s -> new Dish(s, this));
+        this.dishes = orderSpec.getDishes().stream().map(s -> new Dish(s, this)).collect(Collectors.toList());
     }
     public Order(Order order) {
         this.restaurant = order.getRestaurant();
