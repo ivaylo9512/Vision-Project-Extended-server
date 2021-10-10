@@ -32,11 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserModel> findAll() { ;
-        return userRepository.findAll();
-    }
-
-    @Override
     public UserModel findById(int id) {
         UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));

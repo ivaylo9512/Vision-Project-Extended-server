@@ -11,4 +11,6 @@ public interface RestaurantService {
     Restaurant create(Restaurant restaurant);
 
     void delete(int id, UserModel loggedUser);
+
+    Restaurant getById(int restaurantId);
 }

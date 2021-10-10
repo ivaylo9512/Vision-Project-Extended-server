@@ -11,9 +11,9 @@ public interface LongPollingService {
 
     void addRequest(UserRequest userRequest);
 
-    Dish addDish(int orderId, int dishId, int userId, int restaurantId);
+    void checkDishes(Dish dish, int restaurantId, int userId);
 
-    Order addOrder(Order order, int restaurantId, int userId);
+    void checkOrders(Order updatedOrder, int restaurantId, int userId);
 
     Message addMessage(MessageSpec message);
 }

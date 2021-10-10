@@ -23,11 +23,11 @@ public class Dish{
 
     @CreationTimestamp
     @Column(columnDefinition = "DATETIME(6)")
-    private LocalDateTime created;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(columnDefinition = "DATETIME(6)")
-    private LocalDateTime updated;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "updated_by")
@@ -38,10 +38,17 @@ public class Dish{
     public Dish() {
     }
 
-    public Dish(String name, Boolean ready, Order order) {
+    public Dish(String name, Order order){
+        this.name = name;
+        this.order = order;
+    }
+
+    public Dish(String name, Boolean ready, UserModel updatedBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.ready = ready;
-        this.order = order;
+        this.updatedBy = updatedBy;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public int getId() {
@@ -76,20 +83,20 @@ public class Dish{
         this.order = order;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated() {
-        return updated;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public UserModel getUpdatedBy() {

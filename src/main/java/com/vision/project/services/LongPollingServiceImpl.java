@@ -69,7 +69,7 @@ public class LongPollingServiceImpl implements LongPollingService {
         int userId = newRequest.getUserId();
         LocalDateTime lastCheck = newRequest.getLastCheck();
 
-        List<Order> newOrders = orderService.findMoreRecent(lastCheck, newRequest.getRestaurantId());
+        List<Order> newOrders = orderService.findMoreRecent(lastCheck, newRequest.getRestaurant());
         List<Message> newMessages = chatService.findMoreRecentMessages(userId, lastCheck);
         newRequest.setLastCheck(LocalDateTime.now());
 
@@ -85,31 +85,27 @@ public class LongPollingServiceImpl implements LongPollingService {
 
     public void addRequest(UserRequest request){
         int userId = request.getUserId();
+        int restaurantId = request.getRestaurant().getId();
+
         userRequests.put(userId, request);
 
-        Cache<Integer, UserRequest> restaurantRequests = restaurants.get(request.getRestaurantId());
+        Cache<Integer, UserRequest> restaurantRequests = restaurants.get(restaurantId);
         if(restaurantRequests == null){
             restaurantRequests = CacheBuilder.newBuilder()
                     .expireAfterWrite(15, TimeUnit.MINUTES).build();
-            restaurants.put(request.getRestaurantId(), restaurantRequests);
+            restaurants.put(restaurantId, restaurantRequests);
         }
         restaurantRequests.put(userId, request);
     }
 
-    public Dish addDish(int orderId, int dishId, int userId, int restaurantId){
-        Dish dish = orderService.update(orderId, dishId, userId);
-
+    @Override
+    public void checkDishes(Dish dish, int restaurantId, int userId){
         new Thread(() -> checkRestaurants(dish, restaurantId, userId)).start();
-
-        return dish;
     }
 
-    public Order addOrder(Order order, int restaurantId, int userId){
-        Order updatedOrder = orderService.create(order, restaurantId, userId);
-
+    @Override
+    public void checkOrders(Order updatedOrder, int restaurantId, int userId){
         new Thread(() -> checkRestaurants(updatedOrder, restaurantId, userId)).start();
-
-        return updatedOrder;
     }
 
     public Message addMessage(MessageSpec messageSpec){
@@ -148,8 +144,7 @@ public class LongPollingServiceImpl implements LongPollingService {
                     try {
                         userRequest.getLock().lock();
                         if (obj.getClass() == Order.class) {
-                            Order order = (Order) obj;
-                            userRequest.getOrders().add(order);
+                            userRequest.getOrders().add((Order) obj);
                         } else {
                             userRequest.getDishes().add((Dish) obj);
                         }

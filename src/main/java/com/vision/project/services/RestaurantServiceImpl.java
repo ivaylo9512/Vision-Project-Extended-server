@@ -57,4 +57,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         restaurantRepository.deleteById(id);
     }
+
+    @Override
+    public Restaurant getById(int restaurantId){
+        return restaurantRepository.getById(restaurantId);
+    }
 }

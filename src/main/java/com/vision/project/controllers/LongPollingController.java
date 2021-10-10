@@ -23,12 +23,14 @@ public class LongPollingController {
     private final OrderService orderService;
     private final ChatService chatService;
     private final LongPollingService longPollingService;
+    private final RestaurantService restaurantService;
 
-    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService) {
+    public LongPollingController(UserService userService, OrderService orderService, ChatService chatService, LongPollingService longPollingService, RestaurantService restaurantService) {
         this.userService = userService;
         this.orderService = orderService;
         this.chatService = chatService;
         this.longPollingService = longPollingService;
+        this.restaurantService = restaurantService;
     }
 
     @PostMapping("/login/{pageSize}")
@@ -50,10 +52,10 @@ public class LongPollingController {
     @Transactional
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
-        Map<Integer, Order> orders = orderService.findNotReady(restaurant.getId(), 0, pageSize);
+        Map<Integer, Order> orders = orderService.findNotReady(restaurant, 0, pageSize);
         RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
 
-        UserRequest userRequest = new UserRequest(user.getId(), restaurant.getId(), null);
+        UserRequest userRequest = new UserRequest(user.getId(), restaurant, null);
         Map<Integer, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
 
         longPollingService.addRequest(userRequest);
@@ -69,7 +71,7 @@ public class LongPollingController {
 
         DeferredResult<UserRequestDto> request = new DeferredResult<>(15000L,"Time out.");
 
-        UserRequest userRequest = new UserRequest(loggedUser.getId(), loggedUser.getRestaurantId(), request, lastCheck);
+        UserRequest userRequest = new UserRequest(loggedUser.getId(), restaurantService.getById(loggedUser.getRestaurantId()), request, lastCheck);
 
         Runnable onTimeoutOrCompletion = ()-> userRequest.setRequest(null);
         request.onTimeout(onTimeoutOrCompletion);

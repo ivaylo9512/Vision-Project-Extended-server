@@ -1,5 +1,6 @@
 package com.vision.project.models;
 
+import com.vision.project.models.specs.OrderCreateSpec;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,6 +39,16 @@ public class Order{
     private UserModel user;
 
     public Order() {
+    }
+
+    public Order(int id){
+        this.id = id;
+    }
+
+    public Order(OrderCreateSpec orderSpec, Restaurant restaurant, UserModel user){
+        this.restaurant = restaurant;
+        this.user = user;
+        orderSpec.getDishes().forEach(s -> new Dish(s, this));
     }
     public Order(Order order) {
         this.restaurant = order.getRestaurant();

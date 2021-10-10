@@ -8,8 +8,8 @@ public class DishDto {
     private int id;
     private String name;
     private boolean ready;
-    private LocalDateTime created;
-    private LocalDateTime updated;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private int updatedById;
     private int orderId;
     private boolean isOrderReady;
@@ -18,8 +18,8 @@ public class DishDto {
         this.id = dish.getId();
         this.name = dish.getName();
         this.ready = dish.getReady();
-        this.created = dish.getCreated();
-        this.updated = dish.getUpdated();
+        this.createdAt = dish.getCreatedAt();
+        this.updatedAt = dish.getUpdatedAt();
         this.isOrderReady = dish.getOrder().isReady();
         this.orderId = dish.getOrder().getId();
         setUpdatedById(dish.getUpdatedBy());
@@ -49,20 +49,20 @@ public class DishDto {
         this.ready = ready;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated() {
-        return updated;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public int getUpdatedById() {

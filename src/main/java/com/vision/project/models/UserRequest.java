@@ -13,21 +13,21 @@ public class UserRequest {
     private List<Dish> dishes = new ArrayList<>();
     private DeferredResult<UserRequestDto> request;
     private ReentrantLock lock = new ReentrantLock();
+    private Restaurant restaurant;
     private int userId;
-    private int restaurantId;
     private LocalDateTime lastCheck;
 
     public UserRequest(){
 
     }
-    public UserRequest(int userId, int restaurantId, DeferredResult<UserRequestDto> request){
+    public UserRequest(int userId, Restaurant restaurant, DeferredResult<UserRequestDto> request){
         this.userId = userId;
-        this.restaurantId = restaurantId;
+        this.restaurant = restaurant;
         this.request = request;
     }
-    public UserRequest(int userId, int restaurantId, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
+    public UserRequest(int userId, Restaurant restaurant, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
         this.userId = userId;
-        this.restaurantId = restaurantId;
+        this.restaurant = restaurant;
         this.request = request;
         this.lastCheck = lastCheck;
     }
@@ -81,12 +81,12 @@ public class UserRequest {
         this.userId = userId;
     }
 
-    public int getRestaurantId() {
-        return restaurantId;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 
-    public void setRestaurantId(int restaurantId) {
-        this.restaurantId = restaurantId;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
     public LocalDateTime getLastCheck() {

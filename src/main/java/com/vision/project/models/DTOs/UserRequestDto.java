@@ -22,7 +22,7 @@ public class UserRequestDto {
         this.messages = currentRequest.getMessages().stream().map(MessageDto::new).collect(Collectors.toList());
         this.dishes = currentRequest.getDishes().stream().map(DishDto::new).collect(Collectors.toList());
         this.userId = currentRequest.getUserId();
-        this.restaurantId = currentRequest.getRestaurantId();
+        this.restaurantId = currentRequest.getRestaurant().getId();
         this.lastCheck = currentRequest.getLastCheck();
     }
 

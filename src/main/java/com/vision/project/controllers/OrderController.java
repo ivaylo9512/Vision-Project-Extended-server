@@ -3,14 +3,16 @@ package com.vision.project.controllers;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.OrderDto;
+import com.vision.project.models.specs.OrderCreateSpec;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
+import com.vision.project.services.base.RestaurantService;
+import com.vision.project.services.base.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,35 +21,47 @@ import java.util.stream.Collectors;
 public class OrderController {
     private final OrderService orderService;
     private final LongPollingService longPollingService;
+    private final UserService userService;
+    private final RestaurantService restaurantService;
 
-    public OrderController(OrderService orderService, LongPollingService longPollingService) {
+    public OrderController(OrderService orderService, LongPollingService longPollingService, UserService userService, RestaurantService restaurantService) {
         this.orderService = orderService;
         this.longPollingService = longPollingService;
+        this.userService = userService;
+        this.restaurantService = restaurantService;
     }
 
     @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
     public Map<Integer, OrderDto> findNotReady(@PathVariable("page") int page,
-                                      @PathVariable("pageSize") int pageSize,
-                                      @PathVariable("restaurantId") int restaurantId){
-        return orderService.findNotReady(restaurantId, page, pageSize).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto((Order) o),
+                                      @PathVariable("pageSize") int pageSize){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return orderService.findNotReady(restaurantService.getById(loggedUser.getRestaurantId()), page, pageSize).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
                         (existing, replacement) -> existing, LinkedHashMap::new));
     }
 
     @GetMapping(value = "/findById/{id}")
     public OrderDto findById(@PathVariable(name = "id") int id) throws IOException {
-        return new OrderDto(orderService.findById(id));
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new OrderDto(orderService.findById(id, userService.findById(loggedUser.getId())));
     }
 
     @PostMapping(value = "/create")
-    public OrderDto create(@RequestBody Order order) throws ExpiredJwtException{
+    public OrderDto create(@RequestBody OrderCreateSpec orderSpec) throws ExpiredJwtException{
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
 
-        return new OrderDto(longPollingService.addOrder(order, restaurantId, userId));
+        Order order = orderService.create(orderSpec, restaurantService.getById(restaurantId), userService.getById(userId));
+        longPollingService.checkOrders(order, restaurantId, userId);
+
+        return new OrderDto(order);
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")
@@ -56,6 +70,12 @@ public class OrderController {
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        return new DishDto(longPollingService.addDish(orderId, dishId, loggedUser.getId(), loggedUser.getRestaurantId()));
+        int restaurantId = loggedUser.getRestaurantId();
+        int userId = loggedUser.getId();
+
+        Dish dish = orderService.update(orderId, dishId, restaurantService.getById(restaurantId), userService.getById(userId));
+        longPollingService.checkDishes(dish, restaurantId, userId);
+
+        return new DishDto(dish);
     }
 }

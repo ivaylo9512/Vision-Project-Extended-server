@@ -8,20 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    @Query(value = "from Order order by CASE WHEN created > updated THEN created ELSE updated END desc")
-    List<Order> findAll();
-
-    @Query(value = "from Order where ready = false and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
-    List<Order> findAllNotReady(@Param("restaurant")Restaurant restaurant);
-
     @Query(value = "from Order where ready = false and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findNotReady(@Param("restaurant")Restaurant restaurant, Pageable pageable);
 
     @Query(value="from Order where CASE WHEN created > updated THEN created ELSE updated END > :date and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findMoreRecent(@Param("date") LocalDateTime date, @Param("restaurant") Restaurant restaurant);
 
-    @Query(value = "from Order where restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
-    List<Order> findMostRecentDate(@Param("restaurant") Restaurant restaurant, Pageable pageRequest);
+
+    Optional<Order> findByIdAndRestaurant(int id, Restaurant restaurant);
 }
