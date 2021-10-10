@@ -24,11 +24,10 @@ import java.util.*;
 
 @Service
 public class ChatServiceImpl implements ChatService {
-    private ChatRepository chatRepository;
-    private SessionRepository sessionRepository;
-    private MessageRepository messageRepository;
-    private UserRepository userRepository;
-    private int sessionPageSize = 3;
+    private final ChatRepository chatRepository;
+    private final SessionRepository sessionRepository;
+    private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
@@ -80,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
                 .orElse(new Session(chat, LocalDate.now()));
 
         UserModel user = userRepository.getById(receiver);
-        Message message = new Message(user,LocalTime.now(),messageSpec.getMessage(),session);
+        Message message = new Message(user, LocalTime.now(), messageSpec.getMessage(), session);
 
         return messageRepository.save(message);
     }

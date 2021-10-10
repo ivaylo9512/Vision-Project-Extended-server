@@ -3,6 +3,7 @@ package com.vision.project.controllers;
 import com.vision.project.models.DTOs.ChatDto;
 import com.vision.project.models.DTOs.MessageDto;
 import com.vision.project.models.DTOs.SessionDto;
+import com.vision.project.models.Message;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
@@ -50,11 +51,15 @@ public class ChatController {
     }
 
     @PostMapping("/newMessage")
-    public MessageDto message(@Valid @RequestBody MessageSpec message) throws  Exception {
+    public MessageDto addMessage(@Valid @RequestBody MessageSpec messageSpec) throws  Exception {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        message.setSenderId(loggedUser.getId());
-        return new MessageDto(longPollingService.addMessage(message));
+        messageSpec.setSenderId(loggedUser.getId());
+
+        Message message = chatService.addNewMessage(messageSpec);
+        longPollingService.checkMessages(message);
+
+        return new MessageDto(message);
     }
 }

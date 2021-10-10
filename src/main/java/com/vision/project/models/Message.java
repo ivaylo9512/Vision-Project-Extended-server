@@ -29,6 +29,7 @@ public class Message{
         this.message = message;
         this.session = session;
     }
+
     public Message() {
     }
 

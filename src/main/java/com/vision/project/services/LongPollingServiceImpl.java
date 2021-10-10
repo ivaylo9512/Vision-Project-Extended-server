@@ -108,12 +108,8 @@ public class LongPollingServiceImpl implements LongPollingService {
         new Thread(() -> checkRestaurants(updatedOrder, restaurantId, userId)).start();
     }
 
-    public Message addMessage(MessageSpec messageSpec){
-        Message message = chatService.addNewMessage(messageSpec);
-
-        new Thread(() -> checkUsers(message, messageSpec.getReceiverId())).start();
-
-        return message;
+    public void checkMessages(Message message){
+        new Thread(() -> checkUsers(message, message.getReceiver().getId())).start();
     }
 
     public void checkUsers(Message message, int userId){

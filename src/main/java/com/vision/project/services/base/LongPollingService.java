@@ -4,7 +4,6 @@ import com.vision.project.models.Dish;
 import com.vision.project.models.Message;
 import com.vision.project.models.Order;
 import com.vision.project.models.UserRequest;
-import com.vision.project.models.specs.MessageSpec;
 
 public interface LongPollingService {
     void setAndAddRequest(UserRequest newRequest);
@@ -15,5 +14,5 @@ public interface LongPollingService {
 
     void checkOrders(Order updatedOrder, int restaurantId, int userId);
 
-    Message addMessage(MessageSpec message);
+    void checkMessages(Message message);
 }
