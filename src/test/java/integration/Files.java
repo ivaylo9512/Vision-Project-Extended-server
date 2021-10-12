@@ -164,14 +164,14 @@ public class Files {
     }
 
     @Test
-    public void deleteFileWithUserThatIsNotOwner() throws Exception{
+    public void deleteFile_NotOwner_NotAdmin() throws Exception{
         mockMvc.perform(delete("/api/files/auth/delete/profileImage/1")
                 .header("Authorization", userToken))
                 .andExpect(content().string("Unauthorized"));
     }
 
     @Test
-    public void deleteFileWithUserThatIsNotOwnerAndIsRoleAdmin() throws Exception{
+    public void deleteFile_NotOwner_Admin() throws Exception{
         mockMvc.perform(delete("/api/files/auth/delete/test/3")
                         .header("Authorization", adminToken))
                 .andExpect(status().isOk());

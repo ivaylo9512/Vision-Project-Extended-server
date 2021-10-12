@@ -65,12 +65,12 @@ public class UserServiceTest {
         UserModel existingUser = new UserModel();
         existingUser.setUsername("test");
 
-        when(userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(existingUser);
+        when(userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(Optional.of(existingUser));
 
         UsernameExistsException thrown = assertThrows(UsernameExistsException.class,
                 () -> userService.create(user));
 
-        assertEquals(thrown.getMessage(), "Username is already taken.");
+        assertEquals(thrown.getMessage(), "{ \"username\": \"Username is already taken.\" }");
     }
 
     @Test
@@ -78,20 +78,20 @@ public class UserServiceTest {
         UserModel existingUser = new UserModel("test", "test@gmail.com", "test", "ROLE_ADMIN");
         UserModel user = new UserModel("nonexistent", "test@gmail.com", "test", "ROLE_ADMIN");
 
-        when(userRepository.findByUsernameOrEmail("nonexistent", "test@gmail.com")).thenReturn(existingUser);
+        when(userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(Optional.of(existingUser));
 
         EmailExistsException thrown = assertThrows(EmailExistsException.class,
                 () -> userService.create(user)
         );
 
-        assertEquals(thrown.getMessage(), "Email is already taken.");
+        assertEquals(thrown.getMessage(), "{ \"email\": \"Email is already taken.\" }");
     }
 
     @Test
     public void register() {
         UserModel userModel = new UserModel("test", "testEmail@gmail.com","password", "ROLE_USER");
 
-        when(userRepository.findByUsernameOrEmail(userModel.getUsername(), userModel.getEmail())).thenReturn(null);
+        when(userRepository.findFirstByUsernameOrEmail(userModel.getUsername(), userModel.getEmail())).thenReturn(Optional.empty());
         when(userRepository.save(userModel)).thenReturn(userModel);
 
         UserModel user = userService.create(userModel);
@@ -103,7 +103,7 @@ public class UserServiceTest {
     public void registerAdmin() {
         UserModel user = new UserModel("test", "test@gmail.com", "test", "ROLE_ADMIN");
 
-        when(userRepository.findByUsernameOrEmail("test", "test@gmail.com")).thenReturn(null);
+        when(userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail())).thenReturn(Optional.empty());
         when(userRepository.save(user)).thenReturn(user);
 
         UserModel registeredUser = userService.create(user);
@@ -209,70 +209,15 @@ public class UserServiceTest {
     }
 
     @Test()
-    public void changeUserInfo_WithNonExistentUser(){
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
-
-        UserSpec userSpec = new UserSpec();
-        userSpec.setId(1);
-
-        UserModel loggedUser = new UserModel(1, "username", "password", "ROLE_ADMIN");
-
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-                () -> userService.changeUserInfo(userSpec, loggedUser)
-        );
-
-        assertEquals(thrown.getMessage(), "UserModel not found.");
-    }
-
-    @Test()
-    public void changeUserInfo_WhenUserHasDifferentIdAndRoleAdmin(){
-        UserSpec newUser = new UserSpec(1, "newUsername", "newUsername@gmail.com", "firstName",
-                "lastName", 25, "Country");
-
-        UserModel oldUser = new UserModel();
-        oldUser.setUsername("username");
-        oldUser.setUsername("email@gmail.com");
-
-        UserModel loggedUser = new UserModel(2, "username",
-                "password", "ROLE_ADMIN");
-
-        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
-        when(userRepository.save(oldUser)).thenReturn(oldUser);
-        when(userRepository.findByUsernameOrEmail("newUsername", "newUsername@gmail.com")).thenReturn(null);
-
-        userService.changeUserInfo(newUser, loggedUser);
-
-        assertEquals(oldUser.getUsername(), newUser.getUsername());
-        assertEquals(oldUser.getFirstName(), newUser.getFirstName());
-        assertEquals(oldUser.getLastName(), newUser.getLastName());
-        assertEquals(oldUser.getCountry(), newUser.getCountry());
-        assertEquals(oldUser.getAge(), newUser.getAge());
-    }
-
-    @Test()
-    public void changeUserInfo_WhenUserDifferentUserAndRoleUser() {
-        UserSpec newUser = new UserSpec(1, "newUsername", "newUsername@gmail.com", "firstName",
-                "lastName", 25, "Country");
-
-        UserModel loggedUser = new UserModel(2, "username",
-                "password", "ROLE_USER");
-
-        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
-                () -> userService.changeUserInfo(newUser, loggedUser));
-
-        assertEquals(thrown.getMessage(), "Unauthorized");
-    }
-
-    @Test()
     public void changeUserInfo(){
-        UserSpec newUser = new UserSpec(1, "newUsername", "nonexistent@gmail.com", "firstName", "lastName", 25, "Country");
+        UserSpec newUser = new UserSpec(1, "newUsername", "newEmail@gmail.com", "firstName",
+                "lastName", 25, "Country");
 
-        UserModel oldUser = new UserModel("username", "username@gmail.com", "password", "ROLE_USER");
+        UserModel oldUser = new UserModel("oldUsername", "email@gmail.com", "password", "ROLE_USER");
         oldUser.setId(1);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.save(oldUser)).thenReturn(oldUser);
-        when(userRepository.findByUsernameOrEmail("newUsername", "nonexistent@gmail.com")).thenReturn(null);
+        when(userRepository.findFirstByUsernameOrEmail(newUser.getUsername(), newUser.getEmail())).thenReturn(Optional.empty());
 
         userService.changeUserInfo(newUser, oldUser);
 
@@ -296,15 +241,14 @@ public class UserServiceTest {
         existingUser.setId(2);
         existingUser.setUsername("username");
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
-        when(userRepository.findByUsernameOrEmail("username", "email@gmail.com")).thenReturn(existingUser);
+        when(userRepository.findFirstByUsernameOrEmail(newUser.getUsername(), null)).thenReturn(Optional.of(existingUser));
 
         UsernameExistsException thrown = assertThrows(
                 UsernameExistsException.class,
                 () -> userService.changeUserInfo(newUser, oldUser)
         );
 
-        assertEquals(thrown.getMessage(), "Username is already taken.");
+        assertEquals(thrown.getMessage(), "{ \"username\": \"Username is already taken.\" }");
     }
 
     @Test()
@@ -315,7 +259,6 @@ public class UserServiceTest {
         UserModel oldUser = new UserModel("oldUsername", "email@gmail.com", "password", "ROLE_USER");
         oldUser.setId(1);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
         when(userRepository.save(oldUser)).thenReturn(oldUser);
 
         userService.changeUserInfo(newUser, oldUser);
@@ -327,7 +270,7 @@ public class UserServiceTest {
         assertEquals(oldUser.getCountry(), newUser.getCountry());
         assertEquals(oldUser.getAge(), newUser.getAge());
 
-        verify(userRepository, times(0)).findByUsernameOrEmail("username", "email@gmail.com");
+        verify(userRepository, times(0)).findFirstByUsernameOrEmail("username", "email@gmail.com");
     }
 
     @Test()
@@ -335,7 +278,7 @@ public class UserServiceTest {
         UserSpec newUser = new UserSpec(1, "oldUsername", "taken@gmail.com", "firstName",
                 "lastName", 25, "Country");
 
-        UserModel oldUser = new UserModel("oldUsername", "oldEmail@gmail.com", "password", "ROLE_USER");
+        UserModel oldUser = new UserModel("oldUsername", "email@gmail.com", "password", "ROLE_USER");
         oldUser.setId(1);
 
         UserModel existingUser = new UserModel();
@@ -343,15 +286,13 @@ public class UserServiceTest {
         existingUser.setUsername("username");
         existingUser.setUsername("taken@gmail.com");
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
-        when(userRepository.findByUsernameOrEmail("oldUsername", "taken@gmail.com")).thenReturn(existingUser);
+        when(userRepository.findFirstByUsernameOrEmail(null, newUser.getEmail())).thenReturn(Optional.of(existingUser));
 
-        EmailExistsException thrown = assertThrows(
-                EmailExistsException.class,
+        EmailExistsException thrown = assertThrows(EmailExistsException.class,
                 () -> userService.changeUserInfo(newUser, oldUser)
         );
 
-        assertEquals(thrown.getMessage(), "Email is already taken.");
+        assertEquals(thrown.getMessage(), "{ \"email\": \"Email is already taken.\" }");
     }
 
     @Test()

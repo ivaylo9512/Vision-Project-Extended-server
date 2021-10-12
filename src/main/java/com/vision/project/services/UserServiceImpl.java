@@ -50,13 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel create(UserModel user) {
-        UserModel existingUser = userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail());
-        if (existingUser != null) {
+        userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail()).ifPresent(existingUser -> {
             if(existingUser.getUsername().equals(user.getUsername())){
-                throw new UsernameExistsException("Username is already taken.");
+                throw new UsernameExistsException("{ \"username\": \"Username is already taken.\" }");
             }
-            throw new EmailExistsException("Email is already taken.");
-        }
+            throw new EmailExistsException("{ \"email\": \"Email is already taken.\" }");
+        });
 
         user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt(4)));
         return userRepository.save(user);
@@ -117,24 +116,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel changeUserInfo(UserSpec userSpec, UserModel loggedUser){
-        if(userSpec.getId() != loggedUser.getId() &&
-                !loggedUser.getRole().equals("ROLE_ADMIN")){
-            throw new UnauthorizedException("Unauthorized");
-        }
+    public UserModel changeUserInfo(UserSpec userSpec, UserModel user){
+        String newUsername = user.getUsername().equals(userSpec.getUsername()) ? null : userSpec.getUsername();
+        String newEmail = user.getEmail().equals(userSpec.getEmail()) ? null : userSpec.getEmail();
 
-        UserModel user = userRepository.findById(userSpec.getId())
-                .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
-
-        if(!user.getUsername().equals(userSpec.getUsername()) || !user.getEmail().equals(userSpec.getEmail())){
-            UserModel existingUser = userRepository.findByUsernameOrEmail(userSpec.getUsername(), userSpec.getEmail());
-
-            if(existingUser != null){
+        if(newUsername != null || newEmail != null){
+            userRepository.findFirstByUsernameOrEmail(newUsername, newEmail).ifPresent(existingUser -> {
                 if(existingUser.getUsername().equals(userSpec.getUsername())){
-                    throw new UsernameExistsException("Username is already taken.");
+                    throw new UsernameExistsException("{ \"username\": \"Username is already taken.\" }");
                 }
-                throw new EmailExistsException("Email is already taken.");
-            }
+                throw new EmailExistsException("{ \"email\": \"Email is already taken.\" }");
+            });
         }
 
         user.setUsername(userSpec.getUsername());

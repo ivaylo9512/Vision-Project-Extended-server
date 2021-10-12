@@ -208,7 +208,7 @@ public class Users {
     public void register_WhenUsernameIsTaken() throws Exception {
         mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "testUser", "username@gmail.com", null, true))
-                .andExpect(content().string(containsString("Username is already taken.")));
+                .andExpect(content().string(containsString("{ \"username\": \"Username is already taken.\" }")));
     }
 
     @Test
@@ -216,7 +216,7 @@ public class Users {
         mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "nonExistent", "adminUser@gmail.com", null, true))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Email is already taken.")));
+                .andExpect(content().string(containsString("{ \"email\": \"Email is already taken.\" }")));
     }
 
     private void checkDBForUser(UserDto user) throws Exception{
@@ -354,7 +354,7 @@ public class Users {
                         .contentType("Application/json")
                         .content(objectMapper.writeValueAsString(userSpec)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Username is already taken."));
+                .andExpect(content().string("{ \"username\": \"Username is already taken.\" }"));
     }
 
     @Test
@@ -367,7 +367,7 @@ public class Users {
                         .contentType("Application/json")
                         .content(objectMapper.writeValueAsString(userSpec)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Email is already taken."));
+                .andExpect(content().string("{ \"email\": \"Email is already taken.\" }"));
     }
 
     @Test
