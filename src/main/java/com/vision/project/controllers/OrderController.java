@@ -58,10 +58,11 @@ public class OrderController {
         int restaurantId = loggedUser.getRestaurantId();
         int userId = loggedUser.getId();
 
-        Order order = orderService.create(orderSpec, restaurantService.getById(restaurantId), userService.getById(userId));
-        longPollingService.checkOrders(order, restaurantId, userId);
+        Order order = new Order(orderSpec, restaurantService.getById(restaurantId), userService.getById(userId));
+        Order savedOrder = orderService.create(order);
+        longPollingService.checkOrders(savedOrder, restaurantId, userId);
 
-        return new OrderDto(order);
+        return new OrderDto(savedOrder);
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")

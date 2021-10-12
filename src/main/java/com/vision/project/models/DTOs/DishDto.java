@@ -17,7 +17,7 @@ public class DishDto {
     public DishDto(Dish dish) {
         this.id = dish.getId();
         this.name = dish.getName();
-        this.ready = dish.getReady();
+        this.ready = dish.isReady();
         this.createdAt = dish.getCreatedAt();
         this.updatedAt = dish.getUpdatedAt();
         this.isOrderReady = dish.getOrder().isReady();

@@ -15,7 +15,7 @@ public interface OrderService {
 
     Map<Integer, Order> findNotReady(Restaurant restaurant, int page, int pageSize);
 
-    Order create(OrderCreateSpec order, Restaurant restaurant, UserModel loggedUser);
+    Order create(Order order);
 
     Dish update(int orderId, int dishId, Restaurant restaurant, UserModel loggedUser);
 

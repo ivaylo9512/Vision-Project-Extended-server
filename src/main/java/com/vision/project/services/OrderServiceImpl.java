@@ -22,14 +22,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order create(OrderCreateSpec orderSpec, Restaurant restaurant, UserModel loggedUser){
-        return orderRepository.save(new Order(orderSpec, restaurant, loggedUser));
+    public Order create(Order order){
+        return orderRepository.save(order);
     }
 
     @Override
     public Dish update(int orderId, int dishId, Restaurant restaurant, UserModel loggedUser) {
         Order order = orderRepository.findByIdAndRestaurant(orderId, restaurant)
-                .orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
+                .orElseThrow(() -> new EntityNotFoundException("Order not found."));
 
         order.setReady(true);
         boolean updated = false;
@@ -37,15 +37,17 @@ public class OrderServiceImpl implements OrderService {
         Dish updatedDish = null;
         for (Dish orderDish: order.getDishes()) {
             if(orderDish.getId() == dishId ){
-                if(!orderDish.getReady()) {
+                if(!orderDish.isReady()) {
                     orderDish.setUpdatedBy(loggedUser);
                     orderDish.setReady(true);
 
                     updated = true;
                 }
+
                 updatedDish = orderDish;
+                continue;
             }
-            if(!orderDish.getReady()){
+            if(!orderDish.isReady()){
                 order.setReady(false);
             }
         }

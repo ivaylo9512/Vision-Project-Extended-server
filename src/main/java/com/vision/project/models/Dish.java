@@ -67,7 +67,7 @@ public class Dish{
         this.name = name;
     }
 
-    public Boolean getReady() {
+    public Boolean isReady() {
         return ready;
     }
 

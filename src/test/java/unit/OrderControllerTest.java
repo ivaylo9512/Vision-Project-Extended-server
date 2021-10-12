@@ -97,7 +97,7 @@ public class OrderControllerTest {
         orderSpec.setDishes(List.of("dish1", "dish2"));
         Order order = new Order(orderSpec, restaurant, userModel);
 
-        when(orderService.create(orderSpec, restaurant, userModel)).thenReturn(order);
+        when(orderService.create(any(Order.class))).thenReturn(order);
         when(restaurantService.getById(restaurant.getId())).thenReturn(restaurant);
         when(userService.getById(user.getId())).thenReturn(userModel);
 
