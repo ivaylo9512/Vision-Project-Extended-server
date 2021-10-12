@@ -15,13 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,14 +33,14 @@ public class RestaurantControllerTest {
     @Mock
     private RestaurantServiceImpl restaurantService;
 
-    private final Restaurant restaurant = new Restaurant(1, "testName", "testAddress", "fast food", new HashSet<>());
+    private final Restaurant restaurant = new Restaurant(1, "testName", "testAddress", "fast food", new ArrayList<>());
     private final UserModel userModel = new UserModel(1, "username", "email", "password", "ROLE_ADMIN", "firstName", "lastName", 25, "Bulgaria", restaurant);
     private final UserDetails user = new UserDetails(userModel, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
     private final UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, user.getId());
 
     @Test
     public void findById(){
-        restaurant.setMenu(Set.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
+        restaurant.setMenu(List.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
 
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -51,7 +49,7 @@ public class RestaurantControllerTest {
         when(restaurantService.findById(1, userModel)).thenReturn(restaurant);
 
         RestaurantDto restaurantDto = restaurantController.findById(1);
-        Set<MenuDto> menuDto = restaurantDto.getMenu();
+        List<MenuDto> menuDto = restaurantDto.getMenu();
 
         assertEquals(restaurantDto.getId(), restaurant.getId());
         assertEquals(restaurantDto.getAddress(), restaurant.getAddress());
@@ -76,13 +74,13 @@ public class RestaurantControllerTest {
     @Test
     public void create(){
         RestaurantSpec restaurantSpec = new RestaurantSpec("name", "type", "address",
-                Set.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
+                List.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
         Restaurant restaurant = new Restaurant(restaurantSpec);
 
         when(restaurantService.create(eq(restaurant))).thenReturn(restaurant);
 
         RestaurantDto restaurantDto = restaurantController.create(restaurantSpec);
-        Set<MenuDto> menuDto = restaurantDto.getMenu();
+        List<MenuDto> menuDto = restaurantDto.getMenu();
 
         assertEquals(restaurantDto.getId(), restaurant.getId());
         assertEquals(restaurantDto.getAddress(), restaurantSpec.getAddress());

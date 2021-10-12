@@ -9,6 +9,10 @@ public class MenuDto {
     private String name;
     private int restaurantId;
 
+    private MenuDto(){
+
+    }
+
     public MenuDto(String name, int restaurantId) {
         this.name = name;
         this.restaurantId = restaurantId;

@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 public interface FileService {
     boolean delete(String resourceType, UserModel ownerId, UserModel loggedUser);
 
+    void deleteFromSystem(String name);
+
     Resource getAsResource(String fileName) throws MalformedURLException;
 
     File findByType(String resourceType, UserModel ownerId);

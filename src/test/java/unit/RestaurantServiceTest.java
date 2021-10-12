@@ -122,7 +122,7 @@ public class RestaurantServiceTest {
 
     @Test
     public void create() {
-        Set<Menu> menuList = new HashSet<>();
+        List<Menu> menuList = new ArrayList<>();
         Restaurant restaurant = new Restaurant(1, "restaurant", "address", "type", menuList);
         restaurant.setId(1);
 

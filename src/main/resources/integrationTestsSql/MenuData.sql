@@ -32,11 +32,11 @@ CREATE TABLE IF NOT EXISTS `menu` (
 -- Dumping data for table restaurant-app-test.menu: ~0 rows (approximately)
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
 INSERT INTO `menu` (`id`, `name`, `restaurant`) VALUES
-	(1, 'pizza', 1),
-	(2, 'burger', 1),
-	(3, 'water', 1),
-	(4, 'sushi', 1),
-	(5, 'juice', 1);
+	(1, 'Pizza', 1),
+	(2, 'Burger', 1),
+	(3, 'Water', 1),
+	(4, 'Sushi', 1),
+	(5, 'Juice', 1);
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 
 

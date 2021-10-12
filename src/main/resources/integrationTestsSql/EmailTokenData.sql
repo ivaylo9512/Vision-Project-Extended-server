@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `email_tokens` (
   PRIMARY KEY (`id`),
   KEY `FK_email_tokens_users` (`user_id`) USING BTREE,
   CONSTRAINT `FK_email_tokens_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table restaurant-app-test.email_tokens: ~0 rows (approximately)
 /*!40000 ALTER TABLE `email_tokens` DISABLE KEYS */;

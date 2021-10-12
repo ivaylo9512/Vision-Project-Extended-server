@@ -4,7 +4,6 @@ import com.vision.project.exceptions.InvalidRestaurantTokenException;
 import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
-import com.vision.project.models.specs.RestaurantSpec;
 import com.vision.project.repositories.base.RestaurantRepository;
 import com.vision.project.services.base.RestaurantService;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantRepository.save(restaurant);
         restaurant.setToken(UUID.randomUUID().toString() + restaurant.getId());
         restaurantRepository.save(restaurant);
-
-        System.out.println(restaurant.getToken());
 
         return restaurant;
     }

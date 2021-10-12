@@ -1,9 +1,8 @@
 package com.vision.project.models.specs;
 
 import com.vision.project.models.Menu;
-
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 public class RestaurantSpec {
     @NotNull(message = "You must provide name.")
@@ -15,14 +14,15 @@ public class RestaurantSpec {
     @NotNull(message = "You must provide address.")
     private String address;
 
-    public RestaurantSpec(String name, String type, String address, Set<Menu> menu) {
+    private List<Menu> menu;
+
+    public RestaurantSpec(String name, String type, String address, List<Menu> menu) {
         this.name = name;
         this.type = type;
         this.address = address;
         this.menu = menu;
     }
 
-    private Set<Menu> menu;
 
     public String getName() {
         return name;
@@ -48,11 +48,11 @@ public class RestaurantSpec {
         this.address = address;
     }
 
-    public Set<Menu> getMenu() {
+    public List<Menu> getMenu() {
         return menu;
     }
 
-    public void setMenu(Set<Menu> menu) {
+    public void setMenu(List<Menu> menu) {
         this.menu = menu;
     }
 }

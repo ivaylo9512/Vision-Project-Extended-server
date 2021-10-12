@@ -3,10 +3,7 @@ package com.vision.project.models.DTOs;
 import com.vision.project.models.Menu;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestaurantDto {
@@ -14,13 +11,13 @@ public class RestaurantDto {
     private String name;
     private String address;
     private String type;
-    private Set<MenuDto> menu;
+    private List<MenuDto> menu;
     private Map<Integer, OrderDto> orders = new HashMap<>();
 
     public RestaurantDto() {
     }
 
-    public RestaurantDto(int id, String name, String address, String type, Set<Menu> menu) {
+    public RestaurantDto(int id, String name, String address, String type, List<Menu> menu) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -71,11 +68,11 @@ public class RestaurantDto {
         this.type = type;
     }
 
-    public Set<MenuDto> getMenu() {
+    public List<MenuDto> getMenu() {
         return menu;
     }
 
-    public void setMenu(Set<MenuDto> menu) {
+    public void setMenu(List<MenuDto> menu) {
         this.menu = menu;
     }
 
@@ -88,9 +85,9 @@ public class RestaurantDto {
     }
 
 
-    private void toMenuDto(Set<Menu> menu) {
+    private void toMenuDto(List<Menu> menu) {
         if(menu != null){
-            this.menu = menu.stream().map((MenuDto::new)).collect(Collectors.toSet());
+            this.menu = menu.stream().map((MenuDto::new)).collect(Collectors.toList());
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.vision.project.models.specs;
 
 import org.hibernate.validator.constraints.Length;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -28,8 +28,10 @@ public class UserSpec {
 
     @NotNull(message = "You must provide country.")
     private String country;
-    public UserSpec() {
 
+    private MultipartFile profileImage;
+
+    public UserSpec() {
     }
 
     public UserSpec(int id, String username, String email, String firstName, String lastName, int age, String country) {
@@ -96,5 +98,13 @@ public class UserSpec {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public MultipartFile getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(MultipartFile profileImage) {
+        this.profileImage = profileImage;
     }
 }

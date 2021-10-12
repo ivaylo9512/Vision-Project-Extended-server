@@ -38,7 +38,8 @@ public class RegisterSpec {
     public RegisterSpec() {
     }
 
-    public RegisterSpec(String username, String password, String email, MultipartFile profileImage, String firstName, String lastName, String country, int age) {
+    public RegisterSpec(String username, String password, String email, MultipartFile profileImage, String firstName,
+                        String lastName, String country, int age, String restaurantToken) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -47,6 +48,7 @@ public class RegisterSpec {
         this.lastName = lastName;
         this.country = country;
         this.age = age;
+        this.restaurantToken = restaurantToken;
     }
 
     public String getUsername() {

@@ -24,6 +24,12 @@ public class Menu {
         this.restaurant = restaurant;
     }
 
+    public Menu(int id, String name, Restaurant restaurant) {
+        this.id = id;
+        this.name = name;
+        this.restaurant = restaurant;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

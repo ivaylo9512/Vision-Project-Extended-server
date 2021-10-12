@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -53,19 +54,13 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public void register(@Valid @ModelAttribute RegisterSpec registerSpec) throws IOException, MessagingException {
-        MultipartFile profileImage = registerSpec.getProfileImage();
-        File file = null;
-
-        if(profileImage != null){
-            file = fileService.generate(profileImage,"profileImage", "image");
-        }
+        File file = generateFile(registerSpec.getProfileImage(), null);
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
 
         UserModel newUser = userService.create(new UserModel(registerSpec, file, restaurant, "ROLE_USER"));
 
         if(file != null){
-            System.out.println(newUser.getId());
             fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
         }
 
@@ -92,17 +87,15 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/auth/registerAdmin")
+    @Transactional
     public UserDto registerAdmin(@Valid @ModelAttribute RegisterSpec registerSpec) throws IOException {
-        MultipartFile profileImage = registerSpec.getProfileImage();
-        File file = null;
-
-        if(profileImage != null){
-            file = fileService.generate(profileImage,"profileImage", "image");
-        }
+        File file = generateFile(registerSpec.getProfileImage(), null);
 
         Restaurant restaurant = restaurantService.findByToken(registerSpec.getRestaurantToken());
-        UserModel newUser = userService.create(new UserModel(registerSpec, file, restaurant, "ROLE_ADMIN"));
-        newUser.setEnabled(true);
+        UserModel user = new UserModel(registerSpec, file, restaurant, "ROLE_ADMIN");
+        user.setEnabled(true);
+
+        UserModel newUser = userService.create(user);
 
         if(file != null){
             fileService.save(file.getResourceType() + newUser.getId(), registerSpec.getProfileImage());
@@ -111,7 +104,20 @@ public class UserController {
         return new UserDto(newUser);
     }
 
+    @DeleteMapping(value = "/auth/delete/{id}")
+    public void delete(@PathVariable("id") int id){
+        UserDetails loggedUser = (UserDetails)SecurityContextHolder
+                .getContext().getAuthentication().getDetails();
+
+        UserModel user = userService.findById(id);
+        String fileName = "profileImage" + id + "." + user.getProfileImage().getExtension();
+
+        userService.delete(user);
+        fileService.deleteFromSystem(fileName);
+    }
+
     @PatchMapping(value = "/auth/changePassword")
+    @Transactional
     public UserDto changePassword(@Valid @RequestBody NewPasswordSpec newPasswordSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
@@ -119,25 +125,53 @@ public class UserController {
         return new UserDto(userService.changePassword(newPasswordSpec, loggedUser));
     }
 
-    @PatchMapping(value = "/auth/changeUserInfo")
-    public UserDto changeUserInfo(@Valid @RequestBody UserSpec userModel){
+    @PostMapping(value = "/auth/changeUserInfo")
+    public UserDto changeUserInfo(@Valid @ModelAttribute UserSpec userSpec) throws IOException {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
+        UserModel user = userService.findById(loggedUser.getId());
 
-        return new UserDto(userService.changeUserInfo(userModel, userService.findById(loggedUser.getId())));
+        String imageName = user.getProfileImage() != null
+                ? "profileImage" + loggedUser.getId() + "." + user.getProfileImage().getExtension() : null;
+
+        File file = generateFile(userSpec.getProfileImage(), user.getProfileImage());
+        user.setProfileImage(file == null ? user.getProfileImage() : file);
+
+        UserModel newUser = userService.changeUserInfo(userSpec, user);
+
+        if(file != null){
+            fileService.save(file.getResourceType() + newUser.getId(), userSpec.getProfileImage());
+
+            if(imageName != null && !imageName.equals("profileImage" + newUser.getId() + "." + file.getExtension())){
+                fileService.deleteFromSystem(imageName);
+            }
+        }
+
+        return new UserDto(newUser);
+    }
+
+    public File generateFile(MultipartFile profileImage, File oldImage){
+        if(profileImage == null){
+            return null;
+        }
+
+        File file = fileService.generate(profileImage,"profileImage", "image");
+        file.setId(oldImage != null ? oldImage.getId() : 0);
+
+        return file;
     }
 
     @ExceptionHandler
     ResponseEntity<String> handleUsernameExistsException(UsernameExistsException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(e.getMessage());
     }
 
     @ExceptionHandler
     ResponseEntity<String> handleEmailExistsException(EmailExistsException e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(e.getMessage());
     }
 }

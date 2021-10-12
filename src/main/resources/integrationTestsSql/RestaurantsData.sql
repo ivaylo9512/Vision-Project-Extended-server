@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `restaurants` (
   `token` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table restaurant-app-test.restaurants: ~0 rows (approximately)
 /*!40000 ALTER TABLE `restaurants` DISABLE KEYS */;

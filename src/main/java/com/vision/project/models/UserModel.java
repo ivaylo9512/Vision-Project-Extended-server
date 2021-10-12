@@ -18,7 +18,7 @@ public class UserModel {
             inverseJoinColumns = @JoinColumn(name ="second_user" ))
     private List<Chat> chats;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 

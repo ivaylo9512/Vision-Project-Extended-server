@@ -6,8 +6,10 @@ import com.vision.project.config.AppConfig;
 import com.vision.project.config.SecurityConfig;
 import com.vision.project.config.TestWebConfig;
 import com.vision.project.controllers.LongPollingController;
+import com.vision.project.controllers.UserController;
 import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.DTOs.UserDto;
+import com.vision.project.models.Menu;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
@@ -41,13 +43,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,10 +62,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = { AppConfig.class, TestWebConfig.class, SecurityConfig.class })
 @WebAppConfiguration(value = "src/main/java/com/vision/project")
-@WebMvcTest(LongPollingController.class)
+@WebMvcTest({LongPollingController.class, UserController.class})
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
-@Transactional
 public class Users {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -77,6 +78,9 @@ public class Users {
     private MockMvc mockMvc;
     private static String adminToken, userToken, expiredToken;
 
+    private Restaurant restaurant;
+    private UserModel user;
+    private UserDto userDto;
 
     @BeforeEach
     public void setupData() {
@@ -89,29 +93,45 @@ public class Users {
     }
 
     @AfterEach
-    public void reset(){
-        new File("./uploads/profileImage10.png").delete();
+    public void reset() throws IOException {
+        new File("./uploads/test/profileImage10.png").delete();
+        new File("./uploads/test/profileImage1.svg").delete();
+        Files.copy(Paths.get("./uploads/test/test.png"), Paths.get("./uploads/test/profileImage1.png"), StandardCopyOption.REPLACE_EXISTING);
     }
 
     @BeforeAll
-    public void setup() {
+    public void setup() throws IOException {
         ResourceDatabasePopulator rdp = new ResourceDatabasePopulator();
         rdp.addScript(new ClassPathResource("integrationTestsSql/RestaurantsData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/FilesData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/EmailTokenData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/MenuData.sql"));
         rdp.execute(dataSource);
 
+        createDefaultUser();
+        createAuthUsers();
+
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
+
+        new File("./uploads/test/profileImage10.png").delete();
+        new File("./uploads/test/profileImage1.svg").delete();
+        Files.copy(Paths.get("./uploads/test/test.png"), Paths.get("./uploads/test/profileImage1.png"), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private void createAuthUsers(){
         UserModel admin = new UserModel("adminUser", "password", "ROLE_ADMIN");
         admin.setId(1);
 
         UserModel user = new UserModel("testUser", "password", "ROLE_USER");
         user.setId(2);
 
-        adminToken = "Token " + Jwt.generate(new UserDetails(admin, Collections
-                .singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))));
 
-        userToken = "Token " + Jwt.generate(new UserDetails(user, Collections
-                .singletonList(new SimpleGrantedAuthority("ROLE_USER"))));
+        adminToken = "Token " + Jwt.generate(new UserDetails(admin, List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))));
+
+        userToken = "Token " + Jwt.generate(new UserDetails(user, List.of(new SimpleGrantedAuthority("ROLE_USER"))));
 
         int expiration = Jwt.getJwtExpirationInMs();
         Jwt.setJwtExpirationInMs(-20);
@@ -120,11 +140,19 @@ public class Users {
                 .singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))));
 
         Jwt.setJwtExpirationInMs(expiration);
+    }
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .apply(SecurityMockMvcConfigurers.springSecurity())
-                .build();
+    private void createDefaultUser(){
+        restaurant = new Restaurant(1, "testName", "testAddress", "fast food", new ArrayList<>());
+
+        user = new UserModel(1, "username", "username@gmail.com", "password1234","ROLE_USER", "firstname",
+                "lastname", 25, "Bulgaria", restaurant);
+
+        List<Menu> menu = List.of(new Menu(2, "Burger", restaurant), new Menu(5, "Juice", restaurant), new Menu(1, "Pizza", restaurant),
+                new Menu(4, "Sushi", restaurant), new Menu(3, "Water", restaurant));
+        restaurant.setMenu(menu);
+
+        userDto = new UserDto(user);
     }
 
     @Test
@@ -136,13 +164,8 @@ public class Users {
         assertNotNull(webApplicationContext.getBean("longPollingController"));
     }
 
-    private final Restaurant restaurant = new Restaurant(1, "testName", "testAddress", "fast food", new HashSet<>());
-    private final UserModel user = new UserModel(1, "username", "username@gmail.com", "password1234","ROLE_USER", "firstname",
-            "lastname", 25, "Bulgaria", restaurant);
-    private final UserDto userDto = new UserDto(user);
-
     private RequestBuilder createMediaRegisterRequest(String url, String role, String username, String email, String token, boolean isWithImage) throws IOException {
-        FileInputStream input = new FileInputStream("./uploads/test.png");
+        FileInputStream input = new FileInputStream("./uploads/test/test.png");
         MockMultipartFile profileImage = new MockMultipartFile("profileImage", "test.png", "image/png",
                 IOUtils.toByteArray(input));
         input.close();
@@ -215,7 +238,7 @@ public class Users {
     public void register_WhenEmailIsTaken() throws Exception {
         mockMvc.perform(createMediaRegisterRequest("/api/users/register", "ROLE_USER",
                         "nonExistent", "adminUser@gmail.com", null, true))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString("{ \"email\": \"Email is already taken.\" }")));
     }
 
@@ -327,19 +350,28 @@ public class Users {
     }
 
     @Test
-    void changeUserInfo() throws Exception {
+    public void changeUserInfo() throws Exception {
         UserSpec userSpec = new UserSpec(1, "newUsername", "newUsername@gmail.com", "newFirstName",
                 "newLastName", 26, "newCountry");
         UserDto userDto = new UserDto(userSpec, "ROLE_ADMIN");
+        userDto.setProfileImage("profileImage1.svg");
         userDto.setRestaurant(new RestaurantDto(restaurant));
-        userDto.setProfileImage("profileImage1.png");
 
-        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
-                .header("Authorization", adminToken)
-                .contentType("Application/json")
-                .content(objectMapper.writeValueAsString(userSpec)))
-                .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(userDto)));
+        FileInputStream logoInput = new FileInputStream("./uploads/test/test.svg");
+        MockMultipartFile logo = new MockMultipartFile("profileImage", "test.svg", "image/svg",
+                IOUtils.toByteArray(logoInput));
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/auth/changeUserInfo")
+                        .file(logo)
+                        .param("id", String.valueOf(userSpec.getId()))
+                        .param("username", userSpec.getUsername())
+                        .param("email", userSpec.getEmail())
+                        .param("country", userSpec.getCountry())
+                        .param("age", String.valueOf(userSpec.getAge()))
+                        .param("firstName", userSpec.getFirstName())
+                        .param("lastName", userSpec.getLastName())
+                        .header("Authorization", adminToken))
+                .andExpect(status().isOk());
 
         checkDBForUser(userDto);
     }
@@ -349,11 +381,16 @@ public class Users {
         UserSpec userSpec = new UserSpec(1, "testUser", "newUsername@gmail.com", "newFirstName",
                 "newLastName", 26, "newCountry");
 
-        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
-                        .header("Authorization", adminToken)
-                        .contentType("Application/json")
-                        .content(objectMapper.writeValueAsString(userSpec)))
-                .andExpect(status().isBadRequest())
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/auth/changeUserInfo")
+                        .param("id", String.valueOf(userSpec.getId()))
+                        .param("username", userSpec.getUsername())
+                        .param("email", userSpec.getEmail())
+                        .param("country", userSpec.getCountry())
+                        .param("age", String.valueOf(userSpec.getAge()))
+                        .param("firstName", userSpec.getFirstName())
+                        .param("lastName", userSpec.getLastName())
+                        .header("Authorization", adminToken))
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("{ \"username\": \"Username is already taken.\" }"));
     }
 
@@ -362,11 +399,16 @@ public class Users {
         UserSpec userSpec = new UserSpec(1, "newUsername", "testUser@gmail.com", "newFirstName",
                 "newLastName", 26, "newCountry");
 
-        mockMvc.perform(patch("/api/users/auth/changeUserInfo")
-                        .header("Authorization", adminToken)
-                        .contentType("Application/json")
-                        .content(objectMapper.writeValueAsString(userSpec)))
-                .andExpect(status().isBadRequest())
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/auth/changeUserInfo")
+                        .param("id", String.valueOf(userSpec.getId()))
+                        .param("username", userSpec.getUsername())
+                        .param("email", userSpec.getEmail())
+                        .param("country", userSpec.getCountry())
+                        .param("age", String.valueOf(userSpec.getAge()))
+                        .param("firstName", userSpec.getFirstName())
+                        .param("lastName", userSpec.getLastName())
+                        .header("Authorization", adminToken))
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("{ \"email\": \"Email is already taken.\" }"));
     }
 
@@ -401,7 +443,7 @@ public class Users {
 
     @Test
     public void register_WithWrongFileType() throws Exception {
-        FileInputStream input = new FileInputStream("./uploads/test.txt");
+        FileInputStream input = new FileInputStream("./uploads/test/test.txt");
         MockMultipartFile profileImage = new MockMultipartFile("profileImage", "test.txt", "text/plain",
                 IOUtils.toByteArray(input));
         input.close();
@@ -468,10 +510,12 @@ public class Users {
 
     @Test
     void changeUserInfo_WithWrongFields() throws Exception {
-        String response = mockMvc.perform(patch("/api/users/auth/changeUserInfo")
-                        .content("{\"username\": \"short\", \"email\": \"incorrect\"}")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", adminToken))
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.multipart("/api/users/register")
+                .param("username", "short")
+                .param("email", "incorrect")
+                .header("Authorization", adminToken);
+
+        String response = mockMvc.perform(request)
                 .andExpect(status().isUnprocessableEntity())
                 .andReturn()
                 .getResponse()

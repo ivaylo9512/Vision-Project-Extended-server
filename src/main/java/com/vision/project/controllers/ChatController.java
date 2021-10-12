@@ -8,7 +8,6 @@ import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
-import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
@@ -22,12 +21,10 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "api/chat/auth")
 public class ChatController {
     private final ChatService chatService;
-    private final UserService userService;
     private final LongPollingService longPollingService;
 
-    public ChatController(ChatService chatService, UserService userService, LongPollingService longPollingService) {
+    public ChatController(ChatService chatService, LongPollingService longPollingService) {
         this.chatService = chatService;
-        this.userService = userService;
         this.longPollingService = longPollingService;
     }
 
@@ -51,7 +48,7 @@ public class ChatController {
     }
 
     @PostMapping("/newMessage")
-    public MessageDto addMessage(@Valid @RequestBody MessageSpec messageSpec) throws  Exception {
+    public MessageDto addMessage(@Valid @RequestBody MessageSpec messageSpec) {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 

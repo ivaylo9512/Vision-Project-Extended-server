@@ -5,7 +5,6 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
@@ -13,16 +12,16 @@ public class Restaurant {
     @Id
     private int id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
     @OrderBy("name")
-    private Set<Menu> menu;
+    private List<Menu> menu;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.LAZY)
     @OrderBy("created")
     @Where(clause = "ready = false")
     private List<Order> orders;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<UserModel> users;
 
     private String name;
@@ -46,7 +45,7 @@ public class Restaurant {
         return Objects.hash(id);
     }
 
-    public Restaurant(int id, String name, String address, String type, Set<Menu> menu) {
+    public Restaurant(int id, String name, String address, String type, List<Menu> menu) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -93,11 +92,11 @@ public class Restaurant {
         this.type = type;
     }
 
-    public Set<Menu> getMenu() {
+    public List<Menu> getMenu() {
         return menu;
     }
 
-    public void setMenu(Set<Menu> menu) {
+    public void setMenu(List<Menu> menu) {
         this.menu = menu;
     }
 
