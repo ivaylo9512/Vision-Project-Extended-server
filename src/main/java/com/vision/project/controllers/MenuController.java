@@ -43,7 +43,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") long id){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 

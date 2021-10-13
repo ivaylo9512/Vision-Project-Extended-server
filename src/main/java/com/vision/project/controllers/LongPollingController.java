@@ -52,11 +52,11 @@ public class LongPollingController {
     @Transactional
     private UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
-        Map<Integer, Order> orders = orderService.findNotReady(restaurant, 0, pageSize);
+        Map<Long, Order> orders = orderService.findNotReady(restaurant, 0, pageSize);
         RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant, null);
-        Map<Integer, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
+        Map<Long, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
 
         longPollingService.addRequest(userRequest);
         return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);

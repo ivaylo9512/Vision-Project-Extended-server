@@ -41,14 +41,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/findById/{id}")
-    public UserDto findById(@PathVariable(name = "id") int id){
+    public UserDto findById(@PathVariable(name = "id") long id){
         return new UserDto(userService.findById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(value = "/auth/setEnabled/{state}/{id}")
     public void setEnable(@PathVariable(name = "state") boolean state,
-                          @PathVariable(name = "id") int id){
+                          @PathVariable(name = "id") long id){
         userService.setEnabled(state, id);
     }
 
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/auth/delete/{id}")
-    public void delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") long id){
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 

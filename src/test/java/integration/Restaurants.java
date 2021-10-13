@@ -5,6 +5,7 @@ import com.vision.project.config.AppConfig;
 import com.vision.project.config.SecurityConfig;
 import com.vision.project.config.TestWebConfig;
 import com.vision.project.controllers.RestaurantController;
+import com.vision.project.models.DTOs.RestaurantDto;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
 import com.vision.project.security.Jwt;
@@ -23,7 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -54,9 +54,12 @@ public class Restaurants {
     private MockMvc mockMvc;
     private static String adminToken, userToken;
     private ObjectMapper objectMapper;
+    private RestaurantDto restaurant;
 
     @BeforeAll
     public void setup() {
+//        restaurant = new RestaurantDto(1, 'testAddress', 'testName', 'zeT2sqA1', 'fast food');
+
         UserModel admin = new UserModel("adminUser", "password", "ROLE_ADMIN");
         admin.setId(1);
 
@@ -84,6 +87,34 @@ public class Restaurants {
         assertTrue(servletContext instanceof MockServletContext);
         assertNotNull(webApplicationContext.getBean("restaurantController"));
     }
+
+//    @Test
+//    public void findById() throws Exception {
+//        String response = mockMvc.perform(get("/api/restaurants/findById/1")
+//                .header("Authorization", adminToken))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//
+//        RestaurantDto restaurant = objectMapper.readValue(response, RestaurantDto.class);
+//    }
+//
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PostMapping(value = "/create")
+//    public RestaurantDto create(@Valid @RequestBody RestaurantSpec restaurant){
+//        return new RestaurantDto(restaurantService.create(new Restaurant(restaurant)));
+//    }
+//
+//    @PostMapping(value = "/delete/{id}")
+//    public void delete(@PathVariable("id") long id){
+//        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+//                .getAuthentication().getDetails();
+//
+//        restaurantService.delete(id, userService.findById(loggedUser.getId()));
+//    }
+
+
 
     @Test
     void create_WithoutToken_Unauthorized() throws Exception{

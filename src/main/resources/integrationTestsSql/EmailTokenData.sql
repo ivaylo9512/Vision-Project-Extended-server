@@ -21,9 +21,9 @@ USE `restaurant-app-test`;
 DELETE FROM `email_tokens`;
 ALTER TABLE `email_tokens` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `email_tokens` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `token` text NOT NULL,
-  `user_id` int NOT NULL DEFAULT '0',
+  `user_id` bigint(20) NOT NULL DEFAULT '0',
   `expiry_date` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_email_tokens_users` (`user_id`) USING BTREE,

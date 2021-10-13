@@ -4,12 +4,12 @@ import javax.validation.constraints.NotNull;
 
 public class MessageSpec {
     @NotNull(message = "You must provide chat id.")
-    private int chatId;
+    private long chatId;
 
-    private int senderId;
+    private long senderId;
 
     @NotNull(message = "You must provide receiver id.")
-    private int receiverId;
+    private long receiverId;
 
     @NotNull(message = "You must provide message.")
     private String message;
@@ -17,34 +17,34 @@ public class MessageSpec {
     public MessageSpec(){
     }
 
-    public MessageSpec(int chatId, int senderId, int receiverId, String message) {
+    public MessageSpec(long chatId, long senderId, long receiverId, String message) {
         this.chatId = chatId;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.message = message;
     }
 
-    public int getChatId() {
+    public long getChatId() {
         return chatId;
     }
 
-    public void setChatId(int chatId) {
+    public void setChatId(long chatId) {
         this.chatId = chatId;
     }
 
-    public int getSenderId() {
+    public long getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(long senderId) {
         this.senderId = senderId;
     }
 
-    public int getReceiverId() {
+    public long getReceiverId() {
         return receiverId;
     }
 
-    public void setReceiverId(int receiverId) {
+    public void setReceiverId(long receiverId) {
         this.receiverId = receiverId;
     }
 

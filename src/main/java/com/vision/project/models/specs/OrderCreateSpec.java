@@ -9,7 +9,7 @@ public class OrderCreateSpec {
     private List<String> dishes;
 
     @NotNull(message = "You must provide restaurant id")
-    private int restaurantId;
+    private long restaurantId;
 
     public List<String> getDishes() {
         return dishes;
@@ -19,11 +19,11 @@ public class OrderCreateSpec {
         this.dishes = dishes;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 }

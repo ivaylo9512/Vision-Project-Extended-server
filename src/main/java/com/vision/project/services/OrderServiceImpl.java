@@ -2,7 +2,6 @@ package com.vision.project.services;
 
 import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.*;
-import com.vision.project.models.specs.OrderCreateSpec;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Dish update(int orderId, int dishId, Restaurant restaurant, UserModel loggedUser) {
+    public Dish update(long orderId, long dishId, Restaurant restaurant, UserModel loggedUser) {
         Order order = orderRepository.findByIdAndRestaurant(orderId, restaurant)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found."));
 
@@ -61,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Order findById(int id, UserModel loggedUser) {
+    public Order findById(long id, UserModel loggedUser) {
         Order order = orderRepository.findByIdAndRestaurant(id, loggedUser.getRestaurant()).orElseThrow(() -> new EntityNotFoundException("Order doesn't exist."));
 
         if(order.getRestaurant().getId() != loggedUser.getRestaurant().getId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
@@ -72,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<Integer, Order> findNotReady(Restaurant restaurant, int page, int pageSize) {
+    public Map<Long, Order> findNotReady(Restaurant restaurant, int page, int pageSize) {
         return orderRepository.findNotReady(restaurant, PageRequest.of(page, pageSize, Sort.Direction.DESC, "created")).stream()
                 .collect(Collectors.toMap(Order::getId, order -> order, (existing, replacement) -> existing, LinkedHashMap::new));
     }

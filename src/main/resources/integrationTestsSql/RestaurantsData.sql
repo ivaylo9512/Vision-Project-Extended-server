@@ -20,7 +20,7 @@ USE `restaurant-app-test`;
 DELETE FROM `restaurants`;
 ALTER TABLE `restaurants` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `restaurants` (
-  `id` int NOT NULL,
+  `id` bigint(20) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `token` varchar(255) DEFAULT NULL,

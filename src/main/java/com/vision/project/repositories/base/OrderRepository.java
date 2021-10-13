@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<Order, Integer> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "from Order where ready = false and restaurant = :restaurant order by CASE WHEN created > updated THEN created ELSE updated END desc")
     List<Order> findNotReady(@Param("restaurant")Restaurant restaurant, Pageable pageable);
 
@@ -18,5 +18,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findMoreRecent(@Param("date") LocalDateTime date, @Param("restaurant") Restaurant restaurant);
 
 
-    Optional<Order> findByIdAndRestaurant(int id, Restaurant restaurant);
+    Optional<Order> findByIdAndRestaurant(long id, Restaurant restaurant);
 }

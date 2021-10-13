@@ -23,7 +23,7 @@ public class RestaurantController {
     }
 
     @GetMapping(value = "/findById/{id}")
-    public RestaurantDto findById(@PathVariable("id") int id) {
+    public RestaurantDto findById(@PathVariable("id") long id) {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
@@ -37,7 +37,7 @@ public class RestaurantController {
     }
 
     @PostMapping(value = "/delete/{id}")
-    public void delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") long id){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 

@@ -7,17 +7,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RestaurantDto {
-    private int id;
+    private long id;
     private String name;
     private String address;
     private String type;
     private List<MenuDto> menu;
-    private Map<Integer, OrderDto> orders = new HashMap<>();
+    private Map<Long, OrderDto> orders = new HashMap<>();
 
     public RestaurantDto() {
     }
 
-    public RestaurantDto(int id, String name, String address, String type, List<Menu> menu) {
+    public RestaurantDto(long id, String name, String address, String type, List<Menu> menu) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -25,7 +25,7 @@ public class RestaurantDto {
         toMenuDto(menu);
     }
 
-    public RestaurantDto(Restaurant restaurant, Map<Integer, Order> orders){
+    public RestaurantDto(Restaurant restaurant, Map<Long, Order> orders){
         this(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getType(), restaurant.getMenu());
         this.orders = orders.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
@@ -36,11 +36,11 @@ public class RestaurantDto {
         this(restaurant.getId(), restaurant.getName(), restaurant.getAddress(), restaurant.getType(), restaurant.getMenu());
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -76,11 +76,11 @@ public class RestaurantDto {
         this.menu = menu;
     }
 
-    public Map<Integer, OrderDto> getOrders() {
+    public Map<Long, OrderDto> getOrders() {
         return orders;
     }
 
-    public void setOrders(Map<Integer, OrderDto> orders) {
+    public void setOrders(Map<Long, OrderDto> orders) {
         this.orders = orders;
     }
 

@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserRequestDto {
-    private Map<Integer, OrderDto> orders;
+    private Map<Long, OrderDto> orders;
     private List<MessageDto> messages;
     private List<DishDto> dishes;
-    private int userId;
-    private int restaurantId;
+    private Long userId;
+    private long restaurantId;
     private LocalDateTime lastCheck;
 
     public UserRequestDto(UserRequest currentRequest){
@@ -26,11 +26,11 @@ public class UserRequestDto {
         this.lastCheck = currentRequest.getLastCheck();
     }
 
-    public Map<Integer, OrderDto> getOrders() {
+    public Map<Long, OrderDto> getOrders() {
         return orders;
     }
 
-    public void setOrders(Map<Integer, OrderDto> orders) {
+    public void setOrders(Map<Long, OrderDto> orders) {
         this.orders = orders;
     }
 
@@ -50,19 +50,19 @@ public class UserRequestDto {
         this.dishes = dishes;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 

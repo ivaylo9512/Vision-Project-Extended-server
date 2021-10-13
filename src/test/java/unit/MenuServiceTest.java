@@ -39,7 +39,7 @@ public class MenuServiceTest {
         Menu menu = new Menu();
         menu.setRestaurant(restaurant);
 
-        when(menuRepository.findById(1)).thenReturn(Optional.of(menu));
+        when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
 
         menuService.delete(1, userModel);
 
@@ -55,7 +55,7 @@ public class MenuServiceTest {
         userModel.setRestaurant(restaurant);
         userModel.setRole("ROLE_USER");
 
-        when(menuRepository.findById(1)).thenReturn(Optional.empty());
+        when(menuRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> menuService.delete(1, userModel));
@@ -79,7 +79,7 @@ public class MenuServiceTest {
         Menu menu = new Menu();
         menu.setRestaurant(restaurant1);
 
-        when(menuRepository.findById(1)).thenReturn(Optional.of(menu));
+        when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
 
         UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
                 () -> menuService.delete(1, userModel));
@@ -100,7 +100,7 @@ public class MenuServiceTest {
         Menu menu = new Menu();
         menu.setRestaurant(restaurant);
 
-        when(menuRepository.findById(1)).thenReturn(Optional.of(menu));
+        when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
 
         menuService.delete(1, userModel);
 
@@ -141,7 +141,7 @@ public class MenuServiceTest {
         MenuUpdateSpec menuUpdateSpec = new MenuUpdateSpec("name", 1);
         menuUpdateSpec.setId(2);
 
-        when(menuRepository.findById(2)).thenReturn(Optional.empty());
+        when(menuRepository.findById(2L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> menuService.update(menuUpdateSpec, userModel));

@@ -44,12 +44,12 @@ public class FileController {
     }
 
     @GetMapping("/findByType/{resourceType}/{ownerId}")
-    public FileDto findByType(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") int ownerId){
+    public FileDto findByType(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") long ownerId){
         return new FileDto(fileService.findByType(resourceType, userService.getById(ownerId)));
     }
 
     @DeleteMapping("/auth/delete/{resourceType}/{ownerId}")
-    public boolean delete(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") int ownerId){
+    public boolean delete(@PathVariable("resourceType") String resourceType, @PathVariable("ownerId") long ownerId){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
         return fileService.delete(resourceType, userService.getById(ownerId), userService.findById(loggedUser.getId()));

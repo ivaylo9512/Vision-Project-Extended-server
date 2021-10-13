@@ -65,13 +65,12 @@ public class OrderControllerTest {
         when(orderService.findNotReady(restaurant, 0, 5)).thenReturn(Map.of(order.getId(), order, order1.getId(), order1));
         when(restaurantService.getById(restaurant.getId())).thenReturn(restaurant);
 
-        Map<Integer, OrderDto> orders = orderController.findNotReady(0, 5);
+        Map<Long, OrderDto> orders = orderController.findNotReady(0, 5);
 
-        assertOrders(orders.get(1), order);
-        assertOrders(orders.get(2), order1);
+        assertOrders(orders.get(1L), order);
+        assertOrders(orders.get(2L), order1);
         assertEquals(orders.size(), 2);
     }
-
 
     @Test
     public void findById() throws IOException {

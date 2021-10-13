@@ -5,10 +5,10 @@ import javax.validation.constraints.NotNull;
 
 public class MenuUpdateSpec {
     @NotNull(message = "You must provide id")
-    private int id;
+    private long id;
 
     @NotNull(message = "You must provide restaurant id")
-    private int restaurantId;
+    private long restaurantId;
 
     @NotBlank(message = "You must provide name")
     private String name;
@@ -16,16 +16,16 @@ public class MenuUpdateSpec {
     public MenuUpdateSpec() {
     }
 
-    public MenuUpdateSpec(String name, int restaurantId) {
+    public MenuUpdateSpec(String name, long restaurantId) {
         this.name = name;
         this.restaurantId = restaurantId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -37,11 +37,11 @@ public class MenuUpdateSpec {
         this.name = name;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 }

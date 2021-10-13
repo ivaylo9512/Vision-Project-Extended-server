@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public interface MessageRepository extends JpaRepository<Message, Integer> {
+public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query(value="from Message where receiver = :user and session_date = :lastCheckDate and time > :lastCheckTime or receiver = :user and session_date > :lastCheckDate")
     List<Message> findMoreRecentMessages(@Param("user") UserModel user, @Param("lastCheckDate") LocalDate lastCheckDate, @Param("lastCheckTime") LocalTime lastCheckTime);
 }

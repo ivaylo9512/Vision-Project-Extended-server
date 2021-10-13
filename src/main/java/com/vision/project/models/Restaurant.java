@@ -10,7 +10,7 @@ import java.util.Objects;
 @Table(name = "restaurants")
 public class Restaurant {
     @Id
-    private int id;
+    private long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
     @OrderBy("name")
@@ -45,7 +45,7 @@ public class Restaurant {
         return Objects.hash(id);
     }
 
-    public Restaurant(int id, String name, String address, String type, List<Menu> menu) {
+    public Restaurant(long id, String name, String address, String type, List<Menu> menu) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -60,11 +60,11 @@ public class Restaurant {
         this.menu = restaurant.getMenu();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

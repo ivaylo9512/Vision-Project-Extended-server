@@ -11,7 +11,7 @@ import java.util.List;
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},
@@ -60,7 +60,7 @@ public class UserModel {
         this.restaurant = restaurant;
     }
 
-    public UserModel(int id, String username, String email, String password, String role, String firstName,
+    public UserModel(long id, String username, String email, String password, String role, String firstName,
                      String lastName, int age, String country, Restaurant restaurant) {
         this(username, email, password, firstName, lastName, age, country, role, restaurant);
         this.id = id;
@@ -85,13 +85,13 @@ public class UserModel {
         this.role = role;
     }
 
-    public UserModel(int id, String username, String password, String role, Restaurant restaurant){
+    public UserModel(long id, String username, String password, String role, Restaurant restaurant){
         this(username, password, role);
         this.id = id;
         this.restaurant = restaurant;
     }
 
-    public UserModel(int id, String username, String password, String role){
+    public UserModel(long id, String username, String password, String role){
         this(username, password, role);
         this.id = id;
     }
@@ -112,11 +112,11 @@ public class UserModel {
         this.password = password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

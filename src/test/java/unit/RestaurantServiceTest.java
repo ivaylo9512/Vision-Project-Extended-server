@@ -39,7 +39,7 @@ public class RestaurantServiceTest {
         userModel.setRestaurant(restaurant);
         userModel.setRole("ROLE_USER");
 
-        when(restaurantRepository.findById(1)).thenReturn(Optional.of(restaurant));
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
         Restaurant foundRestaurant = restaurantService.findById(1, userModel);
 
@@ -56,7 +56,7 @@ public class RestaurantServiceTest {
         userModel.setRole("ROLE_ADMIN");
         userModel.setRestaurant(restaurant);
 
-        when(restaurantRepository.findById(1)).thenReturn(Optional.empty());
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> restaurantService.findById(1, userModel));
@@ -91,7 +91,7 @@ public class RestaurantServiceTest {
         userModel.setRestaurant(restaurant);
         userModel.setRole("ROLE_ADMIN");
 
-        when(restaurantRepository.findById(1)).thenReturn(Optional.of(restaurant));
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
         Restaurant foundRestaurant = restaurantService.findById(1, userModel);
 
@@ -160,7 +160,7 @@ public class RestaurantServiceTest {
 
         restaurantService.delete(1, userModel);
 
-        verify(restaurantRepository, times(1)).deleteById(1);
+        verify(restaurantRepository, times(1)).deleteById(1L);
     }
 
     @Test
@@ -174,6 +174,6 @@ public class RestaurantServiceTest {
 
         restaurantService.delete(1, userModel);
 
-        verify(restaurantRepository, times(1)).deleteById(1);
+        verify(restaurantRepository, times(1)).deleteById(1L);
     }
 }

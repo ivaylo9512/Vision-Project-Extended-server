@@ -7,12 +7,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserDetails extends User {
-    private int id;
-    private int restaurantId;
+    private long id;
+    private long restaurantId;
     private UserModel userModel;
 
-    public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, int id, int restaurantId){
-        super(username,password,authorities);
+    public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities, long id, long restaurantId){
+        super(username, password, authorities);
         this.id = id;
         this.restaurantId = restaurantId;
     }
@@ -23,19 +23,19 @@ public class UserDetails extends User {
         setRestaurantId(userModel.getRestaurant());
         this.userModel = userModel;
     }
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 

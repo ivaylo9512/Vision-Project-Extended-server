@@ -19,7 +19,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant findById(int id, UserModel loggedUser){
+    public Restaurant findById(long id, UserModel loggedUser){
         if(loggedUser.getRestaurant().getId() != id && !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("Unauthorized.");
         }
@@ -46,7 +46,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public void delete(int id, UserModel loggedUser){
+    public void delete(long id, UserModel loggedUser){
         if(id != loggedUser.getRestaurant().getId() &&
                 !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("You are not authorized to delete this restaurant.");
@@ -56,7 +56,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant getById(int restaurantId){
+    public Restaurant getById(long restaurantId){
         return restaurantRepository.getById(restaurantId);
     }
 }

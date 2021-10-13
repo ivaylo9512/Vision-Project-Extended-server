@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant")
@@ -24,7 +24,7 @@ public class Menu {
         this.restaurant = restaurant;
     }
 
-    public Menu(int id, String name, Restaurant restaurant) {
+    public Menu(long id, String name, Restaurant restaurant) {
         this.id = id;
         this.name = name;
         this.restaurant = restaurant;
@@ -43,11 +43,11 @@ public class Menu {
         return Objects.hash(id, restaurant.getId(), name);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -21,9 +21,9 @@ USE `restaurant-app-test`;
 DELETE FROM `menu`;
 ALTER TABLE `menu` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `menu` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `restaurant` int DEFAULT NULL,
+  `restaurant` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKha3mjlpyaejx4bxghj5emhcc7` (`restaurant`),
   CONSTRAINT `FKha3mjlpyaejx4bxghj5emhcc7` FOREIGN KEY (`restaurant`) REFERENCES `restaurants` (`id`)

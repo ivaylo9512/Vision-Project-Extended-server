@@ -5,15 +5,15 @@ import com.vision.project.models.Menu;
 import java.util.Objects;
 
 public class MenuDto {
-    private int id;
+    private long id;
     private String name;
-    private int restaurantId;
+    private long restaurantId;
 
     private MenuDto(){
 
     }
 
-    public MenuDto(String name, int restaurantId) {
+    public MenuDto(String name, long restaurantId) {
         this.name = name;
         this.restaurantId = restaurantId;
     }
@@ -44,19 +44,19 @@ public class MenuDto {
         this.name = name;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

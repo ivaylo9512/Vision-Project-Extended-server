@@ -7,9 +7,9 @@ import com.vision.project.models.specs.UserSpec;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
-    UserModel findById(int id);
+    UserModel findById(long id);
 
-    UserModel getById(int id);
+    UserModel getById(long id);
 
     UserModel create(UserModel user);
 
@@ -20,9 +20,9 @@ public interface UserService extends UserDetailsService {
 
     UserModel changeUserInfo(UserSpec userSpec, UserModel loggedUser);
 
-    void setEnabled(boolean state, int id);
+    void setEnabled(boolean state, long id);
 
-    void delete(int id, UserDetails loggedUser);
+    void delete(long id, UserDetails loggedUser);
 
     void delete(UserModel user);
 }

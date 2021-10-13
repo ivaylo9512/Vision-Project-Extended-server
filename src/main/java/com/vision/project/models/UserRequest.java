@@ -14,18 +14,18 @@ public class UserRequest {
     private DeferredResult<UserRequestDto> request;
     private ReentrantLock lock = new ReentrantLock();
     private Restaurant restaurant;
-    private int userId;
+    private Long userId;
     private LocalDateTime lastCheck;
 
     public UserRequest(){
 
     }
-    public UserRequest(int userId, Restaurant restaurant, DeferredResult<UserRequestDto> request){
+    public UserRequest(Long userId, Restaurant restaurant, DeferredResult<UserRequestDto> request){
         this.userId = userId;
         this.restaurant = restaurant;
         this.request = request;
     }
-    public UserRequest(int userId, Restaurant restaurant, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
+    public UserRequest(Long userId, Restaurant restaurant, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
         this.userId = userId;
         this.restaurant = restaurant;
         this.request = request;
@@ -73,11 +73,11 @@ public class UserRequest {
         return lock;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

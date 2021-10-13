@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderDto {
-    private int id;
-    private int userId;
+    private long id;
+    private long userId;
     private List<DishDto> dishes;
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean ready;
-    private int restaurantId;
+    private long restaurantId;
 
     public OrderDto() {
     }
@@ -28,19 +28,19 @@ public class OrderDto {
         this.ready = order.isReady();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -68,11 +68,11 @@ public class OrderDto {
         this.updated = updated;
     }
 
-    public int getRestaurantId() {
+    public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(int restaurantId) {
+    public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
 

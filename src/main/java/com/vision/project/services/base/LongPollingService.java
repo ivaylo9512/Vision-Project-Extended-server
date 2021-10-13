@@ -10,9 +10,9 @@ public interface LongPollingService {
 
     void addRequest(UserRequest userRequest);
 
-    void checkDishes(Dish dish, int restaurantId, int userId);
+    void checkDishes(Dish dish, long restaurantId, long userId);
 
-    void checkOrders(Order updatedOrder, int restaurantId, int userId);
+    void checkOrders(Order updatedOrder, long restaurantId, long userId);
 
     void checkMessages(Message message);
 }

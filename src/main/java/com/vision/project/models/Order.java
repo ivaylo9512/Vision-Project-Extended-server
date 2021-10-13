@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Order{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "order", fetch = FetchType.EAGER)
     private List<Dish> dishes;
@@ -42,7 +42,7 @@ public class Order{
     public Order() {
     }
 
-    public Order(int id){
+    public Order(long id){
         this.id = id;
     }
 
@@ -56,7 +56,7 @@ public class Order{
         this.user = order.getUser();
         this.created = order.getCreated();
     }
-    public Order(int id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
+    public Order(long id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;
         this.created = created;
@@ -64,11 +64,11 @@ public class Order{
         this.restaurant = restaurant;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

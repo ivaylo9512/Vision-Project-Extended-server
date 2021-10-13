@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel findById(int id) {
+    public UserModel findById(long id) {
         UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel getById(int id){
+    public UserModel getById(long id){
         return userRepository.getById(id);
     }
 
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(int id, UserDetails loggedUser) {
+    public void delete(long id, UserDetails loggedUser) {
         UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("UserModel not found."));
 
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setEnabled(boolean state, int id){
+    public void setEnabled(boolean state, long id){
         UserModel user = userRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("UserModel not found."));
         user.setEnabled(state);

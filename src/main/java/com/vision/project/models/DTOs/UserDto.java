@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserDto {
-    private int id;
+    private long id;
     private String username;
     private String email;
     private String firstName;
@@ -17,20 +17,20 @@ public class UserDto {
     private String role;
     private String profileImage;
     private RestaurantDto restaurant;
-    private Map<Integer, ChatDto> chats = new HashMap<>();
+    private Map<Long, ChatDto> chats = new HashMap<>();
     private LocalDateTime lastCheck;
 
     public UserDto() {
     }
 
-    public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Integer, Chat> chats){
+    public UserDto(UserModel userModel, RestaurantDto restaurant, LocalDateTime lastCheck, Map<Long, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
         this.lastCheck = lastCheck;
     }
 
-    public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Integer, Chat> chats){
+    public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Long, Chat> chats){
         this(userModel);
         this.restaurant = restaurant;
         this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
@@ -69,11 +69,11 @@ public class UserDto {
         this.username = username;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -140,11 +140,11 @@ public class UserDto {
         this.restaurant = restaurant;
     }
 
-    public Map<Integer, ChatDto> getChats() {
+    public Map<Long, ChatDto> getChats() {
         return chats;
     }
 
-    public void setChats(Map<Integer, ChatDto> chats) {
+    public void setChats(Map<Long, ChatDto> chats) {
         this.chats = chats;
     }
 

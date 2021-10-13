@@ -5,13 +5,13 @@ import com.vision.project.models.UserModel;
 import java.time.LocalDateTime;
 
 public class DishDto {
-    private int id;
+    private long id;
     private String name;
     private boolean ready;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private int updatedById;
-    private int orderId;
+    private long updatedById;
+    private long orderId;
     private boolean isOrderReady;
 
     public DishDto(Dish dish) {
@@ -25,11 +25,11 @@ public class DishDto {
         setUpdatedById(dish.getUpdatedBy());
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -65,7 +65,7 @@ public class DishDto {
         this.updatedAt = updatedAt;
     }
 
-    public int getUpdatedById() {
+    public long getUpdatedById() {
         return updatedById;
     }
 
@@ -75,11 +75,11 @@ public class DishDto {
         }
     }
 
-    public int getOrderId() {
+    public long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(long orderId) {
         this.orderId = orderId;
     }
 

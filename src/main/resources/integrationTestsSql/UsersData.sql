@@ -20,7 +20,7 @@ USE `restaurant-app-test`;
 DELETE FROM `users`;
 ALTER TABLE `users` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `age` int(11) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `profile_image` varchar(255) DEFAULT NULL,
   `is_enabled` bigint(20) DEFAULT 1,
-  `restaurant` int(11) DEFAULT NULL,
+  `restaurant` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`),
   UNIQUE KEY `UK_r43af9ap4edm43mmtq01oddj6` (`username`),

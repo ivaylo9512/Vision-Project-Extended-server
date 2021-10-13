@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface ChatService {
-    Map<Integer, Chat> findUserChats(int id, int pageSize);
+    Map<Long, Chat> findUserChats(long id, int pageSize);
 
-    List<Session> findSessions(int chatId, int page, int pageSize);
+    List<Session> findSessions(long chatId, int page, int pageSize);
 
     Message addNewMessage(MessageSpec message);
 
-    List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck);
+    List<Message> findMoreRecentMessages(Long userId, LocalDateTime lastCheck);
 }

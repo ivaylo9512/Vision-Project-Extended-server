@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class UserSpec {
     @NotNull(message = "You must provide an id.")
-    private int id;
+    private long id;
 
     @Length(min = 8, max=20, message = "Username must be between 8 and 20 characters.")
     @NotNull(message = "You must provide username.")
@@ -34,7 +34,7 @@ public class UserSpec {
     public UserSpec() {
     }
 
-    public UserSpec(int id, String username, String email, String firstName, String lastName, int age, String country) {
+    public UserSpec(long id, String username, String email, String firstName, String lastName, int age, String country) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -84,11 +84,11 @@ public class UserSpec {
         this.country = country;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

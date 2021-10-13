@@ -30,10 +30,10 @@ public class ChatController {
 
     @GetMapping(value = "/getChats")
     @Transactional
-    public Map<Integer, ChatDto> getChats(@RequestParam(name = "pageSize") int pageSize){
+    public Map<Object, Object> getChats(@RequestParam(name = "pageSize") int pageSize){
         UserDetails userDetails = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
-        int userId = userDetails.getId();
+        long userId = userDetails.getId();
 
         return chatService.findUserChats(userId, pageSize).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, duplicate) -> existing, LinkedHashMap::new));
@@ -41,7 +41,7 @@ public class ChatController {
 
     @GetMapping(value = "/getSessions")
     public List<SessionDto> getSessions(
-            @RequestParam(name = "chatId") int chatId,
+            @RequestParam(name = "chatId") long chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
         return chatService.findSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());

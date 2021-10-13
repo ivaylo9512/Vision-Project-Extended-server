@@ -32,7 +32,7 @@ public class OrderController {
     }
 
     @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
-    public Map<Integer, OrderDto> findNotReady(@PathVariable("page") int page,
+    public Map<Long, OrderDto> findNotReady(@PathVariable("page") int page,
                                       @PathVariable("pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/findById/{id}")
-    public OrderDto findById(@PathVariable(name = "id") int id) throws IOException {
+    public OrderDto findById(@PathVariable(name = "id") long id) throws IOException {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
@@ -55,8 +55,8 @@ public class OrderController {
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        int restaurantId = loggedUser.getRestaurantId();
-        int userId = loggedUser.getId();
+        long restaurantId = loggedUser.getRestaurantId();
+        long userId = loggedUser.getId();
 
         Order order = new Order(orderSpec, restaurantService.getById(restaurantId), userService.getById(userId));
         Order savedOrder = orderService.create(order);
@@ -66,13 +66,13 @@ public class OrderController {
     }
 
     @PatchMapping(value = "/update/{orderId}/{dishId}")
-    public DishDto update(@PathVariable(name = "orderId") int orderId,
-                          @PathVariable(name = "dishId")  int dishId){
+    public DishDto update(@PathVariable(name = "orderId") long orderId,
+                          @PathVariable(name = "dishId") long dishId){
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        int restaurantId = loggedUser.getRestaurantId();
-        int userId = loggedUser.getId();
+        long restaurantId = loggedUser.getRestaurantId();
+        long userId = loggedUser.getId();
 
         Dish dish = orderService.update(orderId, dishId, restaurantService.getById(restaurantId), userService.getById(userId));
         longPollingService.checkDishes(dish, restaurantId, userId);

@@ -42,15 +42,15 @@ public class UserServiceTest {
         UserModel user = new UserModel("Test", "Test", "ROLE_ADMIN");
         user.setEnabled(true);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         userService.findById(1);
 
-        verify(userRepository, times(1)).findById(1);
+        verify(userRepository, times(1)).findById(1L);
     }
     @Test
     public void findById_withNonExistingUser() {
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> userService.findById(1));
@@ -122,7 +122,7 @@ public class UserServiceTest {
         userModel.setPassword(BCrypt.hashpw(passwordSpec.getCurrentPassword(),BCrypt.gensalt(4)));
         userModel.setEnabled(true);
 
-        when(userRepository.findById(2)).thenReturn(Optional.of(userModel));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(userModel));
         when(userRepository.save(userModel)).thenReturn(userModel);
 
         UserModel user = userService.changePassword(passwordSpec, loggedUser);
@@ -141,7 +141,7 @@ public class UserServiceTest {
         userModel.setPassword(BCrypt.hashpw("currentPassword",BCrypt.gensalt(4)));
         userModel.setEnabled(true);
 
-        when(userRepository.findById(2)).thenReturn(Optional.of(userModel));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(userModel));
 
         BadCredentialsException thrown = assertThrows(BadCredentialsException.class,
                 () -> userService.changePassword(passwordSpec, loggedUser));
@@ -159,7 +159,7 @@ public class UserServiceTest {
         UserDetails userDetails = new UserDetails(userModel, List.of(
                 new SimpleGrantedAuthority(userModel.getRole())));
 
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(
                 EntityNotFoundException.class,
@@ -301,7 +301,7 @@ public class UserServiceTest {
         user.setEnabled(false);
         user.setId(1);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         userService.setEnabled(true, 1);
 
@@ -311,7 +311,7 @@ public class UserServiceTest {
 
     @Test()
     public void setEnabled_withNonExistent(){
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> userService.setEnabled(true, 1));
@@ -321,7 +321,7 @@ public class UserServiceTest {
 
     @Test()
     public void delete_WithNonExistentUsername(){
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
                 () -> userService.delete(1, any(UserDetails.class))
@@ -336,7 +336,7 @@ public class UserServiceTest {
                 new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails userDetails = new UserDetails("username", "password", authorities, 2, 1);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(new UserModel()));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserModel()));
 
         UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
                 () -> userService.delete(1, userDetails)
@@ -351,7 +351,7 @@ public class UserServiceTest {
                 new SimpleGrantedAuthority("ROLE_ADMIN"));
         UserDetails userDetails = new UserDetails("username", "password", authorities, 2, 1);
 
-        when(userRepository.findById(1)).thenReturn(Optional.of(new UserModel()));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserModel()));
 
         userService.delete(1, userDetails);
     }
@@ -361,7 +361,7 @@ public class UserServiceTest {
         List<SimpleGrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails userDetails = new UserDetails("username", "password", authorities, 1, 1);
-        when(userRepository.findById(1)).thenReturn(Optional.of(new UserModel()));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new UserModel()));
 
         userService.delete(1, userDetails);
     }

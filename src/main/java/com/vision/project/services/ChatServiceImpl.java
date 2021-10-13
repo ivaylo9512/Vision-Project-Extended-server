@@ -37,8 +37,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Map<Integer, Chat> findUserChats(int id, int pageSize) {
-        Map<Integer, Chat> chatsMap = new LinkedHashMap<>();
+    public Map<Long, Chat> findUserChats(long id, int pageSize) {
+        Map<Long, Chat> chatsMap = new LinkedHashMap<>();
         chatRepository.findUserChats(id, PageRequest.of(0, pageSize)).forEach(chat -> {
             chat.setSessions(sessionRepository.findSessions(chat, PageRequest.of(0, pageSize,
                     Sort.Direction.DESC, "session_date")));
@@ -55,21 +55,21 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Session> findSessions(int chatId, int page, int pageSize){
+    public List<Session> findSessions(long chatId, int page, int pageSize){
         return sessionRepository.findSessions(chatRepository.getById(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
     @Transactional
     @Override
     public Message addNewMessage(MessageSpec messageSpec) {
-        int sender = messageSpec.getSenderId();
-        int receiver = messageSpec.getReceiverId();
+        long sender = messageSpec.getSenderId();
+        long receiver = messageSpec.getReceiverId();
 
         Chat chat = chatRepository.findById(messageSpec.getChatId())
                 .orElseThrow(()-> new EntityNotFoundException("Chat with id: " + messageSpec.getChatId() + " is not found."));
 
-        int chatFirstUser = chat.getFirstUserModel().getId();
-        int chatSecondUser = chat.getSecondUserModel().getId();
+        long chatFirstUser = chat.getFirstUserModel().getId();
+        long chatSecondUser = chat.getSecondUserModel().getId();
 
         if ((sender != chatFirstUser && sender != chatSecondUser) || (receiver != chatFirstUser && receiver != chatSecondUser)) {
             throw new UnauthorizedException("Users don't match the given chat.");
@@ -85,7 +85,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Message> findMoreRecentMessages(int userId, LocalDateTime lastCheck) {
+    public List<Message> findMoreRecentMessages(Long userId, LocalDateTime lastCheck) {
         return messageRepository.findMoreRecentMessages(userRepository.getById(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
     }
 }
