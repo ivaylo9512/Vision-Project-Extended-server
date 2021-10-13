@@ -1,5 +1,6 @@
 package unit;
 
+import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
@@ -47,25 +48,31 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void findById() {
+        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.of(order));
+
+        Order foundOrder = orderService.findById(order.getId(), restaurant);
+
+        assertOrders(foundOrder, order);
+    }
+
+    @Test
+    public void findById_WithNotFound() {
+        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.empty());
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
+                () -> orderService.findById(order.getId(), restaurant));
+
+        assertEquals(thrown.getMessage(), "Order not found.");
+    }
+
+    @Test
     public void create(){
         when(orderRepository.save(order)).thenReturn(order);
 
         Order savedOrder = orderService.create(order);
 
         assertOrders(savedOrder, order);
-    }
-
-    @Test
-    public void update_WithNotFound(){
-        Order order = new Order();
-        order.setId(2);
-
-        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.empty());
-
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-                () -> orderService.update(order.getId(), 3, restaurant, userModel));
-
-        assertEquals(thrown.getMessage(), "Order not found.");
     }
 
     @Test
@@ -91,12 +98,49 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void update_WithNotFound(){
+        Order order = new Order();
+        order.setId(2);
+
+        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.empty());
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
+                () -> orderService.update(order.getId(), 3, restaurant, userModel));
+
+        assertEquals(thrown.getMessage(), "Order not found.");
+    }
+
+    @Test
     public void update_WithAlreadyUpdated(){
         UserModel updatedBy = new UserModel();
         Dish dish = order.getDishes().get(0);
         dish.setId(4);
         dish.setReady(true);
         dish.setUpdatedBy(updatedBy);
+
+        order.getDishes().get(1).setReady(true);
+
+        order.setReady(false);
+
+        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.of(order));
+
+        Dish savedDish = orderService.update(order.getId(), dish.getId(), restaurant, userModel);
+
+        verify(orderRepository, times(1)).save(order);
+
+        assertEquals(savedDish.getId(), 4);
+        assertEquals(savedDish.getName(), dish.getName());
+        assertTrue(savedDish.isReady());
+        assertTrue(order.isReady());
+        assertEquals(dish.getUpdatedBy(), updatedBy);
+    }
+
+    @Test
+    public void update_WithAnotherNotReadyDish(){
+        order.getDishes().get(1).setReady(false);
+        Dish dish = order.getDishes().get(0);
+        dish.setId(4);
+        dish.setReady(true);
 
         order.setReady(false);
 
@@ -110,29 +154,21 @@ public class OrderServiceTest {
         assertEquals(savedDish.getName(), dish.getName());
         assertTrue(savedDish.isReady());
         assertFalse(order.isReady());
-        assertEquals(dish.getUpdatedBy(), updatedBy);
+        assertFalse(order.getDishes().get(1).isReady());
+        assertEquals(dish.getUpdatedBy(), userModel);
     }
 
     @Test
-    public void update_WithAnotherNotReadyDish(){
-        order.getDishes().get(1).setReady(false);
-        Dish dish = order.getDishes().get(0);
-        dish.setId(4);
-        dish.setReady(false);
+    public void findMoreRecent() {
+        Order order1 = new Order(4);
+        LocalDateTime dateTime = LocalDateTime.now();
 
-        order.setReady(false);
+        when(orderRepository.findMoreRecent(dateTime, restaurant)).thenReturn(List.of(order, order1));
 
-        when(orderRepository.findByIdAndRestaurant(order.getId(), restaurant)).thenReturn(Optional.of(order));
+        List<Order> orders = orderService.findMoreRecent(dateTime, restaurant);
 
-        Dish savedDish = orderService.update(order.getId(), dish.getId(), restaurant, userModel);
-
-        verify(orderRepository, times(1)).save(order);
-
-        assertEquals(savedDish.getId(), 4);
-        assertEquals(savedDish.getName(), dish.getName());
-        assertTrue(savedDish.isReady());
-        assertFalse(order.isReady());
-        assertEquals(dish.getUpdatedBy(), userModel);
+        assertOrders(orders.get(0), order);
+        assertEquals(orders.get(1).getId(), order1.getId());
     }
 
     private void assertOrders(Order order, Order order1){

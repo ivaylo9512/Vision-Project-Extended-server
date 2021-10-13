@@ -47,7 +47,7 @@ public class OrderController {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return new OrderDto(orderService.findById(id, userService.findById(loggedUser.getId())));
+        return new OrderDto(orderService.findById(id, restaurantService.getById(loggedUser.getId())));
     }
 
     @PostMapping(value = "/create")

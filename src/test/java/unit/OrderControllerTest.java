@@ -79,8 +79,8 @@ public class OrderControllerTest {
 
         Order order = createOrder();
 
-        when(userService.findById(user.getId())).thenReturn(userModel);
-        when(orderService.findById(order.getId(), userModel)).thenReturn(order);
+        when(restaurantService.getById(restaurant.getId())).thenReturn(restaurant);
+        when(orderService.findById(order.getId(), restaurant)).thenReturn(order);
 
         OrderDto orderDto = orderController.findById(order.getId());
 

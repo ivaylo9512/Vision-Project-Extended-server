@@ -4,13 +4,12 @@ import com.vision.project.models.Dish;
 import com.vision.project.models.Order;
 import com.vision.project.models.Restaurant;
 import com.vision.project.models.UserModel;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
-    Order findById(long id, UserModel loggedUser);
+    Order findById(long id, Restaurant restaurant);
 
     Map<Long, Order> findNotReady(Restaurant restaurant, int page, int pageSize);
 
