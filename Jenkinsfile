@@ -21,15 +21,18 @@ pipeline {
                 sh './gradlew test'
             }
         }
-       stage('Publish Test Coverage Report') {
-         steps {
-           step([$class: 'JacocoPublisher',
+        stage('Publish Test Coverage Report') {
+          steps {
+            step([$class: 'JacocoPublisher',
                 execPattern: '**/build/jacoco/*.exec',
                 classPattern: '**/build/classes',
                 sourcePattern: 'src/main/java',
                 exclusionPattern: 'src/test*'
-                ])
-            }
+            ])
+            sh 'curl -Os https://uploader.codecov.io/latest/linux/codecov'
+            sh 'chmod +x codecov'
+            sh './codecov -t 3e875c7a-e948-4fdf-8df5-5fd421c1b022'
+          }
         }
     }
 }
