@@ -28,6 +28,93 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Test
+    public void findById(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRole("ROLE_USER");
+        userModel.setRestaurant(restaurant);
+
+        Menu menu = new Menu();
+        menu.setRestaurant(restaurant);
+
+        when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
+
+        Menu foundMenu = menuService.findById(1, userModel);
+
+        assertEquals(menu, foundMenu);
+    }
+
+    @Test
+    public void findById_WithNotFound(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRole("ROLE_ADMIN");
+        userModel.setRestaurant(restaurant);
+
+        when(menuRepository.findById(1L)).thenReturn(Optional.empty());
+
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
+                () -> menuService.findById(1, userModel));
+
+        assertEquals(thrown.getMessage(), "Menu not found.");
+    }
+
+    @Test
+    public void findById_WithDifferentUserRestaurant_NotAdmin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(2);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_USER");
+
+        Restaurant restaurant1 = new Restaurant();
+        restaurant1.setId(3);
+
+        Menu menu = new Menu();
+        menu.setId(2L);
+        menu.setRestaurant(restaurant1);
+
+        when(menuRepository.findById(2L)).thenReturn(Optional.of(menu));
+
+        UnauthorizedException thrown = assertThrows(UnauthorizedException.class,
+                () -> menuService.findById(2, userModel));
+
+        assertEquals(thrown.getMessage(), "Unauthorized.");
+    }
+
+    @Test
+    public void findById_WithDifferentUserRestaurant_Admin(){
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(2);
+
+        UserModel userModel = new UserModel();
+        userModel.setId(1);
+        userModel.setRestaurant(restaurant);
+        userModel.setRole("ROLE_ADMIN");
+
+        Restaurant restaurant1 = new Restaurant();
+        restaurant1.setId(3);
+
+        Menu menu = new Menu();
+        menu.setId(2L);
+        menu.setRestaurant(restaurant1);
+
+        when(menuRepository.findById(2L)).thenReturn(Optional.of(menu));
+
+        Menu foundMenu = menuService.findById(2, userModel);
+
+        assertEquals(foundMenu, menu);
+    }
+
+    @Test
     public void delete(){
         Restaurant restaurant = new Restaurant();
         restaurant.setId(1);

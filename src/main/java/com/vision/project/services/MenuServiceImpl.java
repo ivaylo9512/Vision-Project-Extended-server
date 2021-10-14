@@ -18,14 +18,19 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public void delete(long id, UserModel loggedUser) {
+    public Menu findById(long id, UserModel loggedUser){
         Menu menu = menuRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Menu not found."));
 
         if(loggedUser.getRestaurant().getId() != menu.getRestaurant().getId() && !loggedUser.getRole().equals("ROLE_ADMIN")){
             throw new UnauthorizedException("Unauthorized.");
         }
 
-        menuRepository.delete(menu);
+        return menu;
+    }
+
+    @Override
+    public void delete(long id, UserModel loggedUser) {
+        menuRepository.delete(findById(id, loggedUser));
     }
 
     @Override

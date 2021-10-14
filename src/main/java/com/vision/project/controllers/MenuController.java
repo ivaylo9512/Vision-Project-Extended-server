@@ -25,6 +25,14 @@ public class MenuController {
         this.restaurantService = restaurantService;
     }
 
+    @GetMapping(value = "/findById/{id}")
+    public MenuDto findById(@PathVariable("id") long id) {
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        return new MenuDto(menuService.findById(id, userService.findById(loggedUser.getId())));
+    }
+
     @PostMapping("/create")
     public MenuDto create(@RequestBody() MenuCreateSpec menuCreateSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()

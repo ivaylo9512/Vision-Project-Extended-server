@@ -45,6 +45,22 @@ public class MenuControllerTest {
     private final UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, user.getId());
 
     @Test
+    public void findById(){
+        Menu menu = new Menu("menu", restaurant);
+
+        auth.setDetails(user);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(userService.findById(user.getId())).thenReturn(userModel);
+        when(menuService.findById(1, userModel)).thenReturn(menu);
+
+        MenuDto menuDto = menuController.findById(1);
+
+        assertEquals(menuDto.getName(), menu.getName());
+        assertEquals(menuDto.getRestaurantId(), restaurant.getId());
+    }
+
+    @Test
     public void create(){
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
