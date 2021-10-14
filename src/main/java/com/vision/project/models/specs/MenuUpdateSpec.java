@@ -4,19 +4,25 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class MenuUpdateSpec {
-    @NotNull(message = "You must provide id")
-    private long id;
+    @NotNull(message = "You must provide id.")
+    private Long id;
 
-    @NotNull(message = "You must provide restaurant id")
-    private long restaurantId;
+    @NotNull(message = "You must provide restaurant id.")
+    private Long restaurantId;
 
-    @NotBlank(message = "You must provide name")
+    @NotBlank(message = "You must provide name.")
     private String name;
 
     public MenuUpdateSpec() {
     }
 
     public MenuUpdateSpec(String name, long restaurantId) {
+        this.name = name;
+        this.restaurantId = restaurantId;
+    }
+
+    public MenuUpdateSpec(long id, String name, long restaurantId) {
+        this.id = id;
         this.name = name;
         this.restaurantId = restaurantId;
     }

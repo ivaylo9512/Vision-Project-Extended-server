@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   PRIMARY KEY (`id`),
   KEY `FKha3mjlpyaejx4bxghj5emhcc7` (`restaurant`),
   CONSTRAINT `FKha3mjlpyaejx4bxghj5emhcc7` FOREIGN KEY (`restaurant`) REFERENCES `restaurants` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table restaurant-app-test.menu: ~0 rows (approximately)
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
@@ -36,7 +36,10 @@ INSERT INTO `menu` (`id`, `name`, `restaurant`) VALUES
 	(2, 'Burger', 1),
 	(3, 'Water', 1),
 	(4, 'Sushi', 1),
-	(5, 'Juice', 1);
+	(5, 'Juice', 1),
+	(6, 'pizza', 2),
+	(7, 'pizza', 3),
+	(8, 'pizza', 4);
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 
 

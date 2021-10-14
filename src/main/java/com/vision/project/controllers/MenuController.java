@@ -12,6 +12,8 @@ import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/menu/auth")
 public class MenuController {
@@ -34,7 +36,7 @@ public class MenuController {
     }
 
     @PostMapping("/create")
-    public MenuDto create(@RequestBody() MenuCreateSpec menuCreateSpec){
+    public MenuDto create(@Valid @RequestBody() MenuCreateSpec menuCreateSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
         UserModel user = userService.findById(loggedUser.getId());
@@ -43,7 +45,7 @@ public class MenuController {
     }
 
     @PatchMapping("/update")
-    public MenuDto update(@RequestBody() MenuUpdateSpec menuUpdateSpec){
+    public MenuDto update(@Valid @RequestBody() MenuUpdateSpec menuUpdateSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 

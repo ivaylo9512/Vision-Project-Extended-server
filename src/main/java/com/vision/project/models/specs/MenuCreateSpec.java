@@ -4,10 +4,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class MenuCreateSpec {
-    @NotNull(message = "You must provide restaurant id")
-    private long restaurantId;
+    @NotNull(message = "You must provide restaurant id.")
+    private Long restaurantId;
 
-    @NotBlank(message = "You must provide name")
+    @NotBlank(message = "You must provide name.")
     private String name;
 
     public MenuCreateSpec() {
