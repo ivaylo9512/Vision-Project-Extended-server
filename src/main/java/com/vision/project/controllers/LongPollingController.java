@@ -50,7 +50,7 @@ public class LongPollingController {
     }
 
     @Transactional
-    private UserDto initializeUser(UserModel user, int pageSize){
+    public UserDto initializeUser(UserModel user, int pageSize){
         Restaurant restaurant = user.getRestaurant();
         Map<Long, Order> orders = orderService.findNotReady(restaurant, 0, pageSize);
         RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
@@ -69,7 +69,7 @@ public class LongPollingController {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        DeferredResult<UserRequestDto> request = new DeferredResult<>(15000L,"Time out.");
+        DeferredResult<UserRequestDto> request = new DeferredResult<>(100_000L,"Time out.");
 
         UserRequest userRequest = new UserRequest(loggedUser.getId(), restaurantService.getById(loggedUser.getRestaurantId()), request, lastCheck);
 
