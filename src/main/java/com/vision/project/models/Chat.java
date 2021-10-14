@@ -1,6 +1,11 @@
 package com.vision.project.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -12,37 +17,47 @@ public class Chat {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "first_user", insertable = false, updatable = false)
-    private UserModel firstUserModel;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private UserModel firstUser;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "second_user", insertable = false, updatable = false)
-    private UserModel secondUserModel;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private UserModel secondUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Session> sessions;
 
+    @CreationTimestamp
+    @Column(name = "created_at", columnDefinition = "DATETIME(6)")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", columnDefinition = "DATETIME(6)")
+    private LocalDateTime updatedAt;
+
     public Chat() {
     }
 
-    public Chat(UserModel firstUserModel, UserModel secondUserModel) {
-        this.firstUserModel = firstUserModel;
-        this.secondUserModel = secondUserModel;
+    public Chat(UserModel firstUser, UserModel secondUser) {
+        this.firstUser = firstUser;
+        this.secondUser = secondUser;
     }
 
-    public UserModel getFirstUserModel() {
-        return firstUserModel;
+    public UserModel getFirstUser() {
+        return firstUser;
     }
 
-    public void setFirstUserModel(UserModel firstUserModel) {
-        this.firstUserModel = firstUserModel;
+    public void setFirstUser(UserModel firstUser) {
+        this.firstUser = firstUser;
     }
 
-    public UserModel getSecondUserModel() {
-        return secondUserModel;
+    public UserModel getSecondUser() {
+        return secondUser;
     }
 
-    public void setSecondUserModel(UserModel secondUserModel) {
-        this.secondUserModel = secondUserModel;
+    public void setSecondUser(UserModel secondUser) {
+        this.secondUser = secondUser;
     }
 
     public long getId() {
@@ -59,5 +74,25 @@ public class Chat {
 
     public void setSessions(List<Session> sessions) {
         this.sessions = sessions;
+    }
+
+    public boolean hasUser(long userId){
+        return firstUser.getId() == userId || secondUser.getId() == userId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

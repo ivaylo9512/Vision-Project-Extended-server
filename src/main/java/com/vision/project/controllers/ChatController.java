@@ -8,6 +8,7 @@ import com.vision.project.models.UserDetails;
 import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
+import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
@@ -22,18 +23,20 @@ import java.util.stream.Collectors;
 public class ChatController {
     private final ChatService chatService;
     private final LongPollingService longPollingService;
+    private final UserService userService;
 
-    public ChatController(ChatService chatService, LongPollingService longPollingService) {
+    public ChatController(ChatService chatService, LongPollingService longPollingService, UserService userService) {
         this.chatService = chatService;
         this.longPollingService = longPollingService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/getChats")
     @Transactional
     public Map<Object, Object> getChats(@RequestParam(name = "pageSize") int pageSize){
-        UserDetails userDetails = (UserDetails)SecurityContextHolder
+        UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
-        long userId = userDetails.getId();
+        long userId = loggedUser.getId();
 
         return chatService.findUserChats(userId, pageSize).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, duplicate) -> existing, LinkedHashMap::new));
@@ -44,7 +47,18 @@ public class ChatController {
             @RequestParam(name = "chatId") long chatId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "pageSize") int pageSize){
-        return chatService.findSessions(chatId, page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
+        UserDetails loggedUser = (UserDetails)SecurityContextHolder
+                .getContext().getAuthentication().getDetails();
+
+        return chatService.findSessions(chatService.findById(chatId, loggedUser.getId()), page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public void delete(@PathVariable("id") long id){
+        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getDetails();
+
+        chatService.delete(id, userService.findById(loggedUser.getId()));
     }
 
     @PostMapping("/newMessage")

@@ -37,16 +37,29 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public Chat findById(long id, long loggedUser) {
+        Chat chat = chatRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Chat not found."));
+
+        if(!chat.hasUser(loggedUser)){
+            throw new UnauthorizedException("Unauthorized.");
+        }
+
+        return chat;
+    }
+
+
+    @Override
     public Map<Long, Chat> findUserChats(long id, int pageSize) {
         Map<Long, Chat> chatsMap = new LinkedHashMap<>();
         chatRepository.findUserChats(id, PageRequest.of(0, pageSize)).forEach(chat -> {
             chat.setSessions(sessionRepository.findSessions(chat, PageRequest.of(0, pageSize,
                     Sort.Direction.DESC, "session_date")));
 
-            UserModel loggedUser = chat.getFirstUserModel();
+            UserModel loggedUser = chat.getFirstUser();
             if(loggedUser.getId() != id){
-                chat.setFirstUserModel(chat.getSecondUserModel());
-                chat.setSecondUserModel(loggedUser);
+                chat.setFirstUser(chat.getSecondUser());
+                chat.setSecondUser(loggedUser);
             }
 
             chatsMap.put(chat.getId(), chat);
@@ -55,37 +68,48 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Session> findSessions(long chatId, int page, int pageSize){
-        return sessionRepository.findSessions(chatRepository.getById(chatId), PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+    public List<Session> findSessions(Chat chat, int page, int pageSize){
+        return sessionRepository.findSessions(chat, PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
     }
 
     @Transactional
     @Override
     public Message addNewMessage(MessageSpec messageSpec) {
-        long sender = messageSpec.getSenderId();
-        long receiver = messageSpec.getReceiverId();
-
         Chat chat = chatRepository.findById(messageSpec.getChatId())
-                .orElseThrow(()-> new EntityNotFoundException("Chat with id: " + messageSpec.getChatId() + " is not found."));
+                .orElseThrow(()-> new EntityNotFoundException("Chat not found."));
 
-        long chatFirstUser = chat.getFirstUserModel().getId();
-        long chatSecondUser = chat.getSecondUserModel().getId();
-
-        if ((sender != chatFirstUser && sender != chatSecondUser) || (receiver != chatFirstUser && receiver != chatSecondUser)) {
-            throw new UnauthorizedException("Users don't match the given chat.");
-        }
+        verifyMessage(messageSpec, chat);
 
         Session session = sessionRepository.findById(new SessionPK(chat,LocalDate.now()))
                 .orElse(new Session(chat, LocalDate.now()));
 
-        UserModel user = userRepository.getById(receiver);
+        UserModel user = userRepository.getById(messageSpec.getReceiverId());
         Message message = new Message(user, LocalTime.now(), messageSpec.getMessage(), session);
 
         return messageRepository.save(message);
     }
 
+    public void verifyMessage(MessageSpec message, Chat chat) {
+        long sender = message.getSenderId();
+        long receiver = message.getReceiverId();
+
+        if (!chat.hasUser(sender) || !chat.hasUser(receiver)) {
+            throw new UnauthorizedException("Users don't match the given chat.");
+        }
+    }
+
     @Override
     public List<Message> findMoreRecentMessages(Long userId, LocalDateTime lastCheck) {
         return messageRepository.findMoreRecentMessages(userRepository.getById(userId), lastCheck.toLocalDate(), lastCheck.toLocalTime());
+    }
+
+    @Override
+    public void delete(long id, UserModel user) {
+        if(user.getRole().equals("ROLE_ADMIN")){
+            chatRepository.deleteById(id);
+            return;
+        }
+
+        chatRepository.delete(findById(id, user.getId()));
     }
 }
