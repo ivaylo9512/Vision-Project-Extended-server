@@ -128,7 +128,6 @@ public class Users {
         UserModel user = new UserModel("testUser", "password", "ROLE_USER");
         user.setId(2);
 
-
         adminToken = "Token " + Jwt.generate(new UserDetails(admin, List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))));
 
         userToken = "Token " + Jwt.generate(new UserDetails(user, List.of(new SimpleGrantedAuthority("ROLE_USER"))));

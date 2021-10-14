@@ -9,7 +9,7 @@ public class OrderCreateSpec {
     private List<String> dishes;
 
     @NotNull(message = "You must provide restaurant id")
-    private long restaurantId;
+    private Long restaurantId;
 
     public List<String> getDishes() {
         return dishes;

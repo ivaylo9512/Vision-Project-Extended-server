@@ -3,36 +3,37 @@ package com.vision.project.models.specs;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class RegisterSpec {
     @Length(min = 8, max=20, message = "Username must be between 8 and 20 characters.")
-    @NotNull(message = "You must provide username.")
+    @NotBlank(message = "You must provide username.")
     private String username;
 
     @Email(message = "Must be a valid email.")
-    @NotNull(message = "You must provide an email.")
+    @NotBlank(message = "You must provide an email.")
     private String email;
 
     private MultipartFile profileImage;
 
     @Length(min = 10, max=25, message = "Password must be between 10 and 25 characters.")
-    @NotNull(message = "You must provide password.")
+    @NotBlank(message = "You must provide password.")
     private String password;
 
-    @NotNull(message = "You must provide first name.")
+    @NotBlank(message = "You must provide first name.")
     private String firstName;
 
-    @NotNull(message = "You must provide last name.")
+    @NotBlank(message = "You must provide last name.")
     private String lastName;
 
     @NotNull(message = "You must provide age.")
     private Integer age;
 
-    @NotNull(message = "You must provide country.")
+    @NotBlank(message = "You must provide country.")
     private String country;
 
-    @NotNull(message = "You must provide restaurant token.")
+    @NotBlank(message = "You must provide restaurant token.")
     private String restaurantToken;
 
     public RegisterSpec() {

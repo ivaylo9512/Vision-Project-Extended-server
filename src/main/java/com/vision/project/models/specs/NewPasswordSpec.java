@@ -2,17 +2,18 @@ package com.vision.project.models.specs;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class NewPasswordSpec {
-    @NotNull(message = "You must provide username.")
+    @NotBlank(message = "You must provide username.")
     private String username;
 
-    @NotNull(message = "You must provide current password.")
+    @NotBlank(message = "You must provide current password.")
     private String currentPassword;
 
     @Length(min = 10, max=25, message = "Password must be between 10 and 25 characters.")
-    @NotNull(message = "You must provide new password.")
+    @NotBlank(message = "You must provide new password.")
     private String newPassword;
 
     public NewPasswordSpec(){
