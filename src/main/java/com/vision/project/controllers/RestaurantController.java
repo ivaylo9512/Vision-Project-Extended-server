@@ -9,10 +9,11 @@ import com.vision.project.services.base.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController()
-@RequestMapping(value = "/api/restaurant/auth")
+@RequestMapping(value = "/api/restaurants/auth")
 public class RestaurantController {
     private final RestaurantService restaurantService;
     private final UserService userService;
@@ -32,11 +33,13 @@ public class RestaurantController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/create")
+    @Transactional
     public RestaurantDto create(@Valid @RequestBody RestaurantSpec restaurant){
         return new RestaurantDto(restaurantService.create(new Restaurant(restaurant)));
     }
 
-    @PostMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
+    @Transactional
     public void delete(@PathVariable("id") long id){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

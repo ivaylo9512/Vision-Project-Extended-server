@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS `restaurants` (
 /*!40000 ALTER TABLE `restaurants` DISABLE KEYS */;
 INSERT INTO `restaurants` (`id`, `address`, `name`, `token`, `type`) VALUES
 	(1, 'testAddress', 'testName', 'zeT2sqA1', 'fast food'),
-	(2, 'testAddress', 'testName', 'eqF8sz4A2', 'fast food'),
-	(3, 'testAddress', 'testName', 's2aZseA3', 'fast food'),
-	(4, 'testAddress', 'testName', 'z2e1TzsqA4', 'fast food');
+	(2, 'testAddress2', 'testName2', 'eqF8sz4A2', 'fast food'),
+	(3, 'testAddress3', 'testName3', 's2aZseA3', 'fast food'),
+	(4, 'testAddress4', 'testName4', 'z2e1TzsqA4', 'fast food');
 /*!40000 ALTER TABLE `restaurants` ENABLE KEYS */;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,15 +1,19 @@
 package com.vision.project.models;
 
 import com.vision.project.models.specs.RestaurantSpec;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "restaurants")
 public class Restaurant {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.EAGER)
@@ -18,10 +22,10 @@ public class Restaurant {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant" , fetch = FetchType.LAZY)
     @OrderBy("created")
-    @Where(clause = "ready = false")
     private List<Order> orders;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<UserModel> users;
 
     private String name;
@@ -57,7 +61,7 @@ public class Restaurant {
         this.address = restaurant.getAddress();
         this.name = restaurant.getName();
         this.type = restaurant.getType();
-        this.menu = restaurant.getMenu();
+        this.menu = restaurant.getMenu().stream().map(m -> new Menu(m, this)).collect(Collectors.toList());
     }
 
     public long getId() {

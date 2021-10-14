@@ -74,7 +74,7 @@ public class RestaurantControllerTest {
     @Test
     public void create(){
         RestaurantSpec restaurantSpec = new RestaurantSpec("name", "type", "address",
-                List.of(new Menu("menu", restaurant), new Menu("menu1", restaurant)));
+                List.of("menu", "menu1"));
         Restaurant restaurant = new Restaurant(restaurantSpec);
 
         when(restaurantService.create(eq(restaurant))).thenReturn(restaurant);
@@ -87,6 +87,6 @@ public class RestaurantControllerTest {
         assertEquals(restaurantDto.getName(), restaurantSpec.getName());
         assertEquals(restaurantDto.getType(), restaurantSpec.getType());
         restaurantSpec.getMenu().forEach(menu -> assertTrue(menuDto.contains(
-                new MenuDto(menu.getName(), menu.getRestaurant().getId()))));
+                new MenuDto(menu, restaurant.getId()))));
     }
 }

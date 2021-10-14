@@ -1,5 +1,8 @@
 package com.vision.project.models;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +16,7 @@ public class EmailToken {
     private String token;
 
     @OneToOne(cascade = CascadeType.DETACH)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel user;
 
     @Column(name = "expiry_date")
