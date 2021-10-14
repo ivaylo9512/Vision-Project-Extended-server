@@ -48,7 +48,6 @@ public class ChatServiceImpl implements ChatService {
         return chat;
     }
 
-
     @Override
     public Map<Long, Chat> findUserChats(long id, int pageSize) {
         Map<Long, Chat> chatsMap = new LinkedHashMap<>();

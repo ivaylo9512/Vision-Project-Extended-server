@@ -97,8 +97,11 @@ public class MenuServiceTest {
         userModel.setRestaurant(restaurant);
         userModel.setRole("ROLE_ADMIN");
 
+        Restaurant restaurant1 = new Restaurant();
+        restaurant1.setId(2);
+
         Menu menu = new Menu();
-        menu.setRestaurant(restaurant);
+        menu.setRestaurant(restaurant1);
 
         when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
 

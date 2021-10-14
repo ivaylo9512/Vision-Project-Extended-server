@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class ChatServiceTest {
     @Mock
     private MessageRepository messageRepository;
 
-    private UserModel user = new UserModel("Test", "Test", "ROLE_ADMIN");
+    private final UserModel user = new UserModel("Test", "Test", "ROLE_ADMIN");
     private Chat chat;
     private List<Chat> chats;
 
@@ -368,6 +369,20 @@ public class ChatServiceTest {
         session1.setMessages(List.of(message2, message3));
 
         chats = List.of(chat, chat1);
+    }
+
+    @Test
+    public void findMoreRecentMessages() {
+        LocalDateTime lastCheck = LocalDateTime.now();
+        List<Message> messages = chat.getSessions().get(0).getMessages();
+
+        when(userRepository.getById(user.getId())).thenReturn(user);
+        when(messageRepository.findMoreRecentMessages(user, lastCheck.toLocalDate(), lastCheck.toLocalTime())).thenReturn(chat.getSessions().get(0).getMessages());
+
+        List<Message> foundMessages = chatService.findMoreRecentMessages(user.getId(), lastCheck);
+
+        assertMessages(foundMessages.get(0), messages.get(0));
+        assertMessages(foundMessages.get(1), messages.get(1));
     }
 
     private void assertChats(Chat chat, Chat chat1){

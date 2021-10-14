@@ -96,9 +96,9 @@ public class RestaurantServiceTest {
         userModel.setRestaurant(restaurant);
         userModel.setRole("ROLE_ADMIN");
 
-        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
+        when(restaurantRepository.findById(2L)).thenReturn(Optional.of(restaurant));
 
-        Restaurant foundRestaurant = restaurantService.findById(1, userModel);
+        Restaurant foundRestaurant = restaurantService.findById(2, userModel);
 
         assertRestaurants(restaurant, foundRestaurant);
     }

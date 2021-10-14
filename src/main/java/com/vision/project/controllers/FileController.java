@@ -26,15 +26,9 @@ public class FileController {
     }
 
     @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> getAsResource(@PathVariable String fileName, HttpServletRequest request) throws MalformedURLException {
+    public ResponseEntity<Resource> getAsResource(@PathVariable String fileName, HttpServletRequest request) throws IOException {
         Resource resource = fileService.getAsResource(fileName);
-        String contentType;
-
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException e) {
-            contentType = "application/octet-stream";
-        }
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))

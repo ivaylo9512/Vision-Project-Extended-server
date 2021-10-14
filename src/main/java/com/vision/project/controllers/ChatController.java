@@ -33,7 +33,7 @@ public class ChatController {
 
     @GetMapping(value = "/getChats")
     @Transactional
-    public Map<Object, Object> getChats(@RequestParam(name = "pageSize") int pageSize){
+    public Map<Long, ChatDto> findChats(@RequestParam(name = "pageSize") int pageSize){
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
         long userId = loggedUser.getId();
