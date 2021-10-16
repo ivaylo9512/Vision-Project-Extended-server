@@ -46,7 +46,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
     implementation group: 'log4j', name: 'log4j', version: '1.2.17'
-    implementation group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
     implementation  group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation ('javax.xml.bind:jaxb-api:2.3.1')
     implementation ('javax.activation:activation:1.1.1')
@@ -56,7 +56,6 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-context'
     implementation group: 'org.apache.derby', name: 'derby', version: '10.14.2.0'
     implementation group: 'org.javassist', name: 'javassist', version: '3.28.0-GA'
-
 
     testImplementation 'org.mockito:mockito-inline:3.12.4'
     testImplementation('org.springframework.boot:spring-boot-starter-test')

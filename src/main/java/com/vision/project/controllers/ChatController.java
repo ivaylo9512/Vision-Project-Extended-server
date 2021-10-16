@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/chat/auth")
+@RequestMapping(value = "api/chats/auth")
 public class ChatController {
     private final ChatService chatService;
     private final LongPollingService longPollingService;

@@ -1,6 +1,8 @@
 package com.vision.project.models;
 
 import com.vision.project.models.compositePK.SessionPK;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +19,7 @@ public class Session{
     private LocalDate date;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "session", cascade = CascadeType.ALL)
-    @OrderBy(value = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Message> messages;
 
     public Session() {

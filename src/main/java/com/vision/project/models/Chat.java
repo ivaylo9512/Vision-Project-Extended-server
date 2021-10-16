@@ -16,16 +16,17 @@ public class Chat {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "first_user", insertable = false, updatable = false)
+    @JoinColumn(name = "first_user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel firstUser;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "second_user", insertable = false, updatable = false)
+    @JoinColumn(name = "second_user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel secondUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Session> sessions;
 
     @CreationTimestamp

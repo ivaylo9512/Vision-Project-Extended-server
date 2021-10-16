@@ -16,22 +16,23 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE DATABASE IF NOT EXISTS `restaurant-app-test` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `restaurant-app-test`;
 
+-- Dumping structure for table restaurant-app-test.chats
 DELETE FROM `chats`;
 ALTER TABLE `chats` AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `chats` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `created_at` datetime(6) DEFAULT NULL,
   `updated_at` datetime(6) DEFAULT NULL,
-  `first_user` bigint(20) DEFAULT NULL,
-  `second_user` bigint(20) DEFAULT NULL,
+  `first_user` bigint DEFAULT NULL,
+  `second_user` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `FK59axryomh25kdkerna0hwm7ps` (`second_user`) USING BTREE,
   KEY `FKjkdygx0osyuythgf37fy512f8` (`first_user`),
-  KEY `FK59axryomh25kdkerna0hwm7ps` (`second_user`),
   CONSTRAINT `FK59axryomh25kdkerna0hwm7ps` FOREIGN KEY (`second_user`) REFERENCES `users` (`id`),
   CONSTRAINT `FKjkdygx0osyuythgf37fy512f8` FOREIGN KEY (`first_user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table restaurant-app-test.chats: ~0 rows (approximately)
+-- Dumping data for table chat-app-test.chats: ~0 rows (approximately)
 /*!40000 ALTER TABLE `chats` DISABLE KEYS */;
 INSERT INTO `chats` (`id`, `created_at`, `updated_at`, `first_user`, `second_user`) VALUES
 	(1, '2021-08-25 23:15:18.000000', '2021-09-18 23:58:16.000000', 1, 2),

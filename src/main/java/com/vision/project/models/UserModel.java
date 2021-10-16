@@ -13,11 +13,6 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinTable(name = "chats",joinColumns ={@JoinColumn(name ="first_user")},
-            inverseJoinColumns = @JoinColumn(name ="second_user" ))
-    private List<Chat> chats;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
@@ -158,14 +153,6 @@ public class UserModel {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public List<Chat> getChats() {
-        return chats;
-    }
-
-    public void setChats(List<Chat> chats) {
-        this.chats = chats;
     }
 
     public Restaurant getRestaurant() {

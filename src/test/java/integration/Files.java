@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -49,11 +48,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = { AppConfig.class, TestWebConfig.class, SecurityConfig.class })
-@WebAppConfiguration(value = "src/main/java/com/chat/app")
+@WebAppConfiguration(value = "src/main/java/com/vision/project")
 @WebMvcTest(FileController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
-@Transactional
 public class Files {
     @Autowired
     private WebApplicationContext webApplicationContext;

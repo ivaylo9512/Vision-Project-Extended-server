@@ -4,7 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.*;
-import com.vision.project.models.specs.MessageSpec;
 import com.vision.project.services.base.ChatService;
 import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class LongPollingServiceImpl implements LongPollingService {
     private Cache<Long, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
-    Map<Long, Cache<Long, UserRequest>> restaurants = new HashMap<Long, Cache<Long, UserRequest>>();
+    Map<Long, Cache<Long, UserRequest>> restaurants = new HashMap<>();
 
     private final OrderService orderService;
     private final ChatService chatService;

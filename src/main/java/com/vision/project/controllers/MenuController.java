@@ -12,6 +12,7 @@ import com.vision.project.services.base.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
@@ -36,6 +37,7 @@ public class MenuController {
     }
 
     @PostMapping("/create")
+    @Transactional
     public MenuDto create(@Valid @RequestBody() MenuCreateSpec menuCreateSpec){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

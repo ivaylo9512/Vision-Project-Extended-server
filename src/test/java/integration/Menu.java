@@ -54,7 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(MenuController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
-@Transactional
 public class Menu {
     @Autowired
     private WebApplicationContext webApplicationContext;

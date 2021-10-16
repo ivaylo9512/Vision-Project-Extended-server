@@ -9,6 +9,7 @@ import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
 import com.vision.project.security.Jwt;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -26,16 +29,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ChatController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
-@Transactional
 public class Chats {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -59,8 +58,23 @@ public class Chats {
     private static String adminToken, userToken;
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    public void setupData() {
+        ResourceDatabasePopulator rdp = new ResourceDatabasePopulator();
+        rdp.addScript(new ClassPathResource("integrationTestsSql/UsersData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/ChatsData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/SessionsData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/MessagesData.sql"));
+        rdp.execute(dataSource);
+    }
+
     @BeforeAll
     public void setup() {
+        ResourceDatabasePopulator rdp = new ResourceDatabasePopulator();
+        rdp.addScript(new ClassPathResource("integrationTestsSql/UsersData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/FilesData.sql"));
+        rdp.execute(dataSource);
+
         UserModel admin = new UserModel("adminUser", "password", "ROLE_ADMIN");
         admin.setId(1);
 
@@ -132,5 +146,20 @@ public class Chats {
                         .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));
+    }
+
+    @Test
+    public void delete_WithIncorrectToken() throws Exception {
+        mockMvc.perform(get("/api/chats/auth/delete/1")
+                        .header("Authorization", "Token incorrect"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Jwt token is incorrect"));
+    }
+
+    @Test
+    public void delete_WithoutToken() throws Exception {
+        mockMvc.perform(get("/api/chats/auth/delete/1"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Jwt token is missing"));
     }
 }

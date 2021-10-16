@@ -16,7 +16,7 @@ public class Message{
     private UserModel receiver;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({@JoinColumn(name = "chat"),@JoinColumn(name = "session_date")})
     private Session session;
 
