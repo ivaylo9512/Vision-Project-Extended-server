@@ -14,6 +14,9 @@ public class DishDto {
     private long orderId;
     private boolean isOrderReady;
 
+    public DishDto() {
+    }
+
     public DishDto(Dish dish) {
         this.id = dish.getId();
         this.name = dish.getName();
@@ -67,6 +70,10 @@ public class DishDto {
 
     public long getUpdatedById() {
         return updatedById;
+    }
+
+    public void setUpdatedById(long updatedById) {
+        this.updatedById = updatedById;
     }
 
     public void setUpdatedById(UserModel updatedBy) {

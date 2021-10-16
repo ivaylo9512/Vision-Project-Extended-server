@@ -1,5 +1,9 @@
 package com.vision.project.controllers;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.DishDto;
 import com.vision.project.models.DTOs.OrderDto;
@@ -8,16 +12,19 @@ import com.vision.project.services.base.LongPollingService;
 import com.vision.project.services.base.OrderService;
 import com.vision.project.services.base.RestaurantService;
 import com.vision.project.services.base.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/order/auth")
+@RequestMapping(value = "/api/orders/auth")
+@JsonSerialize(using = LocalDateTimeSerializer.class)
+@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 public class OrderController {
     private final OrderService orderService;
     private final LongPollingService longPollingService;
@@ -47,11 +54,12 @@ public class OrderController {
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return new OrderDto(orderService.findById(id, restaurantService.getById(loggedUser.getId())));
+        return new OrderDto(orderService.findById(id, restaurantService.getById(loggedUser.getRestaurantId())));
     }
 
     @PostMapping(value = "/create")
-    public OrderDto create(@RequestBody OrderCreateSpec orderSpec) throws ExpiredJwtException{
+    @Transactional
+    public OrderDto create(@Valid @RequestBody OrderCreateSpec orderSpec) {
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 

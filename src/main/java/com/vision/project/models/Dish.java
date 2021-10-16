@@ -22,11 +22,11 @@ public class Dish{
     private Order order;
 
     @CreationTimestamp
-    @Column(columnDefinition = "DATETIME(6)")
+    @Column(name = "created_at" ,columnDefinition = "DATETIME(6)")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(columnDefinition = "DATETIME(6)")
+    @Column(name = "updated_at" ,columnDefinition = "DATETIME(6)")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

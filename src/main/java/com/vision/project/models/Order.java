@@ -20,14 +20,13 @@ public class Order{
     private List<Dish> dishes;
 
     @CreationTimestamp
-    @Column(name = "created", columnDefinition = "DATETIME(6)")
+    @Column(name = "created_at", columnDefinition = "DATETIME(6)")
     private LocalDateTime created;
 
     @UpdateTimestamp
-    @Column(name = "updated", columnDefinition = "DATETIME(6)")
+    @Column(name = "updated_at", columnDefinition = "DATETIME(6)")
     private LocalDateTime updated;
 
-    @Column(name = "ready")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean ready;
 

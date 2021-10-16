@@ -5,11 +5,19 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class OrderCreateSpec {
-    @NotEmpty(message = "Dishes cannot be empty.")
+    @NotEmpty(message = "Dishes must have at least 1 item.")
     private List<String> dishes;
 
-    @NotNull(message = "You must provide restaurant id")
+    @NotNull(message = "You must provide restaurant id.")
     private Long restaurantId;
+
+    public OrderCreateSpec() {
+    }
+
+    public OrderCreateSpec(List<String> dishes, long restaurantId){
+        this.dishes = dishes;
+        this.restaurantId = restaurantId;
+    }
 
     public List<String> getDishes() {
         return dishes;

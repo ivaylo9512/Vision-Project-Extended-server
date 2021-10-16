@@ -1,6 +1,5 @@
 package com.vision.project.services;
 
-import com.vision.project.exceptions.UnauthorizedException;
 import com.vision.project.models.*;
 import com.vision.project.repositories.base.*;
 import com.vision.project.services.base.OrderService;
@@ -49,6 +48,10 @@ public class OrderServiceImpl implements OrderService {
             if(!orderDish.isReady()){
                 order.setReady(false);
             }
+        }
+
+        if(updatedDish == null){
+            throw new EntityNotFoundException("Dish not found.");
         }
 
         if(updated || order.isReady()) {
