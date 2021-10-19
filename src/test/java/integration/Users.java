@@ -260,7 +260,7 @@ public class Users {
         UserDto userDto = new UserDto(user);
         userDto.setProfileImage("profileImage1.png");
 
-        String response = mockMvc.perform(post("/api/users/polling/login/5")
+        String response = mockMvc.perform(post("/api/users/polling/login")
                 .contentType("Application/json")
                 .content("{\"username\": \"adminUser\", \"password\": \"password\"}"))
                 .andExpect(status().isOk())
@@ -306,7 +306,7 @@ public class Users {
         mockMvc.perform(get("/api/users/activate/token1"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/users/polling/login/3")
+        mockMvc.perform(post("/api/users/polling/login")
                         .contentType("Application/json")
                         .content("{\"username\": \"testThird\", \"password\": \"password\"}"))
                 .andExpect(status().isOk());
@@ -426,7 +426,7 @@ public class Users {
                         .content(objectMapper.writeValueAsString(passwordSpec)))
                 .andExpect(status().isOk());
 
-        String response = mockMvc.perform(post("/api/users/polling/login/3")
+        String response = mockMvc.perform(post("/api/users/polling/login")
                         .contentType("Application/json")
                         .content("{\"username\": \"adminUser\", \"password\": \"newPassword\"}"))
                 .andExpect(status().isOk())

@@ -11,7 +11,7 @@ import java.util.Map;
 public interface OrderService {
     Order findById(long id, Restaurant restaurant);
 
-    Map<Long, Order> findNotReady(Restaurant restaurant, int page, int pageSize);
+    Map<Long, Order> findNotReady(Restaurant restaurant);
 
     Order create(Order order);
 

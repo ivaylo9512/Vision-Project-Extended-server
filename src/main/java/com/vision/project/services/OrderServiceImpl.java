@@ -68,8 +68,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<Long, Order> findNotReady(Restaurant restaurant, int page, int pageSize) {
-        return orderRepository.findNotReady(restaurant, PageRequest.of(page, pageSize, Sort.Direction.DESC, "created")).stream()
+    public Map<Long, Order> findNotReady(Restaurant restaurant) {
+        return orderRepository.findNotReady(restaurant).stream()
                 .collect(Collectors.toMap(Order::getId, order -> order, (existing, replacement) -> existing, LinkedHashMap::new));
     }
 

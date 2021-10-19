@@ -64,10 +64,10 @@ public class OrderControllerTest {
         Order order = orders.get(1L);
         Order order1 = orders.get(2L);
 
-        when(orderService.findNotReady(restaurant, 0, 5)).thenReturn(Map.of(order.getId(), order, order1.getId(), order1));
+        when(orderService.findNotReady(restaurant)).thenReturn(Map.of(order.getId(), order, order1.getId(), order1));
         when(restaurantService.getById(restaurant.getId())).thenReturn(restaurant);
 
-        Map<Long, OrderDto> orders = orderController.findNotReady(0, 5);
+        Map<Long, OrderDto> orders = orderController.findNotReady();
 
         assertOrders(orders.get(1L), order);
         assertOrders(orders.get(2L), order1);
@@ -148,8 +148,8 @@ public class OrderControllerTest {
     }
 
     private void assertOrders(OrderDto orderDto, Order order){
-        assertEquals(orderDto.getCreated(), order.getCreated());
-        assertEquals(orderDto.getUpdated(), order.getUpdated());
+        assertEquals(orderDto.getCreatedAt(), order.getCreated());
+        assertEquals(orderDto.getUpdatedAt(), order.getUpdated());
         assertEquals(orderDto.getId(), order.getId());
         assertEquals(orderDto.getRestaurantId(), order.getRestaurant().getId());
         assertEquals(orderDto.getUserId(), order.getUser().getId());

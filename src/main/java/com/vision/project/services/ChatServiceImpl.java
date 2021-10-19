@@ -28,6 +28,7 @@ public class ChatServiceImpl implements ChatService {
     private final SessionRepository sessionRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final int sessionsSize = 3;
 
     public ChatServiceImpl(ChatRepository chatRepository, SessionRepository sessionRepository, MessageRepository messageRepository, UserRepository userRepository) {
         this.chatRepository = chatRepository;
@@ -49,10 +50,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Map<Long, Chat> findUserChats(long id, int pageSize) {
+    public Map<Long, Chat> findAllUserChats(long id) {
         Map<Long, Chat> chatsMap = new LinkedHashMap<>();
-        chatRepository.findUserChats(id, PageRequest.of(0, pageSize)).forEach(chat -> {
-            chat.setSessions(sessionRepository.findSessions(chat, PageRequest.of(0, pageSize,
+        chatRepository.findAllUserChats(id).forEach(chat -> {
+            chat.setSessions(sessionRepository.findSessions(chat, PageRequest.of(0, sessionsSize,
                     Sort.Direction.DESC, "session_date")));
 
             UserModel loggedUser = chat.getFirstUser();
@@ -67,8 +68,14 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<Session> findSessions(Chat chat, int page, int pageSize){
-        return sessionRepository.findSessions(chat, PageRequest.of(page, pageSize, Sort.Direction.DESC, "session_date"));
+    public List<Session> findSessions(Chat chat, String lastSession){
+        if(lastSession == null){
+            return sessionRepository.findSessions(chat,
+                    PageRequest.of(0, sessionsSize, Sort.Direction.DESC, "session_date"));
+        }
+
+        return sessionRepository.findNextSessions(chat, lastSession,
+                PageRequest.of(0, sessionsSize, Sort.Direction.DESC, "session_date"));
     }
 
     @Transactional

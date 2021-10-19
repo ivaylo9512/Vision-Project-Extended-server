@@ -31,29 +31,19 @@ public class ChatController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/getChats")
-    @Transactional
-    public Map<Long, ChatDto> findChats(@RequestParam(name = "pageSize") int pageSize){
-        UserDetails loggedUser = (UserDetails)SecurityContextHolder
-                .getContext().getAuthentication().getDetails();
-        long userId = loggedUser.getId();
-
-        return chatService.findUserChats(userId, pageSize).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, duplicate) -> existing, LinkedHashMap::new));
-    }
-
-    @GetMapping(value = "/getSessions")
-    public List<SessionDto> getSessions(
-            @RequestParam(name = "chatId") long chatId,
-            @RequestParam(name = "page") int page,
-            @RequestParam(name = "pageSize") int pageSize){
+    @GetMapping(value = "/findNextSessions/{chatId}/{lastSession}")
+    public List<SessionDto> findNextSessions(
+            @PathVariable(name = "chatId") long chatId,
+            @PathVariable(name = "lastSession") String lastSession){
         UserDetails loggedUser = (UserDetails)SecurityContextHolder
                 .getContext().getAuthentication().getDetails();
 
-        return chatService.findSessions(chatService.findById(chatId, loggedUser.getId()), page, pageSize).stream().map(SessionDto::new).collect(Collectors.toList());
+        return chatService.findSessions(chatService.findById(chatId, loggedUser.getId()), lastSession).stream()
+                .map(SessionDto::new).collect(Collectors.toList());
     }
 
     @DeleteMapping(value = "/delete/{id}")
+    @Transactional
     public void delete(@PathVariable("id") long id){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();

@@ -17,25 +17,26 @@ public class UserRequest {
     private Long userId;
     private LocalDateTime lastCheck;
 
-    public UserRequest(){
-
-    }
     public UserRequest(Long userId, Restaurant restaurant, DeferredResult<UserRequestDto> request){
         this.userId = userId;
         this.restaurant = restaurant;
         this.request = request;
     }
+
+    public UserRequest(Long userId, Restaurant restaurant, List<Order> orders, List<Message> messages, List<Dish> dishes){
+        this.userId = userId;
+        this.restaurant = restaurant;
+        this.orders = orders;
+        this.messages = messages;
+        this.dishes = dishes;
+    }
+
     public UserRequest(Long userId, Restaurant restaurant, DeferredResult<UserRequestDto> request, LocalDateTime lastCheck){
         this.userId = userId;
         this.restaurant = restaurant;
         this.request = request;
         this.lastCheck = lastCheck;
     }
-
-    public UserRequest(DeferredResult request){
-        this.request = request;
-    }
-
 
     public List<Order> getOrders() {
         return orders;

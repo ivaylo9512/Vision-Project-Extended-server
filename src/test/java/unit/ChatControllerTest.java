@@ -55,28 +55,17 @@ public class ChatControllerTest {
     }
 
     @Test
-    public void findChats(){
-        auth.setDetails(user);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        when(chatService.findUserChats(user.getId(), 5)).thenReturn(chats);
-
-        Map<Long, ChatDto> chatDtos = chatController.findChats(5);
-
-        chatDtos.forEach((k, v) -> assertChats(chats.get(k), v));
-    }
-
-    @Test
-    public void getSessions(){
+    public void findNextSessions(){
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         List<Session> sessions = chat.getSessions();
+        String lastSession = "2021-10-10";
 
         when(chatService.findById(1, user.getId())).thenReturn(chat);
-        when(chatService.findSessions(chat, 3, 5)).thenReturn(List.of(sessions.get(0), sessions.get(1)));
+        when(chatService.findSessions(chat, lastSession)).thenReturn(List.of(sessions.get(0), sessions.get(1)));
 
-        List<SessionDto> sessionDtos = chatController.getSessions(1, 3, 5);
+        List<SessionDto> sessionDtos = chatController.findNextSessions(1, lastSession);
 
         assertSessions(sessions.get(0), sessionDtos.get(0));
         assertSessions(sessions.get(1), sessionDtos.get(1));

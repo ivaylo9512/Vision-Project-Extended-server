@@ -134,8 +134,8 @@ public class Orders {
         DishDto dish = dishes.get(0);
 
         assertEquals(order.getId(), 1);
-        assertEquals(order.getUpdated(), LocalDateTime.of(2021, Month.MAY, 14, 15, 53, 41));
-        assertEquals(order.getCreated(), LocalDateTime.of(2021, Month.APRIL, 14, 15, 53, 37));
+        assertEquals(order.getUpdatedAt(), LocalDateTime.of(2021, Month.MAY, 14, 15, 53, 41));
+        assertEquals(order.getCreatedAt(), LocalDateTime.of(2021, Month.APRIL, 14, 15, 53, 37));
         assertEquals(order.getRestaurantId(), 1);
 
         assertEquals(dishes.size(), 4);
@@ -240,8 +240,8 @@ public class Orders {
         DishDto dish = dishes.get(0);
 
         assertEquals(order.getId(), 1);
-        assertEquals(order.getUpdated(), LocalDateTime.of(2021, Month.MAY, 14, 15, 53, 41));
-        assertEquals(order.getCreated(), LocalDateTime.of(2021, Month.APRIL, 14, 15, 53, 37));
+        assertEquals(order.getUpdatedAt(), LocalDateTime.of(2021, Month.MAY, 14, 15, 53, 41));
+        assertEquals(order.getCreatedAt(), LocalDateTime.of(2021, Month.APRIL, 14, 15, 53, 37));
         assertEquals(order.getRestaurantId(), 1);
 
         assertEquals(dishes.size(), 4);
@@ -283,14 +283,14 @@ public class Orders {
 
     @Test
     void findNotReady_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/restaurant/auth/findNotReady/2/3/2"))
+        mockMvc.perform(get("/api/restaurant/auth/findNotReady"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is missing"));
     }
 
     @Test
     void findNotReady_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/orders/auth/findNotReady/2/3/2")
+        mockMvc.perform(get("/api/orders/auth/findNotReady")
                 .header("Authorization", "Token incorrect"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Jwt token is incorrect"));

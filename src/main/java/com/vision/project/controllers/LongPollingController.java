@@ -33,33 +33,35 @@ public class LongPollingController {
         this.restaurantService = restaurantService;
     }
 
-    @PostMapping("/login/{pageSize}")
-    public UserDto login(@PathVariable("pageSize") int pageSize){
+    @PostMapping("/login")
+    public UserDto login(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
-        return initializeUser(userDetails.getUserModel(), pageSize);
+        return initializeUser(userDetails.getUserModel());
     }
 
-    @GetMapping(value = "/auth/getLoggedUser/{pageSize}")
-    public UserDto getLoggedUser(@RequestParam("pageSize") int pageSize){
+    @GetMapping(value = "/auth/getLoggedUser")
+    public UserDto getLoggedUser(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return initializeUser(userService.findById(loggedUser.getId()), pageSize);
+        return initializeUser(userService.findById(loggedUser.getId()));
     }
 
     @Transactional
-    public UserDto initializeUser(UserModel user, int pageSize){
+    public UserDto initializeUser(UserModel user){
         Restaurant restaurant = user.getRestaurant();
-        Map<Long, Order> orders = orderService.findNotReady(restaurant, 0, pageSize);
+
+        Map<Long, Chat> chats = chatService.findAllUserChats(user.getId());
+        Map<Long, Order> orders = orderService.findNotReady(restaurant);
+        LocalDateTime lastCheck = LocalDateTime.now();
         RestaurantDto restaurantDto = new RestaurantDto(restaurant, orders);
 
         UserRequest userRequest = new UserRequest(user.getId(), restaurant, null);
-        Map<Long, Chat> chats = chatService.findUserChats(user.getId(), pageSize);
-
         longPollingService.addRequest(userRequest);
-        return new UserDto(user, restaurantDto, LocalDateTime.now(), chats);
+
+        return new UserDto(user, restaurantDto, lastCheck, chats);
     }
 
     @PostMapping(value = "/auth/waitData")

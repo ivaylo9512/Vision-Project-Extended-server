@@ -38,13 +38,12 @@ public class OrderController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping("/findNotReady/{page}/{pageSize}/{restaurantId}")
-    public Map<Long, OrderDto> findNotReady(@PathVariable("page") int page,
-                                      @PathVariable("pageSize") int pageSize){
+    @GetMapping("/findNotReady")
+    public Map<Long, OrderDto> findNotReady(){
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getDetails();
 
-        return orderService.findNotReady(restaurantService.getById(loggedUser.getRestaurantId()), page, pageSize).entrySet().stream()
+        return orderService.findNotReady(restaurantService.getById(loggedUser.getRestaurantId())).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, o -> new OrderDto(o.getValue()),
                         (existing, replacement) -> existing, LinkedHashMap::new));
     }

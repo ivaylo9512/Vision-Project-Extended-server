@@ -12,9 +12,9 @@ import java.util.Map;
 public interface ChatService {
     Chat findById(long id, long loggedUser);
 
-    Map<Long, Chat> findUserChats(long id, int pageSize);
+    Map<Long, Chat> findAllUserChats(long id);
 
-    List<Session> findSessions(Chat chat, int page, int pageSize);
+    List<Session> findSessions(Chat chat, String lastSession);
 
     Message addNewMessage(MessageSpec message);
 

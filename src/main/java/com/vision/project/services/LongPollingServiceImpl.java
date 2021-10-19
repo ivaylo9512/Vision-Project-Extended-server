@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class LongPollingServiceImpl implements LongPollingService {
-    private Cache<Long, UserRequest> userRequests = CacheBuilder.newBuilder()
+    private final Cache<Long, UserRequest> userRequests = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES).build();
-    Map<Long, Cache<Long, UserRequest>> restaurants = new HashMap<>();
+    private final Map<Long, Cache<Long, UserRequest>> restaurants = new HashMap<>();
 
     private final OrderService orderService;
     private final ChatService chatService;

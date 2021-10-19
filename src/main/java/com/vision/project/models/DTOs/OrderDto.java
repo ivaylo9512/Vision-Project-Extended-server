@@ -9,8 +9,8 @@ public class OrderDto {
     private long id;
     private long userId;
     private List<DishDto> dishes;
-    private LocalDateTime created;
-    private LocalDateTime updated;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private boolean ready;
     private long restaurantId;
 
@@ -21,8 +21,8 @@ public class OrderDto {
         this.id = order.getId();
         this.userId = order.getUser().getId();
         this.dishes = order.getDishes().stream().map(DishDto::new).collect(Collectors.toList());
-        this.created = order.getCreated();
-        this.updated = order.getUpdated();
+        this.createdAt = order.getCreated();
+        this.updatedAt = order.getUpdated();
         this.restaurantId = order.getRestaurant().getId();
         this.ready = order.isReady();
     }
@@ -51,20 +51,20 @@ public class OrderDto {
         this.dishes = dishes;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated() {
-        return updated;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public long getRestaurantId() {

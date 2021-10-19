@@ -1,9 +1,5 @@
 package unit;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vision.project.controllers.LongPollingController;
 import com.vision.project.models.*;
 import com.vision.project.models.DTOs.*;
@@ -19,12 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.async.DeferredResult;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,17 +65,15 @@ public class LongPollingControllerTest {
 
     @Test
     public void login(){
-        int pageSize = 5;
-
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        when(orderService.findNotReady(restaurant, 0, pageSize)).thenReturn(orders);
-        when(chatService.findUserChats(user.getId(), pageSize)).thenReturn(chats);
+        when(orderService.findNotReady(restaurant)).thenReturn(orders);
+        when(chatService.findAllUserChats(user.getId())).thenReturn(chats);
 
-        UserDto userDto = longPollingController.login(pageSize);
+        UserDto userDto = longPollingController.login();
 
-        verify(longPollingController, times(1)).initializeUser(userModel, pageSize);
+        verify(longPollingController, times(1)).initializeUser(userModel);
         assertOrders(userDto.getRestaurant().getOrders().get(1L), orders.get(1L));
         assertOrders(userDto.getRestaurant().getOrders().get(2L), orders.get(2L));
         assertRestaurants(restaurant, userDto.getRestaurant());
@@ -94,18 +83,16 @@ public class LongPollingControllerTest {
 
     @Test
     public void getLoggedUser(){
-        int pageSize = 5;
-
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         when(userService.findById(user.getId())).thenReturn(userModel);
-        when(orderService.findNotReady(restaurant, 0, pageSize)).thenReturn(orders);
-        when(chatService.findUserChats(user.getId(), pageSize)).thenReturn(chats);
+        when(orderService.findNotReady(restaurant)).thenReturn(orders);
+        when(chatService.findAllUserChats(user.getId())).thenReturn(chats);
 
-        UserDto userDto = longPollingController.getLoggedUser(pageSize);
+        UserDto userDto = longPollingController.getLoggedUser();
 
-        verify(longPollingController, times(1)).initializeUser(userModel, pageSize);
+        verify(longPollingController, times(1)).initializeUser(userModel);
         assertOrders(userDto.getRestaurant().getOrders().get(1L), orders.get(1L));
         assertOrders(userDto.getRestaurant().getOrders().get(2L), orders.get(2L));
         assertRestaurants(restaurant, userDto.getRestaurant());
@@ -115,14 +102,12 @@ public class LongPollingControllerTest {
 
     @Test
     public void initializeUser(){
-        int pageSize = 5;
-
-        when(orderService.findNotReady(restaurant, 0, pageSize)).thenReturn(orders);
-        when(chatService.findUserChats(user.getId(), pageSize)).thenReturn(chats);
+        when(orderService.findNotReady(restaurant)).thenReturn(orders);
+        when(chatService.findAllUserChats(user.getId())).thenReturn(chats);
 
         ArgumentCaptor<UserRequest> captor = ArgumentCaptor.forClass(UserRequest.class);
 
-        UserDto userDto = longPollingController.initializeUser(userModel, pageSize);
+        UserDto userDto = longPollingController.initializeUser(userModel);
 
         verify(longPollingService).addRequest(captor.capture());
         UserRequest request = captor.getValue();
@@ -138,6 +123,9 @@ public class LongPollingControllerTest {
 
     @Test
     public void waitData(){
+        UserRequest userRequest = new UserRequest(user.getId(), restaurant, orders.values().stream().toList(), chats.get(1L).getSessions().get(0).getMessages(), orders.get(1L).getDishes());
+        UserRequestDto requestDto = new UserRequestDto(userRequest);
+
         ArgumentCaptor<UserRequest> captor = ArgumentCaptor.forClass(UserRequest.class);
         LocalDateTime lastCheck = LocalDateTime.now();
 
@@ -145,17 +133,26 @@ public class LongPollingControllerTest {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         when(restaurantService.getById(restaurant.getId())).thenReturn(restaurant);
-
-        longPollingController.waitData(lastCheck);
+        doAnswer(call -> ((UserRequest)call.getArgument(0)).getRequest().setResult(requestDto)).when(longPollingService).setAndAddRequest(any(UserRequest.class));
+        DeferredResult<UserRequestDto> deferredResult = longPollingController.waitData(lastCheck);
 
         verify(longPollingService).setAndAddRequest(captor.capture());
 
-        UserRequest userRequest = captor.getValue();
+        UserRequest userRequestCapture = captor.getValue();
+        UserRequestDto userRequestDto = (UserRequestDto) deferredResult.getResult();
 
-        assertEquals(userRequest.getRestaurant(), restaurant);
-        assertEquals(userRequest.getLastCheck(), lastCheck);
-        assertEquals(userRequest.getUserId(), user.getId());
-        assertNotNull(userRequest.getRequest());
+        assertEquals(userRequestCapture.getRestaurant(), restaurant);
+        assertEquals(userRequestCapture.getLastCheck(), lastCheck);
+        assertEquals(userRequestCapture.getUserId(), user.getId());
+        assertNotNull(userRequestCapture.getRequest());
+        assertOrders(userRequestDto.getOrders().get(1L), orders.get(1L));
+        assertOrders(userRequestDto.getOrders().get(2L), orders.get(2L));
+        assertMessages(chats.get(1L).getSessions().get(0).getMessages().get(0), userRequestDto.getMessages().get(0));
+        assertMessages(chats.get(1L).getSessions().get(0).getMessages().get(1), userRequestDto.getMessages().get(1));
+        assertDishes(userRequestDto.getDishes().get(0), orders.get(1L).getDishes().get(0));
+        assertDishes(userRequestDto.getDishes().get(1), orders.get(1L).getDishes().get(1));
+        assertEquals(userRequestDto.getUserId(), user.getId());
+        assertEquals(userRequestDto.getRestaurantId(), user.getRestaurantId());
     }
 
     private void createOrders(){
@@ -178,13 +175,14 @@ public class LongPollingControllerTest {
     }
 
     private void assertOrders(OrderDto orderDto, Order order){
-        assertEquals(orderDto.getCreated(), order.getCreated());
-        assertEquals(orderDto.getUpdated(), order.getUpdated());
+        assertEquals(orderDto.getCreatedAt(), order.getCreated());
+        assertEquals(orderDto.getUpdatedAt(), order.getUpdated());
         assertEquals(orderDto.getId(), order.getId());
         assertEquals(orderDto.getRestaurantId(), order.getRestaurant().getId());
         assertEquals(orderDto.getUserId(), order.getUser().getId());
 
         assertDishes(orderDto.getDishes().get(0), order.getDishes().get(0));
+        assertDishes(orderDto.getDishes().get(1), order.getDishes().get(1));
     }
 
     private void assertDishes(DishDto dishDto, Dish dish){
