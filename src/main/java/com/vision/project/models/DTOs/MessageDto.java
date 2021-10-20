@@ -16,12 +16,6 @@ public class MessageDto {
     public MessageDto() {
     }
 
-    public MessageDto(String message, long chatId, long senderId, long receiverId) {
-        this.message = message;
-        this.chatId = chatId;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-    }
     public MessageDto(Message message) {
         this.message = message.getMessage();
         this.chatId = message.getSession().getChat().getId();

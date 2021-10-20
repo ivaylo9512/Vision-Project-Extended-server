@@ -11,7 +11,7 @@ public class Message{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver")
     private UserModel receiver;
 
@@ -37,39 +37,19 @@ public class Message{
         return receiver;
     }
 
-    public void setReceiver(UserModel receiverId) {
-        this.receiver = receiverId;
-    }
-
     public LocalTime getTime() {
         return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
     }
 
     public Session getSession() {
         return session;
     }
 
-    public void setSession(Session session) {
-        this.session = session;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }

@@ -30,13 +30,6 @@ public class UserDto {
         this.lastCheck = lastCheck;
     }
 
-    public UserDto(UserModel userModel, RestaurantDto restaurant, Map<Long, Chat> chats){
-        this(userModel);
-        this.restaurant = restaurant;
-        this.chats = chats.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, o -> new ChatDto(o.getValue()), (existing, replacement) -> existing, LinkedHashMap::new));
-
-    }
-
     public UserDto(UserSpec user, String role) {
         this.id = user.getId();
         this.username = user.getUsername();

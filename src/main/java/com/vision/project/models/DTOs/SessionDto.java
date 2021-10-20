@@ -1,10 +1,6 @@
 package com.vision.project.models.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vision.project.models.Chat;
-import com.vision.project.models.Message;
 import com.vision.project.models.Session;
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,9 +9,7 @@ public class SessionDto {
     private LocalDate date;
     private List<MessageDto> messages;
 
-    public SessionDto(LocalDate date, List<Message> messages) {
-        this.date = date;
-        this.messages = messages.stream().map(MessageDto::new).collect(Collectors.toList());
+    public SessionDto(){
     }
 
     public SessionDto(Session session){

@@ -44,19 +44,6 @@ public class File {
         this.owner = owner;
     }
 
-    @Override
-    public int hashCode() {
-        return Long.hashCode(id);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(!(obj instanceof File)) return false;
-
-        File extension = (File) obj;
-        return extension.getId() == getId();
-    }
 
     public long getId() {
         return id;
@@ -70,16 +57,8 @@ public class File {
         return size;
     }
 
-    public void setSize(double size) {
-        this.size = size;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getResourceType() {

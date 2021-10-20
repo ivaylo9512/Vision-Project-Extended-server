@@ -50,11 +50,7 @@ public class Order{
         this.user = user;
         this.dishes = orderSpec.getDishes().stream().map(s -> new Dish(s, this)).collect(Collectors.toList());
     }
-    public Order(Order order) {
-        this.restaurant = order.getRestaurant();
-        this.user = order.getUser();
-        this.created = order.getCreated();
-    }
+
     public Order(long id, List<Dish> dishes, LocalDateTime created, LocalDateTime updated, Restaurant restaurant) {
         this.id = id;
         this.dishes = dishes;
@@ -76,24 +72,12 @@ public class Order{
         return dishes;
     }
 
-    public void setDishes(List<Dish> dishes) {
-        this.dishes = dishes;
-    }
-
     public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
     public LocalDateTime getUpdated() {
         return updated;
-    }
-
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
     }
 
     public boolean isReady() {
@@ -106,10 +90,6 @@ public class Order{
 
     public Restaurant getRestaurant() {
         return restaurant;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
     }
 
     public UserModel getUser() {

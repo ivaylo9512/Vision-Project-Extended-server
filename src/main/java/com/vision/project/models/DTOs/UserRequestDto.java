@@ -30,47 +30,23 @@ public class UserRequestDto {
         return orders;
     }
 
-    public void setOrders(Map<Long, OrderDto> orders) {
-        this.orders = orders;
-    }
-
     public List<MessageDto> getMessages() {
         return messages;
-    }
-
-    public void setMessages(List<MessageDto> messages) {
-        this.messages = messages;
     }
 
     public List<DishDto> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<DishDto> dishes) {
-        this.dishes = dishes;
-    }
-
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public long getRestaurantId() {
         return restaurantId;
     }
 
-    public void setRestaurantId(long restaurantId) {
-        this.restaurantId = restaurantId;
-    }
-
     public LocalDateTime getLastCheck() {
         return lastCheck;
-    }
-
-    public void setLastCheck(LocalDateTime lastCheck) {
-        this.lastCheck = lastCheck;
     }
 }

@@ -13,6 +13,7 @@ import com.vision.project.services.base.RestaurantService;
 import com.vision.project.services.base.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -64,6 +65,7 @@ public class MenuControllerTest {
     public void create(){
         auth.setDetails(user);
         SecurityContextHolder.getContext().setAuthentication(auth);
+        ArgumentCaptor<Menu> captor = ArgumentCaptor.forClass(Menu.class);
 
         MenuCreateSpec menuCreateSpec = new MenuCreateSpec("name", restaurant.getId());
 
@@ -71,12 +73,15 @@ public class MenuControllerTest {
 
         when(userService.findById(user.getId())).thenReturn(userModel);
         when(restaurantService.findById(restaurant.getId(), userModel)).thenReturn(restaurant);
-        when(menuService.create(eq(menu), eq(userModel))).thenReturn(menu);
+        when(menuService.create(captor.capture(), eq(userModel))).thenReturn(menu);
 
         MenuDto menuDto = menuController.create(menuCreateSpec);
+        Menu passedMenu = captor.getValue();
 
         assertEquals(menuDto.getName(), menu.getName());
         assertEquals(menuDto.getRestaurantId(), menu.getRestaurant().getId());
+        assertEquals(passedMenu.getRestaurant(), restaurant);
+        assertEquals(passedMenu.getName(), menuCreateSpec.getName());
     }
 
     @Test

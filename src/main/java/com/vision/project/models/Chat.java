@@ -15,14 +15,12 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_user")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel firstUser;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_user")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel secondUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat", cascade = CascadeType.ALL)
@@ -38,11 +36,6 @@ public class Chat {
     private LocalDateTime updatedAt;
 
     public Chat() {
-    }
-
-    public Chat(UserModel firstUser, UserModel secondUser) {
-        this.firstUser = firstUser;
-        this.secondUser = secondUser;
     }
 
     public UserModel getFirstUser() {

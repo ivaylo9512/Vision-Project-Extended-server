@@ -63,10 +63,6 @@ public class Dish{
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Boolean isReady() {
         return ready;
     }
@@ -87,16 +83,8 @@ public class Dish{
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public UserModel getUpdatedBy() {

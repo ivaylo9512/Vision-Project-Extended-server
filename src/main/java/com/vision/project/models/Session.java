@@ -18,7 +18,7 @@ public class Session{
     @Column(name = "date")
     private LocalDate date;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "session", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "session", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Message> messages;
 
@@ -36,10 +36,6 @@ public class Session{
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public List<Message> getMessages() {

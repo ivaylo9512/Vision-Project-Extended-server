@@ -27,16 +27,8 @@ public class UserDetails extends User {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getRestaurantId() {
         return restaurantId;
-    }
-
-    public void setRestaurantId(long restaurantId) {
-        this.restaurantId = restaurantId;
     }
 
     public void setRestaurantId(Restaurant restaurant) {
@@ -47,9 +39,5 @@ public class UserDetails extends User {
 
     public UserModel getUserModel() {
         return userModel;
-    }
-
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
     }
 }

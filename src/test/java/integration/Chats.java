@@ -1,10 +1,13 @@
 package integration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vision.project.config.AppConfig;
 import com.vision.project.config.SecurityConfig;
 import com.vision.project.config.TestWebConfig;
 import com.vision.project.controllers.ChatController;
+import com.vision.project.models.DTOs.ChatDto;
+import com.vision.project.models.DTOs.SessionDto;
 import com.vision.project.models.UserDetails;
 import com.vision.project.models.UserModel;
 import com.vision.project.security.Jwt;
@@ -31,10 +34,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,9 +60,11 @@ public class Chats {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private MockMvc mockMvc;
     private static String adminToken, userToken;
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void setupData() {
@@ -71,8 +79,8 @@ public class Chats {
     @BeforeAll
     public void setup() {
         ResourceDatabasePopulator rdp = new ResourceDatabasePopulator();
-        rdp.addScript(new ClassPathResource("integrationTestsSql/UsersData.sql"));
         rdp.addScript(new ClassPathResource("integrationTestsSql/FilesData.sql"));
+        rdp.addScript(new ClassPathResource("integrationTestsSql/RestaurantsData.sql"));
         rdp.execute(dataSource);
 
         UserModel admin = new UserModel("adminUser", "password", "ROLE_ADMIN");
@@ -87,11 +95,37 @@ public class Chats {
         userToken = "Token " + Jwt.generate(new UserDetails(user, Collections
                 .singletonList(new SimpleGrantedAuthority("ROLE_USER"))));
 
-        objectMapper = new ObjectMapper();
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
+    }
+
+    @Test
+    public void findNextSessions() throws Exception {
+        String response = mockMvc.perform(get("/api/chats/auth/findNextSessions/1/2021-09-18")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<SessionDto> sessions = objectMapper.readValue(response, new TypeReference<>() {});
+
+        assertEquals(sessions.get(0).getDate().toString(), "2021-09-17");
+        assertEquals(sessions.get(1).getDate().toString(), "2021-09-16");
+        assertEquals(sessions.get(2).getDate().toString(), "2021-09-15");
+    }
+
+    @Test
+    public void deleteChat() throws Exception {
+        mockMvc.perform(delete("/api/chats/auth/delete/1")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/chats/auth/findByUser/2")
+                        .header("Authorization", adminToken))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -101,21 +135,6 @@ public class Chats {
         assertNotNull(servletContext);
         assertTrue(servletContext instanceof MockServletContext);
         assertNotNull(webApplicationContext.getBean("chatController"));
-    }
-
-    @Test
-    void getChats_WithoutToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/chats/auth/getChats"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Jwt token is missing"));
-    }
-
-    @Test
-    void getChats_WithIncorrectToken_Unauthorized() throws Exception{
-        mockMvc.perform(get("/api/chats/auth/getChats")
-                .header("Authorization", "Token incorrect"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Jwt token is incorrect"));
     }
 
     @Test

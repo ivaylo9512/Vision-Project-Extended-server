@@ -10,7 +10,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant")
     private Restaurant restaurant;
 
@@ -28,19 +28,6 @@ public class Menu {
         this.id = id;
         this.name = name;
         this.restaurant = restaurant;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return id == menu.id && restaurant.getId() == menu.restaurant.getId() && name.equals(menu.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, restaurant.getId(), name);
     }
 
     public long getId() {

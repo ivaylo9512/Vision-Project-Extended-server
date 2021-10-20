@@ -9,6 +9,7 @@ import com.vision.project.services.RestaurantServiceImpl;
 import com.vision.project.services.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -73,14 +74,17 @@ public class RestaurantControllerTest {
 
     @Test
     public void create(){
+        ArgumentCaptor<Restaurant> captor = ArgumentCaptor.forClass(Restaurant.class);
+
         RestaurantSpec restaurantSpec = new RestaurantSpec("name", "type", "address",
                 List.of("menu", "menu1"));
         Restaurant restaurant = new Restaurant(restaurantSpec);
 
-        when(restaurantService.create(eq(restaurant))).thenReturn(restaurant);
+        when(restaurantService.create(captor.capture())).thenReturn(restaurant);
 
         RestaurantDto restaurantDto = restaurantController.create(restaurantSpec);
         List<MenuDto> menuDto = restaurantDto.getMenu();
+        Restaurant passedRestaurant = captor.getValue();
 
         assertEquals(restaurantDto.getId(), restaurant.getId());
         assertEquals(restaurantDto.getAddress(), restaurantSpec.getAddress());
@@ -88,5 +92,9 @@ public class RestaurantControllerTest {
         assertEquals(restaurantDto.getType(), restaurantSpec.getType());
         restaurantSpec.getMenu().forEach(menu -> assertTrue(menuDto.contains(
                 new MenuDto(menu, restaurant.getId()))));
+
+        assertEquals(passedRestaurant.getName(), restaurantSpec.getName());
+        assertEquals(passedRestaurant.getType(), restaurantSpec.getType());
+        assertEquals(passedRestaurant.getAddress(), restaurantSpec.getAddress());
     }
 }
