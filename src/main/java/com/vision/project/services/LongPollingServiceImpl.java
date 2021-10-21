@@ -49,7 +49,7 @@ public class LongPollingServiceImpl implements LongPollingService {
         }
     }
 
-    private void setDataFromRequest(UserRequest currentRequest) {
+    public void setDataFromRequest(UserRequest currentRequest) {
         DeferredResult<UserRequestDto> waitingResult = currentRequest.getRequest();
 
         if (currentRequest.getDishes().size() > 0 || currentRequest.getMessages().size() > 0 || currentRequest.getOrders().size() > 0) {
@@ -63,7 +63,7 @@ public class LongPollingServiceImpl implements LongPollingService {
         currentRequest.setRequest(waitingResult);
     }
 
-    private void setMoreRecentData(UserRequest newRequest) {
+    public void setMoreRecentData(UserRequest newRequest) {
         DeferredResult<UserRequestDto> waitingResult = newRequest.getRequest();
         Long userId = newRequest.getUserId();
         LocalDateTime lastCheck = newRequest.getLastCheck();

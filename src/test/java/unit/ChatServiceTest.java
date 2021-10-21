@@ -18,14 +18,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -340,17 +342,59 @@ public class ChatServiceTest {
         assertEquals(thrown.getMessage(), "Users don't match the given chat.");
     }
 
+    @Test
+    public void findAllUserChats() {
+        when(chatRepository.findAllUserChats(user.getId())).thenReturn(chats);
+
+        Map<Long, Chat> chatsMap = chatService.findAllUserChats(user.getId());
+
+        verify(sessionRepository, times(1)).findSessions(chats.get(0), PageRequest.of(0, 3, Sort.Direction.DESC, "session_date"));
+        verify(sessionRepository, times(1)).findSessions(chats.get(1), PageRequest.of(0, 3, Sort.Direction.DESC, "session_date"));
+
+        Chat chat = chats.get(0);
+        Chat chat1 = chats.get(0);
+
+        assertEquals(chatsMap.get(chat.getId()), chat);
+        assertEquals(chatsMap.get(chat1.getId()), chat1);
+    }
+
+    @Test
+    public void findSessions(){
+        when(sessionRepository.findSessions(chat, PageRequest.of(0, 3, Sort.Direction.DESC, "session_date"))).thenReturn(chat.getSessions());
+
+        List<Session> sessions = chatService.findSessions(chat, null);
+
+        assertSessions(sessions.get(0), chat.getSessions().get(0));
+        assertSessions(sessions.get(1), chat.getSessions().get(1));
+    }
+
+    @Test
+    public void findSessions_WithLastSession(){
+        when(sessionRepository.findNextSessions(chat, "2021-09-09", PageRequest.of(0, 3, Sort.Direction.DESC, "session_date"))).thenReturn(chat.getSessions());
+
+        List<Session> sessions = chatService.findSessions(chat, "2021-09-09");
+
+        assertSessions(sessions.get(0), chat.getSessions().get(0));
+        assertSessions(sessions.get(1), chat.getSessions().get(1));
+    }
+
     private void createChats(){
         chat = new Chat();
         Chat chat1 = new Chat();
 
         chat.setId(1);
+        chat.setFirstUser(new UserModel());
+        chat.setSecondUser(user);
+
         chat1.setId(2);
+        chat1.setFirstUser(user);
+        chat1.setSecondUser(new UserModel());
 
         Session session = new Session(chat, LocalDate.now());
         Session session1 = new Session(chat1, LocalDate.now().plusDays(1));
+        Session session2 = new Session(chat, LocalDate.now().plusDays(1));
 
-        chat.setSessions(List.of(session));
+        chat.setSessions(List.of(session, session2));
         chat1.setSessions(List.of(session));
 
         LocalTime time = LocalTime.now();
@@ -367,6 +411,7 @@ public class ChatServiceTest {
 
         session.setMessages(List.of(message, message1));
         session1.setMessages(List.of(message2, message3));
+        session2.setMessages(List.of(message, message1));
 
         chats = List.of(chat, chat1);
     }
